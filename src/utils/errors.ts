@@ -23,6 +23,8 @@ export function friendlyError(err: unknown): string {
       return 'Şəbəkə xətası. İnternet bağlantınızı yoxlayıb yenidən cəhd edin.';
     case 'permission-denied':
       return 'Bu əməliyyat üçün icazəniz yoxdur.';
+    case 'invalid-placement':
+      return 'Seçilmiş qrup bu ixtisasa aid deyil. İxtisası və qrupu yenidən seçin.';
     case 'not-found':
       return 'Axtarılan məlumat tapılmadı.';
     case 'resource-exhausted':

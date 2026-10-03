@@ -3,8 +3,8 @@ import {
   type DocumentData,
 } from 'firebase/firestore';
 import { db, isConfigured, NotConfiguredError } from '@/lib/firebase';
-import type { Announcement, EventItem, Material, ScheduleEntry } from '@/types';
-import { sampleAnnouncements, sampleEvents, sampleMaterials, sampleSchedule } from '@/data/sample';
+import type { Announcement, EventItem, Material } from '@/types';
+import { sampleAnnouncements, sampleEvents, sampleMaterials } from '@/data/sample';
 
 type WithId = { id: string };
 
@@ -84,9 +84,4 @@ export const materialsApi = makeResource<Material>('materials', [], sampleMateri
 export const eventsApi = makeResource<EventItem>(
   'events', ['startsAt', 'endsAt'], sampleEvents, (a, b) => a.startsAt.localeCompare(b.startsAt),
 );
-export const scheduleApi = makeResource<ScheduleEntry>(
-  'schedule', [], sampleSchedule,
-  (a, b) => a.day - b.day || a.startTime.localeCompare(b.startTime),
-);
-
 export const isSampleMode = !isConfigured;

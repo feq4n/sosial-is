@@ -1,6 +1,6 @@
 # Sosial İş
 
-Sosial iş şöbəsinin tələbələri üçün platforma: elanlar, tədris materialları, dərs cədvəli, tədbirlər, şəxsi tələbə kabineti və admin paneli. İnterfeys Azərbaycan dilindədir.
+Azərbaycan Dövlət Pedaqoji Kollecinin Sosial iş şöbəsinin tələbələri üçün platforma: elanlar, tədris materialları, dərs cədvəli, tədbirlər, şəxsi tələbə kabineti və admin paneli. İnterfeys Azərbaycan dilindədir.
 
 **Stack:** React 19 · TypeScript · Vite · Tailwind CSS 4 · React Router 7 · Motion · Lucide · React Hook Form · Firebase (Auth + Firestore)
 
@@ -12,7 +12,7 @@ cp .env.example .env     # Firebase dəyərlərini doldurun
 npm run dev              # http://localhost:3000
 ```
 
-`.env` doldurulmasa sayt **nümunə məzmunla** açılır (ictimai səhifələr üçün, “Nümunə məzmun” xəbərdarlığı ilə). Giriş, qeydiyyat, əlaqə formu, kabinet və admin paneli yalnız Firebase qoşulduqda işləyir; qoşulmayıbsa aydın xəta göstərilir.
+`.env` doldurulmasa sayt elan, material və tədbirlər üçün **nümunə məzmunla** açılır (“Nümunə məzmun” xəbərdarlığı ilə). Dərs cədvəli nümunə deyil, rəsmi Excel faylından gəlir və Firebase olmadan da işləyir. Giriş, qeydiyyat, əlaqə formu, kabinet və admin paneli yalnız Firebase qoşulduqda işləyir; qoşulmayıbsa aydın xəta göstərilir.
 
 ## Firebase qurulumu (bir dəfəlik)
 
@@ -33,10 +33,27 @@ npm run dev              # http://localhost:3000
 | Rol | İcazə |
 |---|---|
 | `student` | Kabinet, yadda saxlama, qeydlər, tədbirə qeydiyyat |
-| `editor` | + elan, material, tədbir, cədvəl idarəetməsi |
+| `editor` | + elan, material, tədbir idarəetməsi |
 | `admin` | + istifadəçi rolları, əlaqə mesajları |
 
 İcazələr `firestore.rules` faylında **serverdə** yoxlanılır; interfeysdəki gizlətmə yalnız rahatlıq üçündür.
+
+## Dərs cədvəli
+
+Cədvəl rəsmi Excel faylından (hər iki növbə vərəqi) oxunur və `src/data/timetable.json` faylına çevrilir. Yeni cədvəl gəldikdə:
+
+```bash
+pip install openpyxl
+python3 scripts/import-timetable.py "cədvəl.xlsx" 2026/2027 payız
+npm test
+firebase deploy --only firestore:rules
+```
+
+- Skript ixtisas, qrup, kurs, növbə, gün, dərs, saat, fənn, müəllim və otaqları oxuyur; qrupun ixtisas, kurs və növbəsi yalnız cədvəldən götürülür.
+- “XXX” kimi qeydlər olduğu kimi saxlanılır, saytda “Fənn hələ təyin olunmayıb” kimi göstərilir. Boş xanalar doldurulmur.
+- İxtisasların tam adları `scripts/specialty-names.json` faylında yalnız təsdiqlənmiş olduqda yazılır; qalanları kodla göstərilir.
+- Skript `firestore.rules` daxilindəki `groupMap()` siyahısını da yeniləyir. Qeydiyyatda və profildə ixtisas-qrup əlaqəsi serverdə bu siyahı ilə yoxlanılır, buna görə qaydalar yenidən yerləşdirilməlidir.
+- İstifadəçinin `users/{uid}` sənədində yalnız `specialty` və `group` saxlanılır; kurs və növbə cədvəldən hesablanır. Köhnə sənədlərdəki `degree` və `course` sahələri silinmir, istifadə olunmur. Qrupu seçilməmiş mövcud istifadəçilər profildə ixtisas və qrup seçməlidir.
 
 ## Test və yoxlama
 
@@ -60,13 +77,14 @@ npm run build
 src/
   components/   ui kit (ui/), cards, Toast, admin/CrudPage
   context/      Auth, Theme
-  data/         content.ts (redaktə edilən statik mətnlər), sample.ts (yalnız nümunə rejimi)
+  data/         timetable.json (rəsmi cədvəl, skriptlə yaradılır), timetable.ts, content.ts (statik mətnlər), sample.ts (yalnız nümunə rejimi)
   hooks/        useAsync, useSeo, useSaved, useNotifications
   layouts/      PublicLayout, AppShell (Dashboard/Admin)
   pages/        public/ auth/ dashboard/ admin/
   routes/       AppRoutes, guards
   services/     content (CRUD), personal, users, contact
   types/ utils/ lib/ config/
+scripts/        import-timetable.py, specialty-names.json, generate-seo.mjs
 ```
 
 ## Məzmun haqqında

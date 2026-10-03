@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { SITE_NAME } from '@/config/site';
 
-export const ADPK_NAME = 'ADPU-nun nəzdində Azərbaycan Dövlət Pedaqoji Kolleci';
+export const ADPK_NAME = 'Azərbaycan Dövlət Pedaqoji Kolleci';
 
 /** Saytın öz işarəsi (yükləmə ekranı və favicon üçün saxlanılır). */
 export function LogoMark({ className = 'size-9' }: { className?: string }) {

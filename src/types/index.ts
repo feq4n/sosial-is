@@ -1,5 +1,4 @@
 export type Role = 'student' | 'editor' | 'admin';
-export type Degree = 'bakalavr' | 'magistr' | 'doktorantura';
 
 export interface UserProfile {
   uid: string;
@@ -8,8 +7,7 @@ export interface UserProfile {
   email: string;
   role: Role;
   studentId?: string;
-  degree?: Degree;
-  course?: number;
+  specialty?: string;
   group?: string;
   createdAt?: string;
 }
@@ -52,19 +50,6 @@ export interface EventItem {
   endsAt?: string;
   registrationOpen: boolean;
   createdAt: string;
-}
-
-export type LessonType = 'muhazire' | 'seminar' | 'praktika';
-
-export interface ScheduleEntry {
-  id: string;
-  day: number; // 1 = Bazar ertəsi … 7 = Bazar
-  startTime: string;
-  endTime: string;
-  subject: string;
-  teacher: string;
-  room: string;
-  lessonType: LessonType;
 }
 
 export interface ContactMessage {

@@ -14,6 +14,8 @@ service cloud.firestore {
     function isAdmin() { return hasProfile() && roleOf(request.auth.uid) == 'admin'; }
     function isEditor() { return hasProfile() && roleOf(request.auth.uid) in ['admin', 'editor']; }
     function str(v, min, max) { return v is string && v.size() >= min && v.size() <= max; }
+    function groupMap() { return {'KŞATS25/01SB': 'KŞATS', 'KŞATS25/02SB': 'KŞATS', 'KŞATS25/03SB': 'KŞATS', 'KŞATS26/01SB': 'KŞATS', 'KŞATS26/02SB': 'KŞATS', 'KŞATS26/03SB': 'KŞATS', 'KŞŞİ24/01SB': 'KŞŞİ', 'KŞŞİ24/02SB': 'KŞŞİ', 'KŞŞİ25/01SB': 'KŞŞİ', 'KŞŞİ25/02SB': 'KŞŞİ', 'KŞŞİ25/03SB': 'KŞŞİ', 'KŞŞİ25/04SB': 'KŞŞİ', 'KŞŞİ25/05SB': 'KŞŞİ', 'KŞŞİ26/01SB': 'KŞŞİ', 'KŞŞİ26/02SB': 'KŞŞİ', 'KŞŞİ26/03SB': 'KŞŞİ', 'KŞŞİ26/04SB': 'KŞŞİ', 'Sİ24/01SB': 'Sİ', 'Sİ24/02SB': 'Sİ', 'Sİ25/01SB': 'Sİ', 'Sİ25/02SB': 'Sİ', 'Sİ25/03SB': 'Sİ', 'Sİ25/04SB': 'Sİ', 'Sİ25/05SB': 'Sİ', 'Sİ26/01SB': 'Sİ', 'Sİ26/02SB': 'Sİ', 'Sİ26/03SB': 'Sİ', 'Sİ26/04SB': 'Sİ', 'Sİ26/05SB': 'Sİ'}; }
+    function placementOk(d) { return d.specialty is string && d.group is string && d.group in groupMap() && groupMap()[d.group] == d.specialty; }
 
     // ---------- İstifadəçilər ----------
     // Rolu yalnız admin dəyişə bilər. Qeydiyyat zamanı yalnız "student" rolu yazıla bilər.
@@ -22,8 +24,9 @@ service cloud.firestore {
       allow read: if isOwner(userId) || isAdmin();
 
       allow create: if isOwner(userId)
-        && request.resource.data.keys().hasOnly(['firstName','lastName','email','role','studentId','degree','course','group','createdAt','updatedAt'])
+        && request.resource.data.keys().hasOnly(['firstName','lastName','email','role','studentId','specialty','group','createdAt','updatedAt'])
         && request.resource.data.role == 'student'
+        && placementOk(request.resource.data)
         && request.resource.data.email == request.auth.token.email
         && str(request.resource.data.firstName, 1, 60)
         && str(request.resource.data.lastName, 1, 60)
@@ -32,9 +35,11 @@ service cloud.firestore {
       allow update: if (
           isOwner(userId)
           && request.resource.data.diff(resource.data).affectedKeys()
-               .hasOnly(['firstName','lastName','studentId','degree','course','group','updatedAt'])
+               .hasOnly(['firstName','lastName','studentId','specialty','group','updatedAt'])
           && str(request.resource.data.firstName, 1, 60)
           && str(request.resource.data.lastName, 1, 60)
+          && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['specialty','group'])
+              || placementOk(request.resource.data))
         ) || (
           isAdmin()
           && request.auth.uid != userId
@@ -105,16 +110,6 @@ service cloud.firestore {
         allow delete: if isOwner(uid) || isEditor();
         allow update: if false;
       }
-    }
-
-    match /schedule/{id} {
-      allow read: if true;
-      allow create, update: if isEditor()
-        && request.resource.data.day in [1,2,3,4,5,6,7]
-        && str(request.resource.data.subject, 2, 120)
-        && str(request.resource.data.startTime, 4, 5)
-        && str(request.resource.data.endTime, 4, 5);
-      allow delete: if isEditor();
     }
 
     // ---------- Əlaqə mesajları ----------

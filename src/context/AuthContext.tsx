@@ -5,13 +5,16 @@ import {
 } from 'firebase/auth';
 import { doc, onSnapshot, serverTimestamp, setDoc, updateDoc, Timestamp, type DocumentData } from 'firebase/firestore';
 import { auth, db, isConfigured, NotConfiguredError } from '@/lib/firebase';
-import type { Degree, Role, UserProfile } from '@/types';
+import { isValidPlacement } from '@/data/timetable';
+import type { Role, UserProfile } from '@/types';
 
 export interface RegisterInput {
   firstName: string; lastName: string; email: string; password: string;
-  degree: Degree; course: number; studentId?: string;
+  specialty: string; group: string; studentId?: string;
 }
-export interface ProfileUpdate { firstName: string; lastName: string; studentId?: string; degree?: Degree; course?: number; group?: string }
+export interface ProfileUpdate { firstName: string; lastName: string; studentId?: string; specialty?: string; group?: string }
+
+const invalidPlacement = () => Object.assign(new Error('invalid-placement'), { code: 'invalid-placement' });
 
 interface AuthState {
   user: User | null;
@@ -79,6 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     async register(input) {
       if (!isConfigured) throw new NotConfiguredError();
+      if (!isValidPlacement(input.specialty, input.group)) throw invalidPlacement();
       const cred = await createUserWithEmailAndPassword(auth, input.email.trim(), input.password);
       try {
         await setDoc(doc(db, 'users', cred.user.uid), {
@@ -86,8 +90,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           lastName: input.lastName.trim(),
           email: cred.user.email,
           role: 'student', // rol qeydiyyatda yalnız "student" ola bilər (firestore.rules)
-          degree: input.degree,
-          course: input.course,
+          specialty: input.specialty,
+          group: input.group,
           ...(input.studentId?.trim() ? { studentId: input.studentId.trim() } : {}),
           createdAt: serverTimestamp(),
         });
@@ -112,9 +116,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         updatedAt: serverTimestamp(),
       };
       if (data.studentId !== undefined) clean.studentId = data.studentId.trim();
-      if (data.degree) clean.degree = data.degree;
-      if (data.course) clean.course = data.course;
-      if (data.group !== undefined) clean.group = data.group.trim();
+      if (data.specialty !== undefined || data.group !== undefined) {
+        if (!isValidPlacement(data.specialty ?? '', data.group ?? '')) throw invalidPlacement();
+        clean.specialty = data.specialty;
+        clean.group = data.group;
+      }
       await updateDoc(doc(db, "users", user.uid), clean as DocumentData);
     },
   }), [user, profile, loading]);

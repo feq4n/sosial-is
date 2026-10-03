@@ -1,54 +1,109 @@
 import { useMemo } from 'react';
-import { Clock, DoorOpen, UserRound } from 'lucide-react';
-import { useAsync } from '@/hooks/useAsync';
+import { useSearchParams } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 import { useSeo } from '@/hooks/useSeo';
-import { isSampleMode, scheduleApi } from '@/services/content';
-import { Badge, Card, EmptyState, ErrorState, ListSkeleton, PageHeader, SampleNotice } from '@/components/ui';
-import { jsDayToIso, lessonTypes, weekdays } from '@/utils/labels';
-import type { ScheduleEntry } from '@/types';
+import { Badge, Button, Card, EmptyState, PageHeader, SelectField } from '@/components/ui';
+import { TimetableGrid } from '@/components/TimetableGrid';
+import {
+  courseLabel, courses, dayFromJsDate, dayHeading, findGroup, groups, lessonsOfGroup, shiftLabel, shifts,
+  specialties, specialtyLabel, timetable, timetableDays, type Group,
+} from '@/data/timetable';
 
-export function WeekGrid({ entries, today, notes }: { entries: ScheduleEntry[]; today?: number; notes?: (day: number) => React.ReactNode }) {
-  const byDay = useMemo(() => weekdays.map((_, i) => entries.filter((e) => e.day === i + 1)), [entries]);
+const KEYS = ['specialty', 'course', 'shift', 'group', 'day'] as const;
+type Key = (typeof KEYS)[number];
+type Filters = Record<Key, string>;
+
+function GroupTitle({ g }: { g: Group }) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {byDay.map((list, i) => {
-        const day = i + 1;
-        if (!list.length && day > 5 && !notes) return null;
-        return (
-          <section key={day} aria-labelledby={`day-${day}`} className={`rounded-2xl border bg-surface p-4 shadow-card ${today === day ? 'border-brand ring-2 ring-brand/20' : 'border-line'}`}>
-            <h2 id={`day-${day}`} className="flex items-center justify-between text-lg font-bold">{weekdays[i]}{today === day && <Badge tone="brand">Bu gün</Badge>}</h2>
-            <ul className="mt-3 grid gap-2.5">
-              {list.length === 0 && <li className="rounded-xl bg-surface-2 p-3 text-sm text-muted">Bu gün dərs yoxdur.</li>}
-              {list.map((s) => (
-                <li key={s.id} className="rounded-xl bg-surface-2 p-3">
-                  <p className="flex items-center gap-1.5 text-sm font-bold text-brand"><Clock className="size-3.5" aria-hidden />{s.startTime} – {s.endTime}</p>
-                  <p className="mt-1 font-semibold">{s.subject}</p>
-                  <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
-                    <span className="inline-flex items-center gap-1"><UserRound className="size-3.5" aria-hidden />{s.teacher}</span>
-                    <span className="inline-flex items-center gap-1"><DoorOpen className="size-3.5" aria-hidden />{s.room}</span>
-                    <Badge>{lessonTypes[s.lessonType]}</Badge>
-                  </p>
-                </li>
-              ))}
-            </ul>
-            {notes?.(day)}
-          </section>
-        );
-      })}
-    </div>
+    <span className="flex flex-wrap items-center gap-2">
+      <span className="text-lg font-bold">{g.code}</span>
+      <Badge tone="brand">{specialtyLabel(g.specialty)}</Badge>
+      <Badge>Kurs: {g.course}</Badge>
+      <Badge>{shiftLabel(g.shift)}</Badge>
+    </span>
   );
 }
 
 export default function Schedule() {
-  useSeo('Dərs cədvəli', 'Sosial iş şöbəsinin həftəlik dərs cədvəli: fənn, müəllim, auditoriya və saat.');
-  const { data, loading, error, reload } = useAsync(() => scheduleApi.list(), []);
+  useSeo('Dərs cədvəli', 'Azərbaycan Dövlət Pedaqoji Kolleci üzrə rəsmi dərs cədvəli: ixtisas, qrup, kurs və növbəyə görə filtr.');
+  const { profile } = useAuth();
+  const [params, setParams] = useSearchParams();
+  const own = findGroup(profile?.group);
+  const useOwn = !params.has('f') && own && own.specialty === profile?.specialty ? own : undefined;
+
+  const filters: Filters = {
+    specialty: params.get('specialty') ?? useOwn?.specialty ?? '',
+    course: params.get('course') ?? '',
+    shift: params.get('shift') ?? '',
+    group: params.get('group') ?? useOwn?.code ?? '',
+    day: params.get('day') ?? '',
+  };
+
+  const update = (patch: Partial<Filters>) => {
+    const next = { ...filters, ...patch };
+    const g = findGroup(next.group);
+    if (g && ((next.specialty && g.specialty !== next.specialty) || (next.course && g.course !== next.course) || (next.shift && String(g.shift) !== next.shift))) next.group = '';
+    const out = new URLSearchParams({ f: '1' });
+    for (const k of KEYS) if (next[k]) out.set(k, next[k]);
+    setParams(out, { replace: true });
+  };
+
+  const groupOptions = useMemo(() => groups.filter((g) =>
+    (!filters.specialty || g.specialty === filters.specialty)
+    && (!filters.course || g.course === filters.course)
+    && (!filters.shift || String(g.shift) === filters.shift)), [filters.specialty, filters.course, filters.shift]);
+  const matched = groupOptions.filter((g) => !filters.group || g.code === filters.group);
+  const days = filters.day ? [Number(filters.day)] : timetableDays.map((d) => d.no);
+  const today = dayFromJsDate(new Date().getDay());
+  const anyFilter = KEYS.some((k) => filters[k]);
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-      <PageHeader title="Dərs cədvəli" text="Həftəlik dərs bölgüsü günlər üzrə qruplaşdırılıb." />
-      {isSampleMode && <SampleNotice />}
-      {loading ? <ListSkeleton rows={3} /> : error ? <ErrorState message={error} onRetry={reload} /> :
-        data?.length ? <WeekGrid entries={data} today={jsDayToIso(new Date().getDay())} /> :
-          <Card className="p-2"><EmptyState title="Cədvəl hələ əlavə olunmayıb" text="Dərs cədvəli administrator tərəfindən əlavə edildikdə burada görünəcək." /></Card>}
+      <PageHeader title="Dərs cədvəli" text={`${timetable.meta.academicYear} tədris ili, ${timetable.meta.semester} semestri. Rəsmi cədvəl üzrə günlər I gündən V günədək göstərilir.`} />
+      <Card className="mb-6 p-4 sm:p-5">
+        <form role="search" aria-label="Cədvəl filtrləri" onSubmit={(e) => e.preventDefault()} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <SelectField label="İxtisas" value={filters.specialty} onChange={(e) => update({ specialty: e.target.value })}>
+            <option value="">Hamısı</option>
+            {specialties.map((s) => <option key={s.code} value={s.code}>{specialtyLabel(s.code)}</option>)}
+          </SelectField>
+          <SelectField label="Kurs" value={filters.course} onChange={(e) => update({ course: e.target.value })}>
+            <option value="">Hamısı</option>
+            {courses.map((c) => <option key={c} value={c}>{courseLabel(c)}</option>)}
+          </SelectField>
+          <SelectField label="Növbə" value={filters.shift} onChange={(e) => update({ shift: e.target.value })}>
+            <option value="">Hamısı</option>
+            {shifts.map((s) => <option key={s} value={s}>{shiftLabel(s)}</option>)}
+          </SelectField>
+          <SelectField label="Qrup" value={filters.group} onChange={(e) => update({ group: e.target.value })}>
+            <option value="">Hamısı</option>
+            {groupOptions.map((g) => <option key={g.code} value={g.code}>{g.code}</option>)}
+          </SelectField>
+          <SelectField label="Gün" value={filters.day} onChange={(e) => update({ day: e.target.value })}>
+            <option value="">Bütün günlər</option>
+            {timetableDays.map((d) => <option key={d.no} value={d.no}>{dayHeading(d.no)}</option>)}
+          </SelectField>
+        </form>
+        {anyFilter && <div className="mt-3"><Button size="sm" variant="secondary" onClick={() => setParams(new URLSearchParams({ f: '1' }), { replace: true })}>Filtrləri sıfırla</Button></div>}
+      </Card>
+
+      {matched.length === 0 ? (
+        <Card className="p-2"><EmptyState title="Uyğun qrup tapılmadı" text="Seçilmiş filtrlərə uyğun qrup yoxdur. Filtrləri dəyişin." /></Card>
+      ) : matched.length === 1 ? (
+        <section aria-label={`${matched[0].code} qrupunun cədvəli`}>
+          <div className="mb-4"><GroupTitle g={matched[0]} /></div>
+          <TimetableGrid lessons={lessonsOfGroup(matched[0].code)} days={days} today={today} idPrefix={`g-${matched[0].code}`} />
+        </section>
+      ) : (
+        <div className="grid gap-3">
+          <p className="text-sm text-muted">{matched.length} qrup tapıldı. Cədvəli görmək üçün qrupu açın və ya yuxarıdan qrup seçin.</p>
+          {matched.map((g) => (
+            <details key={g.code} className="group rounded-2xl border border-line bg-surface shadow-card">
+              <summary className="cursor-pointer list-none rounded-2xl p-4 focus-visible:outline-2"><GroupTitle g={g} /></summary>
+              <div className="border-t border-line p-4"><TimetableGrid lessons={lessonsOfGroup(g.code)} days={days} today={today} idPrefix={`g-${g.code}`} /></div>
+            </details>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

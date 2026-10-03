@@ -72,6 +72,45 @@ describe('ictimai səhifələr', () => {
   });
 });
 
+describe('dərs cədvəli', () => {
+  it('filtr olmadan bütün qrupları sadalayır, ixtisas və qrup seçildikdə dərsləri göstərir', async () => {
+    const user = userEvent.setup();
+    renderAt('/schedule');
+    expect(await screen.findByText(/29 qrup tapıldı/)).toBeInTheDocument();
+    await user.selectOptions(screen.getByLabelText('İxtisas'), 'Sİ');
+    await user.selectOptions(screen.getByLabelText('Qrup'), 'Sİ26/01SB');
+    expect((await screen.findAllByText('Qasımlı Əsmər')).length).toBeGreaterThan(0);
+    expect(screen.getByRole('heading', { level: 3, name: 'I gün · Bazar ertəsi' })).toBeInTheDocument();
+    expect(screen.getByText('Kurs: H')).toBeInTheDocument();
+  });
+
+  it('növbə filtri qrup siyahısını məhdudlaşdırır', async () => {
+    const user = userEvent.setup();
+    renderAt('/schedule');
+    await screen.findByText(/29 qrup tapıldı/);
+    await user.selectOptions(screen.getByLabelText('Növbə'), '2');
+    expect(await screen.findByText(/13 qrup tapıldı/)).toBeInTheDocument();
+    expect(screen.getByLabelText('Qrup').querySelectorAll('option')).toHaveLength(14);
+  });
+
+  it('gün filtri yalnız seçilmiş günü göstərir', async () => {
+    const user = userEvent.setup();
+    renderAt('/schedule?f=1&group=S%C4%B026%2F01SB');
+    await screen.findByRole('heading', { level: 3, name: 'III gün · Çərşənbə' });
+    await user.selectOptions(screen.getByLabelText('Gün'), '3');
+    expect(screen.queryByRole('heading', { level: 3, name: 'I gün · Bazar ertəsi' })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: 'III gün · Çərşənbə' })).toBeInTheDocument();
+  });
+
+  it('qrupu seçilmiş tələbə üçün cədvəl avtomatik açılır', async () => {
+    signIn('student');
+    Object.assign(h.auth, { profile: { ...(h.auth.profile as object), specialty: 'Sİ', group: 'Sİ26/01SB' } });
+    renderAt('/schedule');
+    expect(await screen.findByLabelText('Qrup')).toHaveValue('Sİ26/01SB');
+    expect(screen.getByRole('heading', { level: 3, name: 'I gün · Bazar ertəsi' })).toBeInTheDocument();
+  });
+});
+
 describe('axtarış və filtr', () => {
   it('elanlarda axtarış nəticəni süzür və boş vəziyyət göstərir', async () => {
     const user = userEvent.setup();
@@ -122,6 +161,31 @@ describe('qeydiyyat formu', () => {
     expect(await screen.findByText('E-poçt ünvanı düzgün deyil')).toBeInTheDocument();
     expect(screen.getByText('Şifrə ən azı 8 simvol olmalıdır')).toBeInTheDocument();
     expect(screen.getByText('Şifrələr eyni deyil')).toBeInTheDocument();
+  });
+});
+
+describe('qeydiyyatda ixtisas və qrup seçimi', () => {
+  it('qrup ixtisas seçilməyincə bağlıdır və yalnız həmin ixtisasın qruplarını göstərir', async () => {
+    const user = userEvent.setup();
+    renderAt('/register');
+    const group = await screen.findByLabelText('Qrup');
+    expect(group).toBeDisabled();
+    await user.selectOptions(screen.getByLabelText('İxtisas'), 'KŞATS');
+    expect(group).toBeEnabled();
+    const values = [...group.querySelectorAll('option')].map((o) => o.getAttribute('value')).filter(Boolean);
+    expect(values).toHaveLength(6);
+    expect(values.every((v) => v!.startsWith('KŞATS'))).toBe(true);
+    await user.selectOptions(group, 'KŞATS25/01SB');
+    expect(screen.getByText(/Kurs:/).textContent).toMatch(/I.*II növbə/);
+    await user.selectOptions(screen.getByLabelText('İxtisas'), 'Sİ');
+    expect(screen.getByLabelText('Qrup')).toHaveValue('');
+  });
+
+  it('ixtisas və qrup seçilmədən qeydiyyat göndərilmir', async () => {
+    const user = userEvent.setup();
+    renderAt('/register');
+    await user.click(await screen.findByRole('button', { name: 'Hesab yarat' }));
+    expect(await screen.findByText('İxtisası seçin', { selector: 'p' })).toBeInTheDocument();
   });
 });
 
