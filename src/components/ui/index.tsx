@@ -10,7 +10,7 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'accent';
 const base = 'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition active:scale-[0.98] disabled:opacity-55 disabled:pointer-events-none select-none';
 const variants: Record<Variant, string> = {
   primary: 'bg-brand text-brand-ink hover:brightness-110 shadow-card',
-  accent: 'bg-accent text-accent-ink hover:brightness-105 shadow-card',
+  accent: 'bg-brand-dark text-brand-ink hover:brightness-110 shadow-card',
   secondary: 'bg-surface text-ink border border-line hover:bg-surface-2',
   ghost: 'text-ink hover:bg-surface-2',
   danger: 'bg-danger text-white hover:brightness-110',

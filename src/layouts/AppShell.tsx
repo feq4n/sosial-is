@@ -23,7 +23,7 @@ export default function AppShell({ items, title, extra }: { items: NavItem[]; ti
 
   const sidebar = (
     <div className="flex h-full flex-col gap-6 p-5">
-      <Logo />
+      <Logo logoClass="size-9" textClass="text-lg" />
       <p className="px-1 text-xs font-bold text-muted">{title}</p>
       <nav aria-label={title} className="grid gap-1 -mt-3">
         {items.map((i) => (
@@ -54,10 +54,10 @@ export default function AppShell({ items, title, extra }: { items: NavItem[]; ti
       <aside className="sticky top-0 hidden h-dvh border-r border-line bg-surface lg:block">{sidebar}</aside>
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-line bg-bg/85 px-4 backdrop-blur sm:px-6">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line bg-bg/85 px-4 backdrop-blur sm:px-6">
           <button className="grid size-10 place-items-center rounded-xl border border-line bg-surface lg:hidden" aria-label="Menyunu aç" aria-expanded={open} onClick={() => setOpen(true)}><Menu className="size-5" /></button>
-          <Link to="/" className="hidden text-sm font-semibold text-muted hover:text-brand lg:block">← İctimai sayta qayıt</Link>
-          <div className="lg:hidden"><Logo /></div>
+          <Link to="/" className="hidden flex-1 text-sm font-semibold text-muted hover:text-brand lg:block">← İctimai sayta qayıt</Link>
+          <div className="min-w-0 flex-1 lg:hidden"><Logo logoClass="size-8" textClass="text-lg" /></div>
           <ThemeToggle />
         </header>
         <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-8 sm:px-6">

@@ -5,6 +5,7 @@ import { ArrowRight, BookOpen, CalendarDays, ChevronDown, Clock, Megaphone, Spar
 import { useAsync } from '@/hooks/useAsync';
 import { useSeo } from '@/hooks/useSeo';
 import { announcementsApi, eventsApi, isSampleMode, materialsApi, scheduleApi } from '@/services/content';
+import { AdpkLogo, ADPK_NAME } from '@/components/Logo';
 import { AnnouncementCard, EventCard, MaterialCard } from '@/components/cards';
 import { ButtonLink, Card, EmptyState, ErrorState, ListSkeleton, Reveal, SampleNotice, Skeleton } from '@/components/ui';
 import { advantages, faq } from '@/data/content';
@@ -51,7 +52,7 @@ function Network() {
         <motion.line key={i} x1={nodes[a][0]} y1={nodes[a][1]} x2={nodes[b][0]} y2={nodes[b][1]} stroke="var(--brand)" strokeWidth="1.5" strokeOpacity=".45"
           initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, delay: 0.2 + i * 0.12 }} />
       ))}
-      {nodes.map(([x, y], i) => <motion.circle key={i} cx={x} cy={y} r={i % 2 ? 9 : 12} fill={i % 2 ? 'var(--accent)' : 'var(--brand)'}
+      {nodes.map(([x, y], i) => <motion.circle key={i} cx={x} cy={y} r={i % 2 ? 9 : 12} fill={i % 2 ? 'var(--brand-dark)' : 'var(--brand)'}
         initial={reduce ? false : { scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.1 + i * 0.1, type: 'spring' }} />)}
     </svg>
   );
@@ -98,10 +99,14 @@ export default function Home() {
 
   return (
     <>
-      <section className="relative overflow-hidden border-b border-line">
+      <section className="relative overflow-hidden border-b border-line bg-gradient-to-b from-brand-soft/60 to-bg">
         <Network />
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.25fr_1fr] lg:items-center">
           <div className="relative">
+            <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-line bg-surface py-1.5 pl-1.5 pr-4 shadow-card">
+              <AdpkLogo className="size-12 sm:size-14" />
+              <span className="max-w-[16rem] text-xs font-semibold leading-snug text-brand-dark dark:text-brand sm:text-sm">{ADPK_NAME}</span>
+            </div>
             <h1 className="max-w-2xl text-4xl font-extrabold leading-[1.05] sm:text-6xl">Sosial iş tələbəsinin gündəlik iş masası</h1>
             <p className="mt-5 max-w-xl text-lg text-muted">Elanlar, dərs materialları, cədvəl və tədbirlər bir səhifədə. Daxil olun, materialları yadda saxlayın, bildirişləri qaçırmayın.</p>
             <div className="mt-8 flex flex-wrap gap-3">

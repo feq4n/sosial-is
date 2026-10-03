@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { LayoutDashboard, LogIn, Menu, X } from 'lucide-react';
-import { Logo } from '@/components/Logo';
+import { ADPK_NAME, AdpkLogo, Logo } from '@/components/Logo';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { btnClass, cx } from '@/components/ui';
 import { useAuth } from '@/context/AuthContext';
@@ -34,7 +34,7 @@ export default function PublicLayout() {
       <a href="#main" className="skip-link">Əsas məzmuna keç</a>
       <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-          <Logo />
+          <Logo logoClass="size-9 sm:size-10" textClass="text-lg sm:text-xl" />
           <nav aria-label="Əsas naviqasiya" className="hidden items-center gap-1 lg:flex">
             {links.map((l) => <NavLink key={l.to} to={l.to} end={l.end} className={linkCls}>{l.label}</NavLink>)}
           </nav>
@@ -65,11 +65,15 @@ export default function PublicLayout() {
 
       <main id="main" className="flex-1" tabIndex={-1}><Outlet /></main>
 
-      <footer className="mt-20 border-t border-line bg-surface">
+      <footer className="mt-20 border-t border-line bg-surface-2">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <Logo />
             <p className="mt-4 max-w-sm text-sm text-muted">Sosial iş şöbəsinin tələbələri üçün elanlar, dərs materialları, cədvəl və tədbirlər bir yerdə.</p>
+            <div className="mt-5 flex max-w-sm items-center gap-3 rounded-2xl border border-line bg-surface-2 p-3">
+              <AdpkLogo className="size-14" />
+              <p className="text-sm font-semibold leading-snug text-brand-dark dark:text-brand">{ADPK_NAME}</p>
+            </div>
           </div>
           <nav aria-label="Alt naviqasiya">
             <h2 className="text-sm font-bold">Bölmələr</h2>
@@ -87,7 +91,7 @@ export default function PublicLayout() {
             </ul>
           </div>
         </div>
-        <div className="border-t border-line py-5 text-center text-xs text-muted">© {new Date().getFullYear()} {SITE_NAME}</div>
+        <div className="border-t border-line py-5 text-center text-xs text-muted">© {new Date().getFullYear()} {SITE_NAME} · {ADPK_NAME}</div>
       </footer>
     </div>
   );
