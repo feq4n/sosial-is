@@ -1,17 +1,18 @@
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { db, isConfigured, NotConfiguredError } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
+import { need, unwrap } from './db';
 
 export interface ContactPayload { name: string; email: string; subject: string; message: string }
 
-/** Mesaj Firestore-da `contact_messages` kolleksiyasına yazılır; yalnız admin oxuya bilər. */
+/**
+ * Mesaj `contact_messages` cədvəlinə yazılır; yalnız admin oxuya bilər.
+ * `status` və `created_at` serverdə təyin olunur (müştəriyə bu sütunlara yazmaq icazəsi verilmir).
+ */
 export async function sendContactMessage(p: ContactPayload) {
-  if (!isConfigured) throw new NotConfiguredError();
-  await addDoc(collection(db, 'contact_messages'), {
+  need();
+  unwrap(await supabase.from('contact_messages').insert({
     name: p.name.trim(),
     email: p.email.trim(),
     subject: p.subject.trim(),
     message: p.message.trim(),
-    status: 'new',
-    createdAt: serverTimestamp(),
-  });
+  }));
 }

@@ -4,13 +4,16 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import type { Role } from '@/types';
 
-const h = vi.hoisted(() => ({ auth: { user: null as unknown, profile: null as unknown, role: 'student' as Role, loading: false } }));
+const h = vi.hoisted(() => ({
+  auth: { user: null as unknown, profile: null as unknown, role: 'student' as Role, loading: false },
+  register: vi.fn(),
+}));
 
 vi.mock('@/context/AuthContext', () => ({
   AuthProvider: ({ children }: { children: React.ReactNode }) => children,
   useAuth: () => ({
     ...h.auth, configured: false,
-    login: vi.fn(), register: vi.fn(), logout: vi.fn(), resetPassword: vi.fn(), updateProfile: vi.fn(),
+    login: vi.fn(), register: h.register, logout: vi.fn(), resetPassword: vi.fn(), updatePassword: vi.fn(), updateProfile: vi.fn(),
   }),
 }));
 
@@ -24,7 +27,7 @@ const renderAt = (path: string) => render(
   </MemoryRouter>,
 );
 
-const signedOut = () => Object.assign(h.auth, { user: null, profile: null, role: 'student', loading: false });
+const signedOut = () => (h.register.mockReset(), Object.assign(h.auth, { user: null, profile: null, role: 'student', loading: false }));
 const signIn = (role: Role) => Object.assign(h.auth, {
   user: { uid: 'u1', email: 'a@b.az' },
   profile: { uid: 'u1', firstName: 'Aysel', lastName: 'Məmmədova', email: 'a@b.az', role },
@@ -69,45 +72,6 @@ describe('ictimai səhifələr', () => {
     await screen.findByRole('heading', { level: 1 });
     expect(document.body.textContent).not.toMatch(/Social Work|Sosial İş Hub|Hub/);
     expect(document.title).toBe('Sosial İş');
-  });
-});
-
-describe('dərs cədvəli', () => {
-  it('filtr olmadan bütün qrupları sadalayır, ixtisas və qrup seçildikdə dərsləri göstərir', async () => {
-    const user = userEvent.setup();
-    renderAt('/schedule');
-    expect(await screen.findByText(/29 qrup tapıldı/)).toBeInTheDocument();
-    await user.selectOptions(screen.getByLabelText('İxtisas'), 'Sİ');
-    await user.selectOptions(screen.getByLabelText('Qrup'), 'Sİ26/01SB');
-    expect((await screen.findAllByText('Qasımlı Əsmər')).length).toBeGreaterThan(0);
-    expect(screen.getByRole('heading', { level: 3, name: 'I gün · Bazar ertəsi' })).toBeInTheDocument();
-    expect(screen.getByText('Kurs: H')).toBeInTheDocument();
-  });
-
-  it('növbə filtri qrup siyahısını məhdudlaşdırır', async () => {
-    const user = userEvent.setup();
-    renderAt('/schedule');
-    await screen.findByText(/29 qrup tapıldı/);
-    await user.selectOptions(screen.getByLabelText('Növbə'), '2');
-    expect(await screen.findByText(/13 qrup tapıldı/)).toBeInTheDocument();
-    expect(screen.getByLabelText('Qrup').querySelectorAll('option')).toHaveLength(14);
-  });
-
-  it('gün filtri yalnız seçilmiş günü göstərir', async () => {
-    const user = userEvent.setup();
-    renderAt('/schedule?f=1&group=S%C4%B026%2F01SB');
-    await screen.findByRole('heading', { level: 3, name: 'III gün · Çərşənbə' });
-    await user.selectOptions(screen.getByLabelText('Gün'), '3');
-    expect(screen.queryByRole('heading', { level: 3, name: 'I gün · Bazar ertəsi' })).not.toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 3, name: 'III gün · Çərşənbə' })).toBeInTheDocument();
-  });
-
-  it('qrupu seçilmiş tələbə üçün cədvəl avtomatik açılır', async () => {
-    signIn('student');
-    Object.assign(h.auth, { profile: { ...(h.auth.profile as object), specialty: 'Sİ', group: 'Sİ26/01SB' } });
-    renderAt('/schedule');
-    expect(await screen.findByLabelText('Qrup')).toHaveValue('Sİ26/01SB');
-    expect(screen.getByRole('heading', { level: 3, name: 'I gün · Bazar ertəsi' })).toBeInTheDocument();
   });
 });
 
@@ -164,28 +128,50 @@ describe('qeydiyyat formu', () => {
   });
 });
 
-describe('qeydiyyatda ixtisas və qrup seçimi', () => {
-  it('qrup ixtisas seçilməyincə bağlıdır və yalnız həmin ixtisasın qruplarını göstərir', async () => {
+describe('qeydiyyat: e-poçt təsdiqi', () => {
+  const fill = async (user: ReturnType<typeof userEvent.setup>) => {
+    await user.type(await screen.findByLabelText('Ad'), 'Aysel');
+    await user.type(screen.getByLabelText('Soyad'), 'Məmmədova');
+    await user.type(screen.getByLabelText('E-poçt ünvanı'), 'aysel@example.com');
+    await user.type(screen.getByLabelText('Şifrə'), 'parol1234');
+    await user.type(screen.getByLabelText('Şifrəni təkrarlayın'), 'parol1234');
+    await user.click(screen.getByRole('button', { name: 'Hesab yarat' }));
+  };
+
+  it('təsdiq tələb olunarsa, kabinetə keçmir və təsdiq mesajı göstərir', async () => {
+    h.register.mockResolvedValue({ needsEmailConfirmation: true });
     const user = userEvent.setup();
     renderAt('/register');
-    const group = await screen.findByLabelText('Qrup');
-    expect(group).toBeDisabled();
-    await user.selectOptions(screen.getByLabelText('İxtisas'), 'KŞATS');
-    expect(group).toBeEnabled();
-    const values = [...group.querySelectorAll('option')].map((o) => o.getAttribute('value')).filter(Boolean);
-    expect(values).toHaveLength(6);
-    expect(values.every((v) => v!.startsWith('KŞATS'))).toBe(true);
-    await user.selectOptions(group, 'KŞATS25/01SB');
-    expect(screen.getByText(/Kurs:/).textContent).toMatch(/I.*II növbə/);
-    await user.selectOptions(screen.getByLabelText('İxtisas'), 'Sİ');
-    expect(screen.getByLabelText('Qrup')).toHaveValue('');
+    await fill(user);
+    expect(await screen.findByText(/təsdiq keçidinə klikləyin/)).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 1, name: /Xoş gəldin/ })).not.toBeInTheDocument();
+    expect(h.register).toHaveBeenCalledWith(expect.objectContaining({ email: 'aysel@example.com', firstName: 'Aysel', degree: 'bakalavr', course: 1 }));
   });
 
-  it('ixtisas və qrup seçilmədən qeydiyyat göndərilmir', async () => {
+  it('mövcud e-poçt üçün Azərbaycan dilində xəta göstərir', async () => {
+    h.register.mockRejectedValue({ code: 'user_already_exists', message: 'x' });
     const user = userEvent.setup();
     renderAt('/register');
-    await user.click(await screen.findByRole('button', { name: 'Hesab yarat' }));
-    expect(await screen.findByText('İxtisası seçin', { selector: 'p' })).toBeInTheDocument();
+    await fill(user);
+    expect(await screen.findByText('Bu e-poçt ünvanı ilə artıq qeydiyyatdan keçilib.')).toBeInTheDocument();
+  });
+});
+
+describe('şifrə yeniləmə (/reset-password)', () => {
+  it('etibarsız/müddəti bitmiş keçiddə (sessiya yoxdur) izah və yeni keçid düyməsi göstərir', async () => {
+    renderAt('/reset-password');
+    expect(await screen.findByText(/Keçid etibarsızdır və ya müddəti bitib/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Yeni keçid istə' })).toHaveAttribute('href', '/forgot-password');
+  });
+
+  it('bərpa sessiyası olduqda yeni şifrə formunu göstərir və uyğunsuz şifrəni rədd edir', async () => {
+    signIn('student');
+    const user = userEvent.setup();
+    renderAt('/reset-password');
+    await user.type(await screen.findByLabelText('Yeni şifrə'), 'parol1234');
+    await user.type(screen.getByLabelText('Şifrəni təkrarlayın'), 'basqa1234');
+    await user.click(screen.getByRole('button', { name: 'Şifrəni yenilə' }));
+    expect(await screen.findByText('Şifrələr eyni deyil')).toBeInTheDocument();
   });
 });
 

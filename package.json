@@ -10,13 +10,12 @@
     "preview": "vite preview",
     "lint": "tsc --noEmit",
     "test": "vitest run",
-    "timetable": "python3 scripts/import-timetable.py",
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
-    "firebase": "^12.17.1",
     "lucide-react": "^1.50.0",
     "motion": "^14.0.0",
     "react": "^19.0.1",

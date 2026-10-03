@@ -1,4 +1,4 @@
-import type { AnnouncementCategory, EventCategory, MaterialType, Role } from '@/types';
+import type { AnnouncementCategory, Degree, EventCategory, LessonType, MaterialType, Role } from '@/types';
 
 export const announcementCategories: Record<AnnouncementCategory, string> = {
   umumi: 'Ümumi',
@@ -21,10 +21,20 @@ export const materialTypes: Record<MaterialType, string> = {
   video: 'Video',
   link: 'Keçid',
 };
+export const lessonTypes: Record<LessonType, string> = {
+  muhazire: 'Mühazirə',
+  seminar: 'Seminar',
+  praktika: 'Praktik məşğələ',
+};
 export const roleLabels: Record<Role, string> = {
   student: 'Tələbə',
   editor: 'Redaktor',
   admin: 'Admin',
+};
+export const degreeLabels: Record<Degree, string> = {
+  bakalavr: 'Bakalavr',
+  magistr: 'Magistr',
+  doktorantura: 'Doktorantura',
 };
 export const weekdays = ['Bazar ertəsi', 'Çərşənbə axşamı', 'Çərşənbə', 'Cümə axşamı', 'Cümə', 'Şənbə', 'Bazar'];
 export const weekdaysShort = ['B.e.', 'Ç.a.', 'Çər.', 'C.a.', 'Cümə', 'Şən.', 'Baz.'];

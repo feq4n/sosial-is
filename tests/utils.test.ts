@@ -34,8 +34,28 @@ describe('tarix və gün', () => {
 
 describe('xəta mesajları', () => {
   it('texniki detalları göstərmir', () => {
-    expect(friendlyError({ code: 'auth/invalid-credential', message: 'secret-internal' })).toBe('E-poçt və ya şifrə yanlışdır.');
+    expect(friendlyError({ code: 'invalid_credentials', message: 'secret-internal' })).toBe('E-poçt və ya şifrə yanlışdır.');
     expect(friendlyError(new Error('stack trace internals'))).not.toMatch(/stack|internals/);
-    expect(friendlyError({ code: 'permission-denied' })).toMatch(/icazəniz yoxdur/);
+    expect(friendlyError({ code: '42501', message: 'new row violates row-level security policy for table "x"' })).toMatch(/icazəniz yoxdur/);
+  });
+
+  it.each([
+    ['user_already_exists', /artıq qeydiyyatdan keçilib/],
+    ['email_exists', /artıq qeydiyyatdan keçilib/],
+    ['weak_password', /Şifrə çox zəifdir/],
+    ['over_request_rate_limit', /Çox sayda cəhd/],
+    ['email_not_confirmed', /təsdiqlənməyib/],
+    ['no-rows', /icazəniz yoxdur/],
+    ['PGRST116', /tapılmadı/],
+    ['22P02', /tapılmadı/],
+    ['23505', /artıq mövcuddur/],
+    ['23514', /düzgün deyil/],
+  ])('%s kodu Azərbaycan dilində mesaja çevrilir', (code, re) => {
+    expect(friendlyError({ code, message: 'internal' })).toMatch(re);
+  });
+
+  it('şəbəkə xətasını tanıyır', () => {
+    expect(friendlyError(new TypeError('Failed to fetch'))).toMatch(/Şəbəkə xətası/);
+    expect(friendlyError({ name: 'AuthRetryableFetchError', message: 'x' })).toMatch(/Şəbəkə xətası/);
   });
 });

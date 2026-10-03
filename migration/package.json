@@ -1,0 +1,19 @@
+{
+  "name": "sosial-is-firebase-to-supabase-migration",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Birdəfəlik Firebase → Supabase data miqrasiyası. Əsas tətbiqdən ayrıdır: tətbiqin asılılıqlarında Firebase yoxdur.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "dry-run": "node migrate.mjs",
+    "apply": "node migrate.mjs --apply",
+    "verify": "node migrate.mjs --verify",
+    "send-reset": "node migrate.mjs --send-reset",
+    "rollback": "node migrate.mjs --rollback --yes"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
+    "firebase-admin": "^13.0.0"
+  }
+}

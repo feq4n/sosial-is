@@ -1,31 +1,29 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import {
-  createUserWithEmailAndPassword, deleteUser, onAuthStateChanged, sendEmailVerification,
-  sendPasswordResetEmail, signInWithEmailAndPassword, signOut, type User,
-} from 'firebase/auth';
-import { doc, onSnapshot, serverTimestamp, setDoc, updateDoc, Timestamp, type DocumentData } from 'firebase/firestore';
-import { auth, db, isConfigured, NotConfiguredError } from '@/lib/firebase';
-import { isValidPlacement } from '@/data/timetable';
-import type { Role, UserProfile } from '@/types';
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import type { User } from '@supabase/supabase-js';
+import { supabase, isConfigured, NotConfiguredError } from '@/lib/supabase';
+import { fetchProfile, updateOwnProfile, type ProfileUpdate } from '@/services/profiles';
+import type { AuthUser, Degree, Role, UserProfile } from '@/types';
 
 export interface RegisterInput {
   firstName: string; lastName: string; email: string; password: string;
-  specialty: string; group: string; studentId?: string;
+  degree: Degree; course: number; studentId?: string;
 }
-export interface ProfileUpdate { firstName: string; lastName: string; studentId?: string; specialty?: string; group?: string }
+export type { ProfileUpdate };
 
-const invalidPlacement = () => Object.assign(new Error('invalid-placement'), { code: 'invalid-placement' });
+/** E-poçt təsdiqi Supabase-də aktivdirsə, qeydiyyatdan sonra sessiya təsdiq keçidinə qədər açılmır. */
+export interface RegisterResult { needsEmailConfirmation: boolean }
 
 interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   profile: UserProfile | null;
   role: Role;
   loading: boolean;
   configured: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (input: RegisterInput) => Promise<void>;
+  register: (input: RegisterInput) => Promise<RegisterResult>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
+  updatePassword: (password: string) => Promise<void>;
   updateProfile: (data: ProfileUpdate) => Promise<void>;
 }
 
@@ -37,91 +35,98 @@ export function useAuth(): AuthState {
   return v;
 }
 
+const toAuthUser = (u: User | null | undefined): AuthUser | null => (u ? { uid: u.id, email: u.email ?? null } : null);
+const origin = () => (typeof window !== 'undefined' ? window.location.origin : '');
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(isConfigured);
+  const uidRef = useRef<string | null>(null);
 
+  // Sessiya: ilkin yükləmə, giriş/çıxış və tokenin avtomatik yenilənməsi eyni abunəlikdən gəlir.
+  // Qeyd: bu callback daxilində Supabase sorğusu GÖZLƏNİLMİR (kilidlənmənin qarşısı); profil ayrıca effektdə yüklənir.
   useEffect(() => {
     if (!isConfigured) return;
-    let unsubProfile: (() => void) | undefined;
-    const unsubAuth = onAuthStateChanged(auth, (u) => {
-      unsubProfile?.();
-      unsubProfile = undefined;
-      setUser(u);
-      if (!u) { setProfile(null); setLoading(false); return; }
-      setLoading(true);
-      unsubProfile = onSnapshot(
-        doc(db, 'users', u.uid),
-        (snap) => {
-          if (snap.exists()) {
-            const x = snap.data();
-            setProfile({ ...(x as Omit<UserProfile, 'uid'>), uid: u.uid, createdAt: x.createdAt instanceof Timestamp ? x.createdAt.toDate().toISOString() : undefined });
-          } else {
-            setProfile(null);
-          }
-          setLoading(false);
-        },
-        () => { setProfile(null); setLoading(false); },
-      );
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      const next = toAuthUser(session?.user);
+      if (next?.uid !== uidRef.current) {
+        uidRef.current = next?.uid ?? null;
+        setLoading(next !== null); // profil yüklənənə qədər qorunan səhifələr yönləndirməsin
+        if (!next) setProfile(null);
+      }
+      setUser((prev) => (prev?.uid === next?.uid && prev?.email === next?.email ? prev : next));
     });
-    return () => { unsubAuth(); unsubProfile?.(); };
+    return () => data.subscription.unsubscribe();
   }, []);
+
+  const uid = user?.uid;
+  useEffect(() => {
+    if (!isConfigured || !uid) return;
+    let alive = true;
+    const load = (initial: boolean) =>
+      fetchProfile(uid)
+        .then((p) => { if (alive) setProfile(p); })
+        .catch(() => { if (alive && initial) setProfile(null); })
+        .finally(() => { if (alive && initial) setLoading(false); });
+    load(true);
+    // Rol admin tərəfindən dəyişdirilibsə, səhifəyə qayıdanda yenilənir (əvvəlki canlı abunəliyin əvəzinə).
+    const onVisible = () => { if (document.visibilityState === 'visible') load(false); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => { alive = false; document.removeEventListener('visibilitychange', onVisible); };
+  }, [uid]);
 
   const value = useMemo<AuthState>(() => ({
     user,
     profile,
-    // Rol yalnız serverdən oxunan profil sənədindən gəlir; interfeys üçün istifadə olunur,
-    // həqiqi icazələr firestore.rules ilə yoxlanılır.
+    // Rol yalnız serverdən oxunan profildən gəlir; interfeys üçün istifadə olunur,
+    // həqiqi icazələr Postgres RLS siyasətləri ilə serverdə yoxlanılır.
     role: profile?.role ?? 'student',
     loading,
     configured: isConfigured,
     async login(email, password) {
       if (!isConfigured) throw new NotConfiguredError();
-      await signInWithEmailAndPassword(auth, email.trim(), password);
+      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+      if (error) throw error;
     },
     async register(input) {
       if (!isConfigured) throw new NotConfiguredError();
-      if (!isValidPlacement(input.specialty, input.group)) throw invalidPlacement();
-      const cred = await createUserWithEmailAndPassword(auth, input.email.trim(), input.password);
-      try {
-        await setDoc(doc(db, 'users', cred.user.uid), {
-          firstName: input.firstName.trim(),
-          lastName: input.lastName.trim(),
-          email: cred.user.email,
-          role: 'student', // rol qeydiyyatda yalnız "student" ola bilər (firestore.rules)
-          specialty: input.specialty,
-          group: input.group,
-          ...(input.studentId?.trim() ? { studentId: input.studentId.trim() } : {}),
-          createdAt: serverTimestamp(),
-        });
-      } catch (e) {
-        await deleteUser(cred.user).catch(() => undefined);
-        throw e;
-      }
-      sendEmailVerification(cred.user).catch(() => undefined);
+      // Profil sətri verilənlər bazasındakı tətik ilə yaranır; rol həmişə "student"-dir (metadata-dan oxunmur).
+      const { data, error } = await supabase.auth.signUp({
+        email: input.email.trim(),
+        password: input.password,
+        options: {
+          emailRedirectTo: `${origin()}/login`,
+          data: {
+            first_name: input.firstName.trim(),
+            last_name: input.lastName.trim(),
+            degree: input.degree,
+            course: input.course,
+            ...(input.studentId?.trim() ? { student_id: input.studentId.trim() } : {}),
+          },
+        },
+      });
+      if (error) throw error;
+      // E-poçt təsdiqi aktivdirsə, mövcud e-poçt xəta vermir, lakin identities boş qayıdır.
+      if (data.user && data.user.identities?.length === 0) throw { code: 'user_already_exists', message: 'user_already_exists' };
+      return { needsEmailConfirmation: !data.session };
     },
     async logout() {
-      if (isConfigured) await signOut(auth);
+      if (isConfigured) await supabase.auth.signOut();
     },
     async resetPassword(email) {
       if (!isConfigured) throw new NotConfiguredError();
-      await sendPasswordResetEmail(auth, email.trim());
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: `${origin()}/reset-password` });
+      if (error) throw error;
+    },
+    async updatePassword(password) {
+      if (!isConfigured) throw new NotConfiguredError();
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
     },
     async updateProfile(data) {
       if (!isConfigured || !user) throw new NotConfiguredError();
-      const clean: { [k: string]: unknown } = {
-        firstName: data.firstName.trim(),
-        lastName: data.lastName.trim(),
-        updatedAt: serverTimestamp(),
-      };
-      if (data.studentId !== undefined) clean.studentId = data.studentId.trim();
-      if (data.specialty !== undefined || data.group !== undefined) {
-        if (!isValidPlacement(data.specialty ?? '', data.group ?? '')) throw invalidPlacement();
-        clean.specialty = data.specialty;
-        clean.group = data.group;
-      }
-      await updateDoc(doc(db, "users", user.uid), clean as DocumentData);
+      setProfile(await updateOwnProfile(user.uid, data));
     },
   }), [user, profile, loading]);
 

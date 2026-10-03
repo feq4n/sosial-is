@@ -19,10 +19,8 @@ export default function ForgotPassword() {
       await resetPassword(v.email);
       setState({ ok: true, text: 'Əgər bu e-poçt ünvanı ilə hesab varsa, şifrənin yenilənməsi üçün keçid göndərildi.' });
     } catch (e) {
-      const code = (e as { code?: string }).code;
-      // Hesabın mövcudluğunu açıqlamamaq üçün "user-not-found" uğurlu kimi göstərilir
-      if (code === 'auth/user-not-found') setState({ ok: true, text: 'Əgər bu e-poçt ünvanı ilə hesab varsa, şifrənin yenilənməsi üçün keçid göndərildi.' });
-      else setState({ ok: false, text: friendlyError(e) });
+      // Supabase hesabın mövcudluğunu açıqlamır: mövcud olmayan e-poçt da uğurlu cavab qaytarır.
+      setState({ ok: false, text: friendlyError(e) });
     }
   });
 

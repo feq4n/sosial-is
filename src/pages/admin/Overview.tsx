@@ -3,8 +3,7 @@ import { BookOpen, CalendarDays, Mail, Megaphone, Users, type LucideIcon } from 
 import { useAuth } from '@/context/AuthContext';
 import { useAsync } from '@/hooks/useAsync';
 import { useSeo } from '@/hooks/useSeo';
-import { announcementsApi, eventsApi, materialsApi } from '@/services/content';
-import { groups, lessons } from '@/data/timetable';
+import { announcementsApi, eventsApi, materialsApi, scheduleApi } from '@/services/content';
 import { listMessages, listUsers } from '@/services/users';
 import { Card, ErrorState, PageHeader, Skeleton } from '@/components/ui';
 
@@ -13,9 +12,9 @@ export default function AdminOverview() {
   const { role } = useAuth();
   const isAdmin = role === 'admin';
   const { data, loading, error, reload } = useAsync(async () => {
-    const [a, m, e] = await Promise.all([announcementsApi.list({ includeDrafts: true }), materialsApi.list(), eventsApi.list()]);
+    const [a, m, e, s] = await Promise.all([announcementsApi.list({ includeDrafts: true }), materialsApi.list(), eventsApi.list(), scheduleApi.list()]);
     const [u, msgs] = isAdmin ? await Promise.all([listUsers(), listMessages()]) : [[], []];
-    return { a, m, e, u, unread: msgs.filter((x) => x.status === 'new').length };
+    return { a, m, e, s, u, unread: msgs.filter((x) => x.status === 'new').length };
   }, [isAdmin]);
 
   const now = new Date().toISOString();
@@ -23,7 +22,7 @@ export default function AdminOverview() {
     { label: 'Elan', value: data.a.length, icon: Megaphone, to: '/admin/announcements' },
     { label: 'Material', value: data.m.length, icon: BookOpen, to: '/admin/materials' },
     { label: 'Yaxın tədbir', value: data.e.filter((x) => x.startsAt >= now).length, icon: CalendarDays, to: '/admin/events' },
-    { label: `Qrup (${lessons.length} dərs rəsmi cədvəldə)`, value: groups.length, icon: CalendarDays, to: '/schedule' },
+    { label: 'Dərs (cədvəldə)', value: data.s.length, icon: CalendarDays, to: '/admin/schedule' },
     { label: 'İstifadəçi', value: data.u.length, icon: Users, to: '/admin/users', show: isAdmin },
     { label: 'Oxunmamış mesaj', value: data.unread, icon: Mail, to: '/admin/messages', show: isAdmin },
   ] : [];

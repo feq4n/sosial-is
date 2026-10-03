@@ -4,22 +4,22 @@ import { useAuth } from '@/context/AuthContext';
 import { useAsync } from '@/hooks/useAsync';
 import { useSeo } from '@/hooks/useSeo';
 import { useToast } from '@/components/Toast';
+import { scheduleApi } from '@/services/content';
 import { addNote, listNotes, removeNote } from '@/services/personal';
-import { TimetableGrid } from '@/components/TimetableGrid';
-import { ButtonLink, Button, Card, EmptyState, ErrorState, ListSkeleton, PageHeader, SelectField, TextField } from '@/components/ui';
-import { dayFromJsDate, dayHeading, findGroup, lessonsOfGroup, shiftLabel, specialtyLabel, timetableDays } from '@/data/timetable';
+import { WeekGrid } from '@/pages/public/Schedule';
+import { Button, Card, EmptyState, ErrorState, ListSkeleton, PageHeader, SelectField, TextField } from '@/components/ui';
 import { friendlyError } from '@/utils/errors';
+import { jsDayToIso, weekdays } from '@/utils/labels';
 
 export default function PersonalSchedule() {
   useSeo('Şəxsi cədvəl', undefined, { noindex: true });
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const toast = useToast();
+  const sched = useAsync(() => scheduleApi.list(), []);
   const notes = useAsync(() => (user ? listNotes(user.uid) : Promise.resolve([])), [user?.uid]);
-  const group = findGroup(profile?.group);
-  const lessons = lessonsOfGroup(group?.code);
-  const today = dayFromJsDate(new Date().getDay());
+  const today = jsDayToIso(new Date().getDay());
   const [text, setText] = useState('');
-  const [day, setDay] = useState(today ?? 1);
+  const [day, setDay] = useState(today);
   const [busy, setBusy] = useState(false);
   const [fieldErr, setFieldErr] = useState('');
 
@@ -38,27 +38,22 @@ export default function PersonalSchedule() {
     try { await removeNote(user.uid, id); notes.reload(); } catch (er) { toast.error(friendlyError(er)); }
   };
 
-  const noteDays = [...new Set((notes.data ?? []).map((n) => n.day).filter((d) => d > 5))].sort();
-  const days = [1, 2, 3, 4, 5, ...noteDays];
+  const nextUp = (sched.data ?? []).filter((s) => s.day === today).slice(0, 3);
 
   return (
     <>
-      <PageHeader title="Şəxsi cədvəl" text="Qrupunuzun həftəlik dərsləri və günlərə bağlı şəxsi qeydləriniz." />
+      <PageHeader title="Şəxsi cədvəl" text="Həftəlik dərslər və günlərə bağlı şəxsi qeydləriniz." />
       <Card className="mb-6 p-5">
         <form onSubmit={add} className="grid gap-3 sm:grid-cols-[1fr_12rem_auto] sm:items-end" noValidate>
           <TextField label="Yeni qeyd" value={text} onChange={(e) => setText(e.target.value)} placeholder="Məs.: seminar üçün referat" error={fieldErr} />
-          <SelectField label="Gün" value={day} onChange={(e) => setDay(Number(e.target.value))}>{timetableDays.map((d) => <option key={d.no} value={d.no}>{dayHeading(d.no)}</option>)}</SelectField>
+          <SelectField label="Gün" value={day} onChange={(e) => setDay(Number(e.target.value))}>{weekdays.map((w, i) => <option key={w} value={i + 1}>{w}</option>)}</SelectField>
           <Button type="submit" loading={busy} className="sm:mb-0">Əlavə et</Button>
         </form>
       </Card>
-      {group ? (
-        <p className="mb-4 text-sm text-muted">Qrup: <strong className="text-ink">{group.code}</strong> · {specialtyLabel(group.specialty)} · Kurs: {group.course} · {shiftLabel(group.shift)}</p>
-      ) : (
-        <Card className="mb-6 p-2"><EmptyState title="Qrupunuz seçilməyib" text="Şəxsi dərs cədvəlinizin görünməsi üçün profilinizdə ixtisas və qrupu seçin." action={<ButtonLink to="/dashboard/profile" size="sm">Profilə keç</ButtonLink>} /></Card>
-      )}
-      {notes.loading ? <ListSkeleton rows={3} /> : notes.error ? <ErrorState message={notes.error} onRetry={notes.reload} /> :
-        lessons.length || notes.data?.length ? (
-          <TimetableGrid lessons={lessons} days={days} today={today} idPrefix="personal" notes={(d) => {
+      {nextUp.length > 0 && <p className="mb-4 text-sm text-muted">Bu gün: {nextUp.map((s) => `${s.startTime} ${s.subject}`).join(' · ')}</p>}
+      {sched.loading || notes.loading ? <ListSkeleton rows={3} /> : sched.error || notes.error ? <ErrorState message={(sched.error ?? notes.error)!} onRetry={() => { sched.reload(); notes.reload(); }} /> :
+        sched.data?.length || notes.data?.length ? (
+          <WeekGrid entries={sched.data ?? []} today={today} notes={(d) => {
             const list = (notes.data ?? []).filter((n) => n.day === d);
             return list.length ? (
               <ul className="mt-3 grid gap-2 border-t border-line pt-3" aria-label="Şəxsi qeydlər">
@@ -66,7 +61,7 @@ export default function PersonalSchedule() {
               </ul>
             ) : null;
           }} />
-        ) : group ? <EmptyState title="Qrup üçün cədvəl tapılmadı" text="Yuxarıdakı formdan qeyd əlavə edə bilərsiniz." /> : null}
+        ) : <EmptyState title="Cədvəl və qeyd yoxdur" text="Cədvəl əlavə olunduqda burada görünəcək. Yuxarıdakı formdan qeyd də əlavə edə bilərsiniz." />}
     </>
   );
 }

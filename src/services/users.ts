@@ -1,37 +1,33 @@
-import { collection, deleteDoc, doc, getDocs, serverTimestamp, Timestamp, updateDoc } from 'firebase/firestore';
-import { db, isConfigured, NotConfiguredError } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 import type { ContactMessage, Role, UserProfile } from '@/types';
+import { expectRows, fromRow, need, unwrap } from './db';
+import { toProfile } from './profiles';
 
-const need = () => { if (!isConfigured) throw new NotConfiguredError(); };
-const iso = (v: unknown) => (v instanceof Timestamp ? v.toDate().toISOString() : new Date(0).toISOString());
-
+/** Admin əməliyyatları. Server tərəfdə yalnız admin üçün RLS siyasətləri icazə verir. */
 export async function listUsers(): Promise<UserProfile[]> {
   need();
-  const snap = await getDocs(collection(db, 'users'));
-  return snap.docs
-    .map((d) => ({ ...(d.data() as Omit<UserProfile, 'uid' | 'createdAt'>), uid: d.id, createdAt: iso(d.data().createdAt) }))
-    .sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''));
+  const rows = unwrap(await supabase.from('profiles').select('*').order('created_at', { ascending: false })) as Record<string, unknown>[];
+  return rows.map(toProfile);
 }
 
 export async function setUserRole(uid: string, role: Role) {
   need();
-  await updateDoc(doc(db, 'users', uid), { role, updatedAt: serverTimestamp() });
+  const rows = unwrap(await supabase.from('profiles').update({ role }).eq('id', uid).select('id'));
+  expectRows(rows);
 }
 
 export async function listMessages(): Promise<ContactMessage[]> {
   need();
-  const snap = await getDocs(collection(db, 'contact_messages'));
-  return snap.docs
-    .map((d) => ({ ...(d.data() as Omit<ContactMessage, 'id' | 'createdAt'>), id: d.id, createdAt: iso(d.data().createdAt) }))
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const rows = unwrap(await supabase.from('contact_messages').select('*').order('created_at', { ascending: false })) as Record<string, unknown>[];
+  return rows.map((r) => fromRow<ContactMessage>(r, ['createdAt']));
 }
 
 export async function markMessageRead(id: string, status: 'new' | 'read') {
   need();
-  await updateDoc(doc(db, 'contact_messages', id), { status });
+  expectRows(unwrap(await supabase.from('contact_messages').update({ status }).eq('id', id).select('id')));
 }
 
 export async function deleteMessage(id: string) {
   need();
-  await deleteDoc(doc(db, 'contact_messages', id));
+  expectRows(unwrap(await supabase.from('contact_messages').delete().eq('id', id).select('id')));
 }

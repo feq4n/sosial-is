@@ -7,11 +7,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   build: {
-    chunkSizeWarningLimit: 750, // firebase SDK-nın öz ölçüsü; ayrıca chunk-a bölünüb və lazım olduqda yüklənir
+    chunkSizeWarningLimit: 750,
     rollupOptions: {
       output: {
         manualChunks: {
-          firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore'],
+          supabase: ['@supabase/supabase-js'],
           motion: ['motion/react'],
           react: ['react', 'react-dom', 'react-router-dom'],
         },
@@ -22,6 +22,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./tests/setup.ts'],
     globals: true,
+    include: ['tests/**/*.test.{ts,tsx}'],
     css: false,
   },
 });

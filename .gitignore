@@ -8,6 +8,10 @@ coverage/
 .env
 .env.*
 !.env.example
-.firebase/
 .vercel/
 public/sitemap.xml
+migration/node_modules/
+migration/backup/
+migration/.env
+supabase/.temp/
+supabase/.branches/

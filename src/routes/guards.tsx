@@ -13,7 +13,7 @@ export function RequireAuth() {
   return <Outlet />;
 }
 
-/** Yalnız interfeys üçün: həqiqi icazələr firestore.rules-da yoxlanılır. */
+/** Yalnız interfeys üçün: həqiqi icazələr Postgres RLS siyasətləri ilə serverdə yoxlanılır. */
 export function RequireRole({ roles }: { roles: Role[] }) {
   const { role, profile, loading } = useAuth();
   if (loading) return <PageLoader />;

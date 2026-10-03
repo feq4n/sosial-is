@@ -4,44 +4,41 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowRight, BookOpen, CalendarDays, ChevronDown, Clock, Megaphone, Sparkles, Users } from 'lucide-react';
 import { useAsync } from '@/hooks/useAsync';
 import { useSeo } from '@/hooks/useSeo';
-import { announcementsApi, eventsApi, isSampleMode, materialsApi } from '@/services/content';
-import { useAuth } from '@/context/AuthContext';
-import { dayFromJsDate, dayHeading, findGroup, lessonsOfGroup, lessonView } from '@/data/timetable';
+import { announcementsApi, eventsApi, isSampleMode, materialsApi, scheduleApi } from '@/services/content';
 import { AdpkLogo, ADPK_NAME } from '@/components/Logo';
 import { AnnouncementCard, EventCard, MaterialCard } from '@/components/cards';
-import { ButtonLink, Card, EmptyState, ErrorState, ListSkeleton, Reveal, SampleNotice } from '@/components/ui';
+import { ButtonLink, Card, EmptyState, ErrorState, ListSkeleton, Reveal, SampleNotice, Skeleton } from '@/components/ui';
 import { advantages, faq } from '@/data/content';
 import { contact, hasContactInfo } from '@/config/site';
+import { jsDayToIso, lessonTypes, weekdays } from '@/utils/labels';
 
 function TodayPanel() {
-  const { profile } = useAuth();
-  const group = findGroup(profile?.group);
-  const day = dayFromJsDate(new Date().getDay());
-  const today = group && day ? lessonsOfGroup(group.code).filter((l) => l.day === day) : [];
+  const { data, loading, error } = useAsync(() => scheduleApi.list(), []);
+  const day = jsDayToIso(new Date().getDay());
+  const today = (data ?? []).filter((s) => s.day === day);
   return (
     <Card className="relative overflow-hidden p-6 shadow-pop">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-semibold text-muted">Bu gün{group ? ` · ${group.code}` : ''}</p>
-          <h2 className="text-xl font-bold">{day ? dayHeading(day) : 'Həftə sonu'}</h2>
+          <p className="text-sm font-semibold text-muted">Bu gün</p>
+          <h2 className="text-xl font-bold">{weekdays[day - 1]}</h2>
         </div>
         <Clock className="size-6 text-brand" aria-hidden />
       </div>
       <div className="mt-5 grid gap-3">
-        {!group && <p className="rounded-xl bg-surface-2 p-4 text-sm text-muted">Qrupunuzun bugünkü dərslərini görmək üçün daxil olun və profilinizdə qrupu seçin.</p>}
-        {group && !day && <p className="rounded-xl bg-surface-2 p-4 text-sm text-muted">Bu gün həftə sonudur, cədvəldə dərs yoxdur.</p>}
-        {group && day && today.length === 0 && <p className="rounded-xl bg-surface-2 p-4 text-sm text-muted">Bu gün üçün cədvəldə dərs görünmür.</p>}
-        {today.map((l) => {
-          const v = lessonView(l);
-          return (
-            <div key={`${l.day}-${l.lesson}`} className="flex items-center gap-3 rounded-xl bg-surface-2 p-3">
-              <div className="w-16 shrink-0 text-center text-sm font-bold text-brand">{l.start}<div className="text-xs font-medium text-muted">{l.end}</div></div>
-              <div className="min-w-0"><p className="truncate font-semibold">{v.subject}</p><p className="truncate text-xs text-muted">{v.room ? `Otaq ${v.room}` : 'Otaq göstərilməyib'}</p></div>
-            </div>
-          );
-        })}
+        {loading && <><Skeleton className="h-14" /><Skeleton className="h-14" /></>}
+        {error && <p className="text-sm text-danger" role="alert">{error}</p>}
+        {!loading && !error && today.length === 0 && (
+          <p className="rounded-xl bg-surface-2 p-4 text-sm text-muted">Bu gün üçün cədvəldə dərs görünmür.</p>
+        )}
+        {today.slice(0, 3).map((s) => (
+          <div key={s.id} className="flex items-center gap-3 rounded-xl bg-surface-2 p-3">
+            <div className="w-16 shrink-0 text-center text-sm font-bold text-brand">{s.startTime}<div className="text-xs font-medium text-muted">{s.endTime}</div></div>
+            <div className="min-w-0"><p className="truncate font-semibold">{s.subject}</p><p className="truncate text-xs text-muted">{lessonTypes[s.lessonType]} · {s.room}</p></div>
+          </div>
+        ))}
       </div>
-      <Link to="/schedule" className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:underline">Dərs cədvəlinə bax <ArrowRight className="size-4" aria-hidden /></Link>
+      <Link to="/schedule" className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:underline">Həftəlik cədvələ bax <ArrowRight className="size-4" aria-hidden /></Link>
     </Card>
   );
 }
@@ -96,7 +93,7 @@ export default function Home() {
   const quick = [
     { to: '/announcements', icon: Megaphone, title: 'Elanlar', text: 'Şöbədən ən son xəbərlər' },
     { to: '/materials', icon: BookOpen, title: 'Materiallar', text: 'Fənlər üzrə dərs resursları' },
-    { to: '/schedule', icon: CalendarDays, title: 'Dərs cədvəli', text: 'İxtisas, qrup və növbə üzrə' },
+    { to: '/schedule', icon: CalendarDays, title: 'Dərs cədvəli', text: 'Həftəlik dərs bölgüsü' },
     { to: '/events', icon: Users, title: 'Tədbirlər', text: 'Seminar, konfrans, könüllülük' },
   ];
 
