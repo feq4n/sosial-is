@@ -1,0 +1,141 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Köməkçi funksiyalar ----------
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    function roleOf(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data.role;
+    }
+    function hasProfile() {
+      return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+    function isAdmin() { return hasProfile() && roleOf(request.auth.uid) == 'admin'; }
+    function isEditor() { return hasProfile() && roleOf(request.auth.uid) in ['admin', 'editor']; }
+    function str(v, min, max) { return v is string && v.size() >= min && v.size() <= max; }
+
+    // ---------- İstifadəçilər ----------
+    // Rolu yalnız admin dəyişə bilər. Qeydiyyat zamanı yalnız "student" rolu yazıla bilər.
+    // İlk admin Firebase Console-dan əl ilə təyin edilir (README-yə bax).
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+
+      allow create: if isOwner(userId)
+        && request.resource.data.keys().hasOnly(['firstName','lastName','email','role','studentId','degree','course','group','createdAt','updatedAt'])
+        && request.resource.data.role == 'student'
+        && request.resource.data.email == request.auth.token.email
+        && str(request.resource.data.firstName, 1, 60)
+        && str(request.resource.data.lastName, 1, 60)
+        && request.resource.data.createdAt == request.time;
+
+      allow update: if (
+          isOwner(userId)
+          && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['firstName','lastName','studentId','degree','course','group','updatedAt'])
+          && str(request.resource.data.firstName, 1, 60)
+          && str(request.resource.data.lastName, 1, 60)
+        ) || (
+          isAdmin()
+          && request.auth.uid != userId
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role','updatedAt'])
+          && request.resource.data.role in ['student','editor','admin']
+        );
+
+      allow delete: if false;
+
+      // Şəxsi məlumatlar: yalnız sahibi
+      match /saved/{materialId} {
+        allow read, delete: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.keys().hasOnly(['materialId','createdAt'])
+          && request.resource.data.materialId == materialId;
+        allow update: if false;
+      }
+      match /notes/{noteId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && request.resource.data.keys().hasOnly(['text','day','createdAt'])
+          && str(request.resource.data.text, 1, 500)
+          && request.resource.data.day in [1,2,3,4,5,6,7];
+      }
+      match /notificationReads/{key} {
+        allow read, delete: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.keys().hasOnly(['readAt']);
+        allow update: if false;
+      }
+    }
+
+    // ---------- İctimai məzmun (oxumaq hamı üçün, yazmaq redaktor/admin üçün) ----------
+    match /announcements/{id} {
+      allow read: if resource.data.published == true || isEditor();
+      allow create, update: if isEditor()
+        && str(request.resource.data.title, 3, 160)
+        && str(request.resource.data.body, 1, 8000)
+        && request.resource.data.published is bool
+        && request.resource.data.important is bool;
+      allow delete: if isEditor();
+    }
+
+    match /materials/{id} {
+      allow read: if true;
+      allow create, update: if isEditor()
+        && str(request.resource.data.title, 3, 160)
+        && str(request.resource.data.subject, 2, 120)
+        && str(request.resource.data.url, 8, 1000)
+        && request.resource.data.url.matches('^https://.*');
+      allow delete: if isEditor();
+    }
+
+    match /events/{id} {
+      allow read: if true;
+      allow create, update: if isEditor()
+        && str(request.resource.data.title, 3, 160)
+        && str(request.resource.data.location, 2, 200)
+        && request.resource.data.startsAt is timestamp;
+      allow delete: if isEditor();
+
+      match /registrations/{uid} {
+        allow read: if isOwner(uid) || isEditor();
+        allow create: if isOwner(uid)
+          && request.resource.data.keys().hasOnly(['userId','name','email','createdAt'])
+          && request.resource.data.userId == request.auth.uid
+          && get(/databases/$(database)/documents/events/$(id)).data.registrationOpen == true;
+        allow delete: if isOwner(uid) || isEditor();
+        allow update: if false;
+      }
+    }
+
+    match /schedule/{id} {
+      allow read: if true;
+      allow create, update: if isEditor()
+        && request.resource.data.day in [1,2,3,4,5,6,7]
+        && str(request.resource.data.subject, 2, 120)
+        && str(request.resource.data.startTime, 4, 5)
+        && str(request.resource.data.endTime, 4, 5);
+      allow delete: if isEditor();
+    }
+
+    // ---------- Əlaqə mesajları ----------
+    // Hər kəs göndərə bilər (sahə uzunlukları yoxlanılır); oxumaq/idarə etmək yalnız admin.
+    match /contact_messages/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['name','email','subject','message','status','createdAt'])
+        && str(request.resource.data.name, 2, 100)
+        && str(request.resource.data.email, 5, 160)
+        && request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+        && str(request.resource.data.subject, 3, 150)
+        && str(request.resource.data.message, 10, 3000)
+        && request.resource.data.status == 'new'
+        && request.resource.data.createdAt == request.time;
+      allow read, delete: if isAdmin();
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status in ['new','read'];
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
