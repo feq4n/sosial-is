@@ -43,6 +43,11 @@ const AdminSite = lazy(() => named(import('@/pages/admin/Site'), 'AdminSite'));
 const AdminFaq = lazy(() => named(import('@/pages/admin/Site'), 'AdminFaq'));
 const AdminFooter = lazy(() => named(import('@/pages/admin/Site'), 'AdminFooter'));
 const AdminTeam = lazy(() => named(import('@/pages/admin/Team'), 'AdminTeam'));
+const AdminForms = lazy(() => named(import('@/pages/admin/Forms'), 'AdminForms'));
+const AdminFormEditor = lazy(() => named(import('@/pages/admin/FormEditor'), 'AdminFormEditor'));
+const AdminFormResponses = lazy(() => named(import('@/pages/admin/FormResponses'), 'AdminFormResponses'));
+const StudentForms = lazy(() => import('@/pages/dashboard/Forms'));
+const FormEntry = lazy(() => import('@/pages/public/FormEntry'));
 
 export default function AppRoutes() {
   return (
@@ -78,7 +83,11 @@ export default function AppRoutes() {
             <Route path="saved" element={<Saved />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="schedule" element={<PersonalSchedule />} />
+            <Route path="forms" element={<StudentForms />} />
           </Route>
+
+          {/* Formun paylaşım linki: portalın daxilindədir, giriş tələb edir */}
+          <Route element={<PublicLayout />}><Route path="f/:slug" element={<FormEntry />} /></Route>
 
           <Route element={<RequireRole roles={['admin', 'editor']} />}>
             <Route path="admin" element={<AdminLayout />}>
@@ -94,6 +103,10 @@ export default function AppRoutes() {
                 <Route path="site" element={<AdminSite />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="messages" element={<AdminMessages />} />
+                <Route path="forms" element={<AdminForms />} />
+                <Route path="forms/new" element={<AdminFormEditor />} />
+                <Route path="forms/:id" element={<AdminFormEditor />} />
+                <Route path="forms/:id/responses" element={<AdminFormResponses />} />
               </Route>
             </Route>
           </Route>

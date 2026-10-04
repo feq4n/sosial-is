@@ -43,9 +43,25 @@ create or replace function t.cnt(q text) returns int language plpgsql as $$
 declare n int;
 begin execute 'select count(*) from (' || q || ') s' into n; return n; end $$;
 
+-- sql icra olunur, gözlənilən xəta MESAJI ilə uğursuz olmalıdır (submit_form sabit mesajlar qaytarır)
+create or replace function t.throws_msg(label text, q text, expected text) returns void language plpgsql as $$
+declare m text;
+begin
+  begin
+    execute q;
+  exception when others then
+    get stacked diagnostics m = message_text;
+    if m <> expected then raise exception 'FAIL: % (gözlənilən mesaj %, alınan %)', label, expected, m; end if;
+    raise notice 'PASS: %', label;
+    return;
+  end;
+  raise exception 'FAIL: % (xəta gözlənilirdi, amma icra olundu)', label;
+end $$;
+
 grant execute on all functions in schema t to public;
 
 begin;
+
 
 -- ---------- Qeydiyyat tətiyi (GoTrue auth.users-ə yazır)
 insert into auth.users (id, email, raw_user_meta_data) values
@@ -449,6 +465,145 @@ select t.back();
 select t.as_user(null);
 select t.ok('anon fayl obyektlərini oxuya bilir (ictimai bucket)', t.cnt($q$select 1 from storage.objects where bucket_id = 'materials'$q$) = 4);
 select t.back();
+
+-- ---------- Formlar (20261004000003_native_forms.sql)
+insert into auth.users (id, email, raw_user_meta_data) values
+  ('00000000-0000-0000-0000-00000000000f', 'f@test.az', '{"first_name":"Fidan","last_name":"Nəsirova","specialty":"KŞŞİ","group":"KŞŞİ25/01SB"}');
+
+-- Fixture-lər superuser ilə yazılır (id sütunu müştəriyə açıq deyil)
+insert into public.forms (id, title, status, audience_mode, audience_specialties, audience_groups, fields, closes_at) values
+  ('f0000000-0000-0000-0000-000000000001', 'Hamı üçün sorğu', 'published', 'all', '{}', '{}',
+   '[{"id":"q1","type":"text","label":"Ad","required":true},{"id":"q2","type":"radio","label":"Seçim","required":true,"options":["Bəli","Xeyr"]},{"id":"q3","type":"checkbox","label":"Çoxlu","options":["A","B","C"]},{"id":"q4","type":"scale","label":"Qiymət"},{"id":"q5","type":"number","label":"Say"},{"id":"q6","type":"date","label":"Gün"},{"id":"q7","type":"email","label":"Poçt"}]', null),
+  ('f0000000-0000-0000-0000-000000000002', 'Yalnız Sİ', 'published', 'restricted', '{"Sİ"}', '{}',
+   '[{"id":"q1","type":"text","label":"Ad","required":true}]', null),
+  ('f0000000-0000-0000-0000-000000000003', 'Yalnız KŞŞİ25/01SB', 'published', 'restricted', '{}', '{"KŞŞİ25/01SB"}',
+   '[{"id":"q1","type":"text","label":"Ad","required":true}]', null),
+  ('f0000000-0000-0000-0000-000000000004', 'Qaralama', 'draft', 'all', '{}', '{}',
+   '[{"id":"q1","type":"text","label":"Ad"}]', null),
+  ('f0000000-0000-0000-0000-000000000005', 'Vaxtı bitib', 'published', 'all', '{}', '{}',
+   '[{"id":"q1","type":"text","label":"Ad"}]', now() - interval '1 day');
+
+select t.throws_msg('naməlum sual növü rədd edilir',
+  $q$insert into public.forms (title, fields) values ('X1X', '[{"id":"q1","type":"zzz","label":"A"}]')$q$, 'invalid-form');
+select t.throws_msg('təkrar sual açarı rədd edilir',
+  $q$insert into public.forms (title, fields) values ('X2X', '[{"id":"q1","type":"text","label":"A"},{"id":"q1","type":"text","label":"B"}]')$q$, 'invalid-form');
+select t.throws_msg('seçim sualında variantlar təkrarlana bilməz',
+  $q$insert into public.forms (title, fields) values ('X3X', '[{"id":"q1","type":"radio","label":"A","options":["a","a"]}]')$q$, 'invalid-form');
+select t.throws_msg('boş sual mətni rədd edilir',
+  $q$insert into public.forms (title, fields) values ('X4X', '[{"id":"q1","type":"text","label":"  "}]')$q$, 'invalid-form');
+select t.throws_msg('mövcud olmayan ixtisas auditoriyada rədd edilir',
+  $q$insert into public.forms (title, audience_mode, audience_specialties) values ('X5X', 'restricted', '{"YOXDUR"}')$q$, 'invalid-audience');
+select t.throws('boş «məhdud» auditoriya rədd edilir',
+  $q$insert into public.forms (title, audience_mode) values ('X6X', 'restricted')$q$, '23514');
+
+-- Əvvəlki testlər tələbə «a»-nı KŞATS-a köçürüb; form testləri onun Sİ olduğunu fərz edir
+update public.profiles set specialty = 'Sİ', group_name = 'Sİ26/01SB' where id = '00000000-0000-0000-0000-00000000000a';
+
+-- ---- görünürlük (RLS)
+select t.as_user('00000000-0000-0000-0000-00000000000a');
+select t.ok('Sİ tələbəsi: «hamı» + «Sİ» + vaxtı bitmiş dərc olunmuş formu görür (qaralama və KŞŞİ formu yox)',
+  t.cnt('select 1 from public.forms') = 3
+  and t.cnt($q$select 1 from public.forms where title in ('Hamı üçün sorğu', 'Yalnız Sİ', 'Vaxtı bitib')$q$) = 3);
+select t.back();
+select t.as_user('00000000-0000-0000-0000-00000000000b');
+select t.ok('qrupsuz tələbə yalnız «hamı» formlarını görür', t.cnt('select 1 from public.forms') = 2);
+select t.back();
+select t.as_user('00000000-0000-0000-0000-00000000000f');
+select t.ok('KŞŞİ25/01SB tələbəsi qrup formunu görür, Sİ formunu görmür',
+  t.cnt($q$select 1 from public.forms where title = 'Yalnız KŞŞİ25/01SB'$q$) = 1
+  and t.cnt($q$select 1 from public.forms where title = 'Yalnız Sİ'$q$) = 0);
+select t.throws('tələbə form yarada bilmir', $q$insert into public.forms (title) values ('Hack')$q$, '42501');
+select t.ok('tələbə formu dəyişə bilmir (RLS: 0 sətir)', t.affected($q$update public.forms set title = 'Hack'$q$) = 0);
+select t.ok('tələbə formu silə bilmir (RLS: 0 sətir)', t.affected('delete from public.forms') = 0);
+select t.back();
+select t.as_user('00000000-0000-0000-0000-00000000000e');
+select t.throws('redaktor form yarada bilmir (yalnız admin)', $q$insert into public.forms (title) values ('Hack')$q$, '42501');
+select t.back();
+select t.as_user(null);
+select t.throws('anon formları oxuya bilmir', 'select 1 from public.forms', '42501');
+select t.throws('anon submit_form çağıra bilmir',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000001', '{}'::jsonb)$q$, '42501');
+select t.back();
+select t.as_user('00000000-0000-0000-0000-00000000000c');
+select t.ok('admin bütün formları görür (qaralama daxil)', t.cnt('select 1 from public.forms') = 5);
+select t.ok('admin form yarada bilir', t.affected($q$insert into public.forms (title, status, fields) values ('Admin yaratdı', 'draft', '[]')$q$) = 1);
+select t.ok('slug avtomatik yaranır', (select slug ~ '^[a-z0-9]{12}$' and created_by = '00000000-0000-0000-0000-00000000000c' from public.forms where title = 'Admin yaratdı'));
+select t.throws('admin slug-ı dəyişə bilmir (sütun icazəsi)', $q$update public.forms set slug = 'abcdef123456' where title = 'Admin yaratdı'$q$, '42501');
+select t.ok('admin formu dəyişə bilir', t.affected($q$update public.forms set status = 'published', fields = '[{"id":"q1","type":"text","label":"Ad"}]' where title = 'Admin yaratdı'$q$) = 1);
+select t.ok('updated_at yenilənib', (select updated_at is not null from public.forms where title = 'Admin yaratdı'));
+select t.back();
+
+-- ---- cavab göndərmə (submit_form)
+select t.as_user('00000000-0000-0000-0000-00000000000a');
+select public.submit_form('f0000000-0000-0000-0000-000000000001',
+  '{"q1":"Aysel","q2":"Bəli","q3":["A","C"],"q4":4,"q5":12.5,"q6":"2026-10-04","q7":"a@b.az"}'::jsonb);
+select t.throws_msg('eyni tələbə formu ikinci dəfə doldura bilməz',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000001', '{"q1":"Yenə","q2":"Xeyr"}'::jsonb)$q$, 'form-already-submitted');
+select t.throws_msg('Sİ tələbəsi KŞŞİ qrup formunu doldura bilməz',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000003', '{"q1":"X"}'::jsonb)$q$, 'form-not-allowed');
+select t.ok('tələbə yalnız öz doldurma qeydini görür', t.cnt('select 1 from public.form_submissions') = 1);
+select t.ok('tələbə cavabları oxuya bilmir (RLS)', t.cnt('select 1 from public.form_responses') = 0);
+select t.throws('cavab cədvəlinə birbaşa yazmaq olmaz (INSERT icazəsi yoxdur)',
+  $q$insert into public.form_responses (form_id, answers) values ('f0000000-0000-0000-0000-000000000001', '{}')$q$, '42501');
+select t.throws('doldurma qeydini birbaşa yazmaq olmaz',
+  $q$insert into public.form_submissions (form_id, user_id) values ('f0000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-00000000000a')$q$, '42501');
+select t.back();
+
+select t.as_user('00000000-0000-0000-0000-00000000000b');
+select t.throws_msg('ixtisassız (NULL) tələbə məhdud formu doldura bilməz',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000002', '{"q1":"X"}'::jsonb)$q$, 'form-not-allowed');
+select t.throws_msg('qaralama formu doldurmaq olmaz',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000004', '{"q1":"X"}'::jsonb)$q$, 'form-unavailable');
+select t.throws_msg('vaxtı bitmiş formu doldurmaq olmaz',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000005', '{"q1":"X"}'::jsonb)$q$, 'form-closed');
+select t.throws_msg('mövcud olmayan formu doldurmaq olmaz',
+  $q$select public.submit_form('f0000000-0000-0000-0000-0000000000ff', '{"q1":"X"}'::jsonb)$q$, 'form-unavailable');
+select t.back();
+
+select t.as_user('00000000-0000-0000-0000-00000000000f');
+select t.throws_msg('məcburi sual boşdursa rədd edilir',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000001', '{"q2":"Bəli"}'::jsonb)$q$, 'invalid-answers');
+select t.throws_msg('variantlarda olmayan seçim rədd edilir',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000001', '{"q1":"A","q2":"Ola bilər"}'::jsonb)$q$, 'invalid-answers');
+select t.throws_msg('qiymət 1-5 aralığından kənardırsa rədd edilir',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000001', '{"q1":"A","q2":"Bəli","q4":9}'::jsonb)$q$, 'invalid-answers');
+select t.throws_msg('yanlış tarix rədd edilir',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000001', '{"q1":"A","q2":"Bəli","q6":"2026-13-45"}'::jsonb)$q$, 'invalid-answers');
+select t.throws_msg('yanlış e-poçt rədd edilir',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000001', '{"q1":"A","q2":"Bəli","q7":"abc"}'::jsonb)$q$, 'invalid-answers');
+select t.throws_msg('çox seçimdə variantlarda olmayan dəyər rədd edilir',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000001', '{"q1":"A","q2":"Bəli","q3":["Z"]}'::jsonb)$q$, 'invalid-answers');
+select t.throws_msg('mətn sahəsinə ədəd göndərmək olmaz',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000001', '{"q1":5,"q2":"Bəli"}'::jsonb)$q$, 'invalid-answers');
+select t.throws_msg('cavab obyekt deyilsə rədd edilir',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000001', '[]'::jsonb)$q$, 'invalid-answers');
+select t.ok('uğursuz cəhdlər doldurma qeydi yaratmır', t.cnt('select 1 from public.form_submissions') = 0);
+select public.submit_form('f0000000-0000-0000-0000-000000000001', '{"q1":"  Fidan  ","q2":"Xeyr","zzz":"atılmalıdır"}'::jsonb);
+select public.submit_form('f0000000-0000-0000-0000-000000000003', '{"q1":"Qrup cavabı"}'::jsonb);
+select t.back();
+
+select t.ok('cavablar yazılıb, mətn kəsilib, təyində olmayan açar atılıb',
+  (select count(*) from public.form_responses where form_id = 'f0000000-0000-0000-0000-000000000001') = 2
+  and (select count(*) from public.form_responses where answers ? 'zzz') = 0
+  and exists (select 1 from public.form_responses where answers ->> 'q1' = 'Fidan' and answers ->> 'q2' = 'Xeyr'));
+select t.ok('cavab cədvəlində istifadəçi identifikatoru sütunu YOXDUR (anonimlik)',
+  not exists (select 1 from information_schema.columns
+              where table_schema = 'public' and table_name = 'form_responses' and column_name ~ '(user|uid|profile)'));
+select t.ok('vaxt saata yuvarlaqlaşdırılır',
+  (select bool_and(submitted_at = date_trunc('hour', submitted_at)) from public.form_responses));
+
+select t.as_user('00000000-0000-0000-0000-00000000000c');
+select t.ok('admin cavabları oxuya bilir', t.cnt('select 1 from public.form_responses') = 3);
+select t.ok('admin doldurma qeydlərini görmür (tələbə ilə cavab əlaqələndirilmir)', t.cnt('select 1 from public.form_submissions') = 0);
+select t.ok('admin cavab sayını form siyahısında ala bilir',
+  (select count(*) from public.form_responses where form_id = 'f0000000-0000-0000-0000-000000000001') = 2);
+select t.ok('admin formu silə bilir', t.affected($q$delete from public.forms where title = 'Admin yaratdı'$q$) = 1);
+select t.back();
+
+delete from public.forms where id = 'f0000000-0000-0000-0000-000000000001';
+select t.ok('form silinəndə cavablar və doldurma qeydləri cascade ilə silinir',
+  (select count(*) from public.form_responses where form_id = 'f0000000-0000-0000-0000-000000000001') = 0
+  and (select count(*) from public.form_submissions where form_id = 'f0000000-0000-0000-0000-000000000001') = 0);
 
 -- ---------- Cascade
 delete from auth.users where id = '00000000-0000-0000-0000-00000000000a';

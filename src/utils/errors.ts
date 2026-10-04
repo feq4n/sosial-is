@@ -1,6 +1,17 @@
 import { NotConfiguredError } from '@/lib/supabase';
 import { UploadError } from '@/utils/upload';
 
+/** Formlar (supabase/migrations/20261004000003_native_forms.sql) sabit kodlu xəta mesajları qaytarır. */
+const FORM_ERRORS: Record<string, string> = {
+  'form-unavailable': 'Bu form tapılmadı, bağlanıb və ya sizin üçün açıq deyil.',
+  'form-closed': 'Bu formun qəbul müddəti bitib.',
+  'form-not-allowed': 'Bu form sizin ixtisas və ya qrupunuz üçün nəzərdə tutulmayıb.',
+  'form-already-submitted': 'Siz bu formu artıq doldurmusunuz.',
+  'invalid-answers': 'Cavablar düzgün deyil. Sahələri yoxlayıb yenidən göndərin.',
+  'invalid-form': 'Formun sualları düzgün deyil. Sual mətnlərini və variantları yoxlayın.',
+  'invalid-audience': 'Seçilmiş ixtisas və ya qrup tapılmadı.',
+};
+
 /** İstifadəçiyə texniki detalları göstərmədən, Azərbaycan dilində aydın mesaj qaytarır. */
 export function friendlyError(err: unknown): string {
   if (err instanceof NotConfiguredError) {
@@ -11,6 +22,9 @@ export function friendlyError(err: unknown): string {
   const code = e.code ? String(e.code) : '';
   const name = e.name ? String(e.name) : '';
   const message = e.message ? String(e.message) : '';
+
+  const formMsg = FORM_ERRORS[message];
+  if (formMsg) return formMsg;
 
   if (code === 'invalid-placement' || message === 'invalid-placement') return 'Seçilmiş qrup bu ixtisasa aid deyil. İxtisası və qrupu yenidən seçin.';
 

@@ -7,7 +7,7 @@ const publicRoutes = ['/', '/announcements', '/materials', '/schedule', '/events
 
 mkdirSync('public', { recursive: true });
 
-const robots = ['User-agent: *', 'Allow: /', 'Disallow: /dashboard', 'Disallow: /admin', 'Disallow: /login', 'Disallow: /register', 'Disallow: /forgot-password'];
+const robots = ['User-agent: *', 'Allow: /', 'Disallow: /dashboard', 'Disallow: /admin', 'Disallow: /f/', 'Disallow: /login', 'Disallow: /register', 'Disallow: /forgot-password'];
 if (site) robots.push('', `Sitemap: ${site}/sitemap.xml`);
 writeFileSync('public/robots.txt', robots.join('\n') + '\n');
 

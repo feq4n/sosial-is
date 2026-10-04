@@ -76,7 +76,7 @@ cd migration && npm install && npm test
 
 1. Repozitoriyanı Vercel-ə qoşun (Framework: Vite; `vercel.json` hazırdır, SPA yönləndirməsi və təhlükəsizlik başlıqları daxildir).
 2. **Environment Variables** bölməsinə `.env.example`-dakı bütün `VITE_*` dəyərlərini əlavə edin. İstəyə görə `SITE_URL=https://sizin-domen` — təyin edilərsə build zamanı `sitemap.xml` yaradılır.
-3. Deploy edin. Vercel yalnız frontend-i yayımlayır; Supabase yuxarıdakı addımlarla ayrıca qurulmalıdır.
+3. Deploy edin. Vercel yalnız frontend-i yayımlayır (serverless funksiya və ya ikinci layihə yoxdur); verilənlər bazası, giriş, fayllar və formlar Supabase-dədir.
 
 ## Struktur
 
@@ -118,10 +118,22 @@ migration/      birdəfəlik Firebase → Supabase data miqrasiyası (ayrı pake
 - Yeni miqrasiyanı Supabase SQL Editor-də `20261004000001`-dən SONRA bir dəfə işə salın. Əvvəlki miqrasiyaları təkrar işlətməyin.
 
 
+## Formlar (sorğu və qeydiyyat formları)
+
+Ayrıca xidmət yoxdur: formlar portalın içində, Supabase cədvəllərində işləyir (`supabase/migrations/20261004000003_native_forms.sql`).
+
+- **Admin → Formlar:** yeni form (başlıq, təsvir, suallar, status, son tarix), auditoriya (bütün tələbələr və ya seçilmiş ixtisas/qruplar), önizləmə, paylaşım linki, cavab cədvəli, xülasə və CSV ixracı.
+- **Sual növləri:** qısa mətn, uzun mətn, ədəd, e-poçt, tarix, bir seçim (düymə/siyahı), çox seçim, qiymət (1–5). Hər sual məcburi ola bilər.
+- **Tələbə:** Kabinet → Formlar (yalnız öz ixtisas/qrupuna açıq olanlar) və ya paylaşım linki `/f/<kod>` (giriş tələb edir).
+- **Təhlükəsizlik (hamısı serverdə, RLS + `submit_form`):** tələbə yalnız dərc olunmuş və öz auditoriyasına aid formu görür; cavab sualların təyininə görə yoxlanılır (məcburilik, variant, tarix, e-poçt, 1–5); bir tələbə bir dəfə doldura bilər; qaralama və vaxtı bitmiş formlar qəbul olunmur; yalnız admin form yarada/dəyişə/cavablara baxa bilər.
+- **Anonimlik:** `form_responses` cədvəlində istifadəçi identifikatoru yoxdur, vaxt saata yuvarlaqlaşdırılır; kimin doldurduğu ayrıca `form_submissions` cədvəlindədir və admin onu oxuya bilmir.
+- **Məhdudiyyət:** cavab tələbələrə göstərilmir; fayl yükləmə yoxdur; formu dərc etdikdən sonra sualları dəyişsəniz köhnə cavablar yeni suallarla uyğun gəlməyə bilər.
+
 ## Yeniləmə: Super Admin, admin tərəfindən idarə olunan məzmun, material faylları
 
 ### Miqrasiyalar (SQL Editor-də, ardıcıllıqla, hər biri bir dəfə)
 
+0. `20261004000003_native_forms.sql` (formlar): `20261004000002_specialties.sql`-dən sonra işə salınır, aşağıdakılardan asılı deyil. Əvvəllər artıq işə salıbsınızsa, təkrar işə salmayın.
 1. `20261005000001_detach_student_id_and_course.sql`: bilet nömrəsi yazılmasını dayandırır (məlumat silmir).
 2. `20261005000002_super_admin.sql`: dəyişdirilməz Super Admin (RLS + tətiklər). Hesab hələ yoxdursa heç kimi yüksəltmir.
 3. `20261005000003_site_content.sql`: `site_settings`, `faq_items`, `footer_links`, `team_members`, `team-photos` bucket-i. İlkin məlumat yalnız boş cədvələ yazılır.
