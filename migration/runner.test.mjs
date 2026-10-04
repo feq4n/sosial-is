@@ -34,7 +34,7 @@ function fakeSupabase() {
       if (T.profiles.some((p) => p.email.toLowerCase() === a.email.toLowerCase())) return { data: null, error: { code: 'email_exists', message: 'exists' } };
       const id = randomUUID();
       const m = a.user_metadata;
-      T.profiles.push({ id, email: a.email, first_name: m.first_name, last_name: m.last_name, degree: m.degree, course: m.course, student_id: m.student_id, role: 'student', firebase_uid: null }); // handle_new_user tətiyi
+      T.profiles.push({ id, email: a.email, first_name: m.first_name, last_name: m.last_name, degree: null, course: null, specialty: m.specialty ?? null, group_name: m.group ?? null, student_id: m.student_id, role: 'student', firebase_uid: null }); // handle_new_user tətiyi
       return { data: { user: { id } }, error: null };
     },
     deleteUser: async (id) => {
@@ -51,8 +51,8 @@ function fakeSupabase() {
 function fixture() {
   const col = {
     users: [
-      { id: 'u1', data: { firstName: 'Admin', lastName: 'Adminov', role: 'admin', createdAt: ts('2025-01-01T00:00:00Z') } },
-      { id: 'u2', data: { firstName: 'Aysel', lastName: 'Məmmədova', role: 'student', degree: 'bakalavr', course: 2, studentId: 'S-1', group: 'SI-21', createdAt: ts('2025-09-01T00:00:00Z') } },
+      { id: 'u1', data: { firstName: 'Admin', lastName: 'Adminov', role: 'admin', degree: 'magistr', course: 1, group: 'SI-21', createdAt: ts('2025-01-01T00:00:00Z') } }, // köhnə sxem: sərbəst mətn qrup
+      { id: 'u2', data: { firstName: 'Aysel', lastName: 'Məmmədova', role: 'student', specialty: 'Sİ', group: 'Sİ26/01SB', studentId: 'S-1', createdAt: ts('2025-09-01T00:00:00Z') } },
       { id: 'u4', data: { firstName: 'Yetim', lastName: 'Profil' } }, // Auth hesabı yoxdur
       { id: 'u5', data: { firstName: 'Bloklu', lastName: 'İstifadəçi' } },
     ],
@@ -99,9 +99,10 @@ function fixture() {
 }
 
 const quiet = () => {};
+const GROUPS = [{ code: 'Sİ26/01SB', specialty: 'Sİ' }, { code: 'KŞATS25/01SB', specialty: 'KŞATS' }];
 
 test('dry-run: Supabase olmadan işləyir, heç nə yazmır, problemləri aşkarlayır', async () => {
-  const r = await runMigration({ source: fixture(), sb: null, mode: 'dry-run', log: quiet });
+  const r = await runMigration({ source: fixture(), sb: null, mode: 'dry-run', log: quiet, groups: GROUPS });
   assert.equal(r.verification.length, 0);
   const reasons = r.problems.map((p) => `${p.area}:${p.id}`);
   assert.ok(reasons.includes('users:u3'), 'profilsiz auth hesabı');
@@ -112,7 +113,7 @@ test('dry-run: Supabase olmadan işləyir, heç nə yazmır, problemləri aşkar
 
 test('apply: hesablar, rollar, FK-lar, tarixlər və bildiriş açarları düzgün köçürülür; say yoxlaması uğurludur', async () => {
   const sb = fakeSupabase();
-  const r = await runMigration({ source: fixture(), sb, mode: 'apply', log: quiet });
+  const r = await runMigration({ source: fixture(), sb, mode: 'apply', log: quiet, groups: GROUPS });
 
   // istifadəçilər: u1, u2, u5 (blok); u3 profilsiz atlandı
   assert.equal(sb.T.profiles.length, 3);
@@ -120,13 +121,18 @@ test('apply: hesablar, rollar, FK-lar, tarixlər və bildiriş açarları düzg�
   assert.equal(admin.role, 'admin', 'admin rolu qorunur');
   assert.equal(admin.created_at, '2025-01-01T00:00:00.000Z');
   const aysel = sb.T.profiles.find((p) => p.firebase_uid === 'u2');
-  assert.deepEqual([aysel.role, aysel.group_name, aysel.student_id, aysel.course, aysel.degree], ['student', 'SI-21', 'S-1', 2, 'bakalavr']);
+  assert.deepEqual([aysel.role, aysel.specialty, aysel.group_name, aysel.student_id], ['student', 'Sİ', 'Sİ26/01SB', 'S-1']);
+  // köhnə sxemli admin: degree/course saxlanılır, sərbəst mətn qrup təmizlənir (hesabatda bildirilir)
+  assert.deepEqual([admin.degree, admin.course, admin.specialty, admin.group_name], ['magistr', 1, null, null]);
+  assert.ok(r.problems.some((p) => p.area === 'users' && p.id === 'u1' && /ixtisas\/qrup keçərsizdir/.test(p.reason)));
+  assert.equal(r.verification.find((v) => v.area === 'users').skipped, 1, 'təmizlənən qrup istifadəçini atlanmışlara əlavə etmir');
+  assert.deepEqual(sb.log.createUser.find((a) => a.email === 'aysel@x.az').user_metadata, { first_name: 'Aysel', last_name: 'Məmmədova', student_id: 'S-1', specialty: 'Sİ', group: 'Sİ26/01SB' });
 
   // createUser: parolsuz köçürmə (təsadüfi parol), rol metadata-da yoxdur, bloklu hesab bloklanıb
   assert.equal(sb.log.createUser.length, 3);
   const pwds = new Set(sb.log.createUser.map((a) => a.password));
   assert.equal(pwds.size, 3);
-  for (const a of sb.log.createUser) { assert.ok(a.password.length >= 40); assert.ok(!('role' in a.user_metadata)); assert.equal(a.email_confirm, true); }
+  for (const a of sb.log.createUser) { assert.ok(a.password.length >= 40); assert.ok(!('role' in a.user_metadata)); assert.ok(!('degree' in a.user_metadata)); assert.equal(a.email_confirm, true); }
   assert.equal(sb.log.createUser.find((a) => a.email === 'bloklu@x.az').ban_duration, '876000h');
 
   // məzmun
@@ -163,10 +169,10 @@ test('apply: hesablar, rollar, FK-lar, tarixlər və bildiriş açarları düzg�
 
 test('apply ikinci dəfə: dublikat yaranmır, yeni hesab yaradılmır (idempotent)', async () => {
   const sb = fakeSupabase();
-  await runMigration({ source: fixture(), sb, mode: 'apply', log: quiet });
+  await runMigration({ source: fixture(), sb, mode: 'apply', log: quiet, groups: GROUPS });
   const before = JSON.stringify(Object.fromEntries(Object.entries(sb.T).map(([k, v]) => [k, v.length])));
   const usersBefore = sb.log.createUser.length;
-  const r = await runMigration({ source: fixture(), sb, mode: 'apply', log: quiet });
+  const r = await runMigration({ source: fixture(), sb, mode: 'apply', log: quiet, groups: GROUPS });
   assert.equal(sb.log.createUser.length, usersBefore, 'mövcud istifadəçilər yenidən yaradılmır');
   assert.equal(JSON.stringify(Object.fromEntries(Object.entries(sb.T).map(([k, v]) => [k, v.length]))), before);
   assert.equal(r.ok, true);
@@ -174,28 +180,28 @@ test('apply ikinci dəfə: dublikat yaranmır, yeni hesab yaradılmır (idempote
 
 test('verify: heç nə yazmır və sərtdir: Supabase-ə düşməyən sənədi (a2) gizlətmir; itkini tapır', async () => {
   const sb = fakeSupabase();
-  await runMigration({ source: fixture(), sb, mode: 'apply', log: quiet });
+  await runMigration({ source: fixture(), sb, mode: 'apply', log: quiet, groups: GROUPS });
   const writes = sb.log.writes;
 
-  const r1 = await runMigration({ source: fixture(), sb, mode: 'verify', log: quiet });
+  const r1 = await runMigration({ source: fixture(), sb, mode: 'verify', log: quiet, groups: GROUPS });
   assert.equal(sb.log.writes, writes, 'verify rejimi yazmır');
   assert.deepEqual(r1.verification.filter((v) => !v.ok).map((v) => v.area), ['announcements'], 'yalnız DB-nin rədd etdiyi a2 fərq kimi görünür');
 
   // mənbədən problemli elanı çıxarsaq, hər şey uyğundur
   const base = fixture();
   const clean = { ...base, collection: async (n) => (n === 'announcements' ? (await base.collection(n)).filter((d) => d.id === 'a1') : base.collection(n)) };
-  assert.equal((await runMigration({ source: clean, sb, mode: 'verify', log: quiet })).ok, true);
+  assert.equal((await runMigration({ source: clean, sb, mode: 'verify', log: quiet, groups: GROUPS })).ok, true);
 
   // itki simulyasiyası
   sb.T.materials.length = 0;
-  const r2 = await runMigration({ source: clean, sb, mode: 'verify', log: quiet });
+  const r2 = await runMigration({ source: clean, sb, mode: 'verify', log: quiet, groups: GROUPS });
   assert.equal(r2.ok, false);
   assert.equal(r2.verification.find((v) => v.area === 'materials').ok, false);
 });
 
 test('rollback: yalnız köçürülmüşləri silir, əl ilə yaradılmış məlumata toxunmur', async () => {
   const sb = fakeSupabase();
-  await runMigration({ source: fixture(), sb, mode: 'apply', log: quiet });
+  await runMigration({ source: fixture(), sb, mode: 'apply', log: quiet, groups: GROUPS });
   sb.T.announcements.push({ id: randomUUID(), firebase_id: null, title: 'Əl ilə yazılmış elan', body: 'x' });
   sb.T.profiles.push({ id: randomUUID(), firebase_uid: null, email: 'yeni@x.az', first_name: 'Yeni', last_name: 'Qeydiyyat', role: 'student' });
   await rollback({ sb, log: quiet });
@@ -208,7 +214,7 @@ test('rollback: yalnız köçürülmüşləri silir, əl ilə yaradılmış məl
 
 test('sendResetEmails: yalnız köçürülmüş istifadəçilərə /reset-password keçidi göndərir', async () => {
   const sb = fakeSupabase();
-  await runMigration({ source: fixture(), sb, mode: 'apply', log: quiet });
+  await runMigration({ source: fixture(), sb, mode: 'apply', log: quiet, groups: GROUPS });
   sb.T.profiles.push({ id: randomUUID(), firebase_uid: null, email: 'yeni@x.az' });
   const { sent, failed } = await sendResetEmails({ sb, redirectTo: 'https://site.az/reset-password', delayMs: 0, log: quiet });
   assert.equal(sent, 3);

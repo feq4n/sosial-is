@@ -6,12 +6,16 @@ Bu qovluq **birdəfəlik** köçürmə üçündür və əsas tətbiqdən ayrıd�
 ## Nə köçürülür
 | Firestore | Supabase |
 |---|---|
-| Firebase Auth hesabları + `users/{uid}` | `auth.users` + `public.profiles` (rol, ad, pillə, kurs, qrup, yaranma tarixi saxlanılır) |
+| Firebase Auth hesabları + `users/{uid}` | `auth.users` + `public.profiles` (rol, ad, ixtisas, qrup, yaranma tarixi; köhnə `degree`/`course` də saxlanılır) |
 | `announcements`, `materials`, `events`, `schedule`, `contact_messages` | eyni adlı cədvəllər (`schedule` → `schedule_entries`) |
 | `events/{id}/registrations/{uid}` | `event_registrations` |
 | `users/{uid}/saved`, `notes`, `notificationReads` | `saved_materials`, `personal_notes`, `notification_reads` |
 
 Köhnə ID-lər `firebase_id` / `firebase_uid` sütunlarında saxlanılır; yeni ID-lər UUID-dir. Əlaqələr (FK) və bildiriş açarları (`a-<id>`) yeni UUID-lərlə yenidən qurulur.
+
+## İxtisas və qrup
+Skript `src/data/timetable.json`-dakı qrup siyahısı ilə `specialty`/`group` cütünü yoxlayır. Köhnə sxemdən qalan sərbəst mətn qrup (məs. `SI-21`) və ya uyğunsuz cüt **təmizlənir** (istifadəçi profildə yenidən seçir); hər belə hal hesabatda (`ixtisas/qrup keçərsizdir`) göstərilir, hesab isə köçürülür. Firebase surəti `backup/`-da qalır.
+`supabase/migrations/20261004000001_adpk_placement.sql` bu miqrasiyadan **əvvəl** işə salınmış olmalıdır.
 
 ## Parollar haqqında (vacib)
 Firebase parolları **dəyişdirilmiş scrypt** ilə heşlənir; Supabase yalnız bcrypt/argon2 qəbul edir və hazır GoTrue idxalı Firebase-scrypt-i dəstəkləmir. Bu skript parol heşlərini **köçürmir** və parolları heç vaxt açıq mətn kimi saxlamır:

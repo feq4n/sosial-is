@@ -24,7 +24,9 @@ export async function fetchAll(sb, table, cols) {
 
 const AREAS = ['users', 'announcements', 'materials', 'events', 'schedule', 'contact_messages', 'event_registrations', 'saved_materials', 'personal_notes', 'notification_reads'];
 
-export async function runMigration({ source, sb, mode = 'dry-run', log = console.log }) {
+export async function runMigration({ source, sb, mode = 'dry-run', log = console.log, groups = null }) {
+  // groups: [{ code, specialty }] (src/data/timetable.json). Verilibsə, profillərdəki ixtisas+qrup cütü ilə yoxlanılır.
+  const groupMap = groups ? new Map(groups.map((g) => [g.code, g.specialty])) : null;
   const write = mode === 'apply';
   const stats = Object.fromEntries(AREAS.map((a) => [a, { source: 0, skipped: 0, failed: 0 }]));
   const problems = [];
@@ -59,7 +61,8 @@ export async function runMigration({ source, sb, mode = 'dry-run', log = console
     if (!doc) { problem('users', au.uid, 'Firebase Auth hesabı var, Firestore profili yoxdur (köhnə sistemdə də giriş işləməzdi)'); continue; }
     if (!au.email) { problem('users', au.uid, 'e-poçt yoxdur'); continue; }
     let row;
-    try { row = t.mapProfile(doc, au); } catch (e) { problem('users', au.uid, e.message); continue; }
+    try { row = t.mapProfile(doc, au, groupMap); } catch (e) { problem('users', au.uid, e.message); continue; }
+    if (t.placementOf(doc, groupMap).dropped) problem('users', au.uid, `ixtisas/qrup keçərsizdir (${doc.specialty ?? '—'} / ${doc.group ?? '—'}), təmizləndi: istifadəçi profildə yenidən seçməlidir`, null);
     if (uidMap.has(au.uid)) continue; // artıq köçürülüb
     if (!write) { uidMap.set(au.uid, `dry:${au.uid}`); continue; }
 
@@ -67,7 +70,8 @@ export async function runMigration({ source, sb, mode = 'dry-run', log = console
       email: au.email,
       email_confirm: true, // köhnə sistem təsdiqi məcburi etmirdi; istifadəçi parolu e-poçt keçidi ilə yeniləyəcək
       password: t.randomPassword(),
-      user_metadata: { first_name: row.first_name, last_name: row.last_name, degree: row.degree, course: row.course, student_id: row.student_id },
+      // handle_new_user tətiyi yalnız bunları oxuyur; köhnə degree/course sonrakı update ilə yazılır.
+      user_metadata: { first_name: row.first_name, last_name: row.last_name, student_id: row.student_id, specialty: row.specialty, group: row.group_name },
       ...(au.disabled ? { ban_duration: '876000h' } : {}),
     });
     if (error) { problem('users', au.uid, `Supabase Auth: ${error.code ?? ''} ${error.message}`, 'failed'); continue; }

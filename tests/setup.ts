@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom/vitest';
 import { afterEach } from 'vitest';
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
+
+// /schedule səhifəsi böyük timetable.json-u ilk dəfə lazy yükləyir; yavaş maşınlarda 1 san. limit kifayət etmir.
+configure({ asyncUtilTimeout: 5000 });
 
 afterEach(() => cleanup());
 

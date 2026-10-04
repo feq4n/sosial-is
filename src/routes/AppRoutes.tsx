@@ -35,7 +35,6 @@ const AdminOverview = lazy(() => import('@/pages/admin/Overview'));
 const AdminAnnouncements = lazy(() => named(import('@/pages/admin/Content'), 'AdminAnnouncements'));
 const AdminMaterials = lazy(() => named(import('@/pages/admin/Content'), 'AdminMaterials'));
 const AdminEvents = lazy(() => named(import('@/pages/admin/Content'), 'AdminEvents'));
-const AdminSchedule = lazy(() => named(import('@/pages/admin/Content'), 'AdminSchedule'));
 const AdminUsers = lazy(() => named(import('@/pages/admin/People'), 'AdminUsers'));
 const AdminMessages = lazy(() => named(import('@/pages/admin/People'), 'AdminMessages'));
 
@@ -80,7 +79,6 @@ export default function AppRoutes() {
               <Route path="announcements" element={<AdminAnnouncements />} />
               <Route path="materials" element={<AdminMaterials />} />
               <Route path="events" element={<AdminEvents />} />
-              <Route path="schedule" element={<AdminSchedule />} />
               <Route element={<RequireRole roles={['admin']} />}>
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="messages" element={<AdminMessages />} />

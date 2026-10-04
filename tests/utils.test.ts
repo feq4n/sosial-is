@@ -50,8 +50,14 @@ describe('xəta mesajları', () => {
     ['22P02', /tapılmadı/],
     ['23505', /artıq mövcuddur/],
     ['23514', /düzgün deyil/],
+    ['invalid-placement', /qrup bu ixtisasa aid deyil/],
+    ['23503', /qrup bu ixtisasa aid deyil/],
   ])('%s kodu Azərbaycan dilində mesaja çevrilir', (code, re) => {
     expect(friendlyError({ code, message: 'internal' })).toMatch(re);
+  });
+
+  it('verilənlər bazasının invalid-placement mesajı kod olmadan da tanınır', () => {
+    expect(friendlyError({ code: 'P0001', message: 'invalid-placement' })).toMatch(/qrup bu ixtisasa aid deyil/);
   });
 
   it('şəbəkə xətasını tanıyır', () => {

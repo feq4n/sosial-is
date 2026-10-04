@@ -79,12 +79,21 @@ describe('rəsmi cədvəl məlumatı', () => {
   });
 });
 
-describe('firestore.rules uyğunluğu', () => {
-  it('qaydalardakı qrup-ixtisas xəritəsi cədvəl məlumatı ilə üst-üstə düşür', () => {
-    const rules = readFileSync(join(process.cwd(), 'firestore.rules'), 'utf-8');
-    const line = rules.split('\n').find((x) => x.includes('function groupMap()'))!;
-    const pairs = [...line.matchAll(/'([^']+)': '([^']+)'/g)].map((m) => [m[1], m[2]]);
-    expect(Object.fromEntries(pairs)).toEqual(Object.fromEntries(groups.map((g) => [g.code, g.specialty])));
+describe('Supabase qrup siyahısı uyğunluğu', () => {
+  const pairsOf = (sql: string) => {
+    const block = sql.slice(sql.indexOf('values'), sql.indexOf(') as v'));
+    return Object.fromEntries([...block.matchAll(/\('([^']+)', '([^']+)'\)/g)].map((m) => [m[1], m[2]]));
+  };
+  const expected = Object.fromEntries(groups.map((g) => [g.code, g.specialty]));
+
+  it('supabase/seed/groups.sql cədvəl məlumatı ilə üst-üstə düşür (skript yenidən işlədilməlidir)', () => {
+    const sql = readFileSync(join(process.cwd(), 'supabase/seed/groups.sql'), 'utf-8');
+    expect(pairsOf(sql)).toEqual(expected);
+  });
+
+  it('ADPK miqrasiyasındakı ilkin qrup siyahısı seed ilə eynidir', () => {
+    const sql = readFileSync(join(process.cwd(), 'supabase/migrations/20261004000001_adpk_placement.sql'), 'utf-8');
+    expect(pairsOf(sql)).toEqual(expected);
   });
 });
 

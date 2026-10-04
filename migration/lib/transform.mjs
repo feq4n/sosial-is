@@ -24,8 +24,20 @@ const str = (v, fallback = '') => (typeof v === 'string' ? v.trim() : fallback);
 const pick = (v, allowed, fallback) => (allowed.includes(v) ? v : fallback);
 const withDate = (row, d) => { const c = tsToIso(d.createdAt); if (c) row.created_at = c; return row; };
 
-/** Profil: ad və soyad olmadan hesab yaradılmır (DB tətiyi də rədd edər). */
-export function mapProfile(d, authUser) {
+/**
+ * İxtisas + qrup cütü. `groupMap` (qrup kodu → ixtisas) verilibsə cüt onunla yoxlanılır; keçərsiz cüt (məs. köhnə sxemdəki
+ * sərbəst mətn qrup) təmizlənir və dropped=true qaytarılır ki, hesabatda göstərilsin. Məlumat itirilmir: Firebase surəti backup/-dadır.
+ */
+export function placementOf(d, groupMap) {
+  const specialty = str(d.specialty).slice(0, 40), group = str(d.group).slice(0, 20);
+  if (!specialty && !group) return { specialty: null, group_name: null, dropped: false };
+  if (groupMap && !(specialty && group && groupMap.get(group) === specialty)) return { specialty: null, group_name: null, dropped: true };
+  if (!specialty || !group) return { specialty: null, group_name: null, dropped: true };
+  return { specialty, group_name: group, dropped: false };
+}
+
+/** Profil: ad və soyad olmadan hesab yaradılmır (DB tətiyi də rədd edər). Köhnə degree/course sütunlarda saxlanılır (istifadə olunmur). */
+export function mapProfile(d, authUser, groupMap = null) {
   const first = str(d.firstName), last = str(d.lastName);
   if (first.length < 1 || first.length > 60) throw new Error('firstName boşdur və ya 60 simvoldan uzundur');
   if (last.length < 1 || last.length > 60) throw new Error('lastName boşdur və ya 60 simvoldan uzundur');
@@ -38,8 +50,10 @@ export function mapProfile(d, authUser) {
     student_id: str(d.studentId).slice(0, 30) || null,
     degree: pick(d.degree, DEGREES, null),
     course: Number.isInteger(course) && course >= 1 && course <= 6 ? course : null,
-    group_name: str(d.group).slice(0, 20) || null,
   };
+  const { dropped, ...placement } = placementOf(d, groupMap);
+  void dropped;
+  Object.assign(row, placement);
   return withDate(row, d);
 }
 

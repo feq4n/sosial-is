@@ -1,6 +1,6 @@
 # Sosial İş
 
-Sosial iş şöbəsinin tələbələri üçün platforma: elanlar, tədris materialları, dərs cədvəli, tədbirlər, şəxsi tələbə kabineti və admin paneli. İnterfeys Azərbaycan dilindədir.
+Azərbaycan Dövlət Pedaqoji Kollecinin Sosial iş şöbəsinin tələbələri üçün platforma: elanlar, tədris materialları, dərs cədvəli, tədbirlər, şəxsi tələbə kabineti və admin paneli. İnterfeys Azərbaycan dilindədir.
 
 **Stack:** React 19 · TypeScript · Vite · Tailwind CSS 4 · React Router 7 · Motion · Lucide · React Hook Form · Supabase (Auth + PostgreSQL + RLS)
 
@@ -12,12 +12,12 @@ cp .env.example .env     # VITE_SUPABASE_URL və VITE_SUPABASE_PUBLISHABLE_KEY d
 npm run dev              # http://localhost:3000
 ```
 
-`.env` doldurulmasa sayt **nümunə məzmunla** açılır (ictimai səhifələr üçün, “Nümunə məzmun” xəbərdarlığı ilə). Giriş, qeydiyyat, əlaqə formu, kabinet və admin paneli yalnız Supabase qoşulduqda işləyir; qoşulmayıbsa aydın xəta göstərilir.
+`.env` doldurulmasa sayt elan, material və tədbirlər üçün **nümunə məzmunla** açılır (“Nümunə məzmun” xəbərdarlığı ilə). Dərs cədvəli nümunə deyil, rəsmi Excel faylından gəlir və Supabase olmadan da işləyir. Giriş, qeydiyyat, əlaqə formu, kabinet və admin paneli yalnız Supabase qoşulduqda işləyir; qoşulmayıbsa aydın xəta göstərilir.
 
 ## Supabase qurulumu (bir dəfəlik)
 
 1. [supabase.com](https://supabase.com)-da layihə yaradın. **Project Settings → API** bölməsindən *Project URL* və *Publishable key*-i `.env`-ə yazın. `service_role`/secret açarını `.env`-ə **yazmayın**.
-2. **SQL Editor**-də `supabase/migrations/20261003000001_initial_schema.sql` faylının məzmununu işə salın (və ya `supabase link` + `supabase db push`).
+2. **SQL Editor**-də `supabase/migrations/` qovluğundakı faylları **tarix ardıcıllığı ilə** işə salın: `20261003000001_initial_schema.sql`, sonra `20261004000001_adpk_placement.sql` (və ya `supabase link` + `supabase db push`). Birinci fayl artıq işə salınıbsa, yalnız ikincisini işə salın; mövcud profillər qorunur.
 3. **Authentication → Sign In / Providers → Email** aktiv olsun. **E-poçt təsdiqi** (Confirm email) açıqdırsa, qeydiyyatdan sonra istifadəçiyə təsdiq mesajı göstərilir.
 4. **Authentication → URL Configuration**: *Site URL* = saytın ünvanı; *Redirect URLs* siyahısına `https://SAYT/login` və `https://SAYT/reset-password` (və lokal üçün `http://localhost:3000/**`) əlavə edin.
 5. **İlk admini təyin edin.** Rol interfeysdən və ya qeydiyyatdan verilə bilməz. Sayta qeydiyyatdan keçin, sonra **SQL Editor**-də:
@@ -33,10 +33,29 @@ Köhnə Firebase məlumatını köçürmək üçün `migration/README.md`-yə ba
 | Rol | İcazə |
 |---|---|
 | `student` | Kabinet, yadda saxlama, qeydlər, tədbirə qeydiyyat |
-| `editor` | + elan, material, tədbir, cədvəl idarəetməsi |
+| `editor` | + elan, material, tədbir idarəetməsi |
 | `admin` | + istifadəçi rolları, əlaqə mesajları |
 
 İcazələr Postgres **Row Level Security** siyasətləri ilə (`supabase/migrations/`) serverdə yoxlanılır; interfeysdəki gizlətmə yalnız rahatlıq üçündür.
+
+## Dərs cədvəli
+
+Cədvəl rəsmi Excel faylından (hər iki növbə vərəqi) oxunur və `src/data/timetable.json` faylına çevrilir. Yeni cədvəl gəldikdə:
+
+```bash
+pip install openpyxl
+python3 scripts/import-timetable.py "cədvəl.xlsx" 2026/2027 payız
+npm test
+# Supabase SQL Editor-də işə salın (təkrar işlətmək təhlükəsizdir):
+#   supabase/seed/groups.sql
+```
+
+- Skript ixtisas, qrup, kurs, növbə, gün, dərs, saat, fənn, müəllim və otaqları oxuyur; qrupun ixtisas, kurs və növbəsi yalnız cədvəldən götürülür.
+- “XXX” kimi qeydlər olduğu kimi saxlanılır, saytda “Fənn hələ təyin olunmayıb” kimi göstərilir. Boş xanalar doldurulmur.
+- İxtisasların tam adları `scripts/specialty-names.json` faylında yalnız təsdiqlənmiş olduqda yazılır; qalanları kodla göstərilir.
+- Skript `supabase/seed/groups.sql` faylını da yeniləyir. Qeydiyyatda və profildə ixtisas-qrup əlaqəsi serverdə `public.groups` cədvəli (composite FK + tətik) ilə yoxlanılır, buna görə həmin SQL yenidən işlədilməlidir. Siyahıdan çıxan qruplar silinmir, `active=false` olur: köhnə profillər qalır, amma yeni seçim/qeydiyyat üçün qəbul edilmir. `npm test` seed-in `timetable.json` ilə üst-üstə düşdüyünü yoxlayır.
+- İstifadəçinin `profiles` sətrində yalnız `specialty` və `group_name` saxlanılır; kurs və növbə cədvəldən hesablanır. Köhnə `degree` və `course` sütunları silinmir, istifadə olunmur və müştəri onları dəyişə bilməz. Qrupu seçilməmiş mövcud istifadəçilər profildə ixtisas və qrup seçməlidir.
+- `schedule_entries` cədvəli (köhnə admin cədvəli) tətbiqdə artıq istifadə olunmur; məlumat itməsin deyə saxlanılır.
 
 ## Test və yoxlama
 
@@ -65,14 +84,15 @@ cd migration && npm install && npm test
 src/
   components/   ui kit (ui/), cards, Toast, admin/CrudPage
   context/      Auth, Theme
-  data/         content.ts (redaktə edilən statik mətnlər), sample.ts (yalnız nümunə rejimi)
+  data/         timetable.json (rəsmi cədvəl, skriptlə yaradılır), timetable.ts, content.ts (statik mətnlər), sample.ts (yalnız nümunə rejimi)
   hooks/        useAsync, useSeo, useSaved, useNotifications
   layouts/      PublicLayout, AppShell (Dashboard/Admin)
   pages/        public/ auth/ dashboard/ admin/
   routes/       AppRoutes, guards
   services/     db (ortaq), content (CRUD), profiles, personal, users, contact
   types/ utils/ lib/ config/
-supabase/       migrations/ (SQL sxem + RLS), tests/ (RLS testləri)
+scripts/        import-timetable.py, specialty-names.json, generate-seo.mjs
+supabase/       migrations/ (SQL sxem + RLS), seed/groups.sql (qrup siyahısı), tests/ (RLS testləri)
 migration/      birdəfəlik Firebase → Supabase data miqrasiyası (ayrı paket)
 ```
 

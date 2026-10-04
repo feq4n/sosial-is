@@ -14,12 +14,24 @@ test('tsToIso: Timestamp, Date, ISO, {_seconds}, boş', () => {
   assert.equal(t.tsToIso('yanlış'), null);
 });
 
-test('mapProfile: rol, pillə, kurs və tarix qorunur; firebase_uid saxlanılır', () => {
+const GROUPS = new Map([['Sİ26/01SB', 'Sİ'], ['KŞATS25/01SB', 'KŞATS']]);
+
+test('mapProfile: rol, köhnə pillə/kurs, ixtisas+qrup və tarix qorunur; firebase_uid saxlanılır', () => {
   const r = t.mapProfile(
-    { firstName: ' Aysel ', lastName: 'Məmmədova', role: 'admin', degree: 'magistr', course: 2, studentId: 'S1', group: 'SI-21', createdAt: ts('2025-09-01T08:00:00Z') },
-    { uid: 'fbUID123' },
+    { firstName: ' Aysel ', lastName: 'Məmmədova', role: 'admin', degree: 'magistr', course: 2, studentId: 'S1', specialty: 'Sİ', group: 'Sİ26/01SB', createdAt: ts('2025-09-01T08:00:00Z') },
+    { uid: 'fbUID123' }, GROUPS,
   );
-  assert.deepEqual(r, { firebase_uid: 'fbUID123', first_name: 'Aysel', last_name: 'Məmmədova', role: 'admin', student_id: 'S1', degree: 'magistr', course: 2, group_name: 'SI-21', created_at: '2025-09-01T08:00:00.000Z' });
+  assert.deepEqual(r, { firebase_uid: 'fbUID123', first_name: 'Aysel', last_name: 'Məmmədova', role: 'admin', student_id: 'S1', degree: 'magistr', course: 2, specialty: 'Sİ', group_name: 'Sİ26/01SB', created_at: '2025-09-01T08:00:00.000Z' });
+});
+
+test('placementOf: düzgün cüt saxlanılır; köhnə sərbəst mətn qrup, uyğunsuz və yarımçıq cüt təmizlənir (dropped=true)', () => {
+  assert.deepEqual(t.placementOf({ specialty: 'Sİ', group: 'Sİ26/01SB' }, GROUPS), { specialty: 'Sİ', group_name: 'Sİ26/01SB', dropped: false });
+  assert.deepEqual(t.placementOf({}, GROUPS), { specialty: null, group_name: null, dropped: false });
+  assert.equal(t.placementOf({ group: 'SI-21' }, GROUPS).dropped, true, 'köhnə sxem: ixtisassız sərbəst qrup');
+  assert.equal(t.placementOf({ specialty: 'KŞATS', group: 'Sİ26/01SB' }, GROUPS).dropped, true, 'qrup başqa ixtisasa aiddir');
+  assert.equal(t.placementOf({ specialty: 'Sİ', group: 'uydurma' }, GROUPS).dropped, true);
+  assert.equal(t.placementOf({ specialty: 'Sİ' }, GROUPS).dropped, true, 'yalnız ixtisas');
+  assert.deepEqual(t.placementOf({ specialty: 'Sİ', group: 'Sİ26/01SB' }, null), { specialty: 'Sİ', group_name: 'Sİ26/01SB', dropped: false }, 'groupMap yoxdursa yoxlanmır');
 });
 
 test('mapProfile: yanlış rol/pillə/kurs təhlükəsiz defolta düşür (rol heç vaxt yüksəlmir)', () => {
@@ -27,6 +39,8 @@ test('mapProfile: yanlış rol/pillə/kurs təhlükəsiz defolta düşür (rol h
   assert.equal(r.role, 'student');
   assert.equal(r.degree, null);
   assert.equal(r.course, null);
+  assert.equal(r.specialty, null);
+  assert.equal(r.group_name, null);
   assert.equal(r.student_id, null);
   assert.ok(!('created_at' in r));
 });

@@ -1,11 +1,11 @@
 import { Check, Star } from 'lucide-react';
-import { announcementsApi, eventsApi, materialsApi, scheduleApi } from '@/services/content';
+import { announcementsApi, eventsApi, materialsApi } from '@/services/content';
 import { CrudPage, type FieldDef } from '@/components/admin/CrudPage';
 import { Badge } from '@/components/ui';
-import { announcementCategories, eventCategories, lessonTypes, materialTypes, weekdays } from '@/utils/labels';
+import { announcementCategories, eventCategories, materialTypes } from '@/utils/labels';
 import { formatDate, formatDateTime, isSafeHttpsUrl } from '@/utils/format';
 import { useSeo } from '@/hooks/useSeo';
-import type { Announcement, EventItem, Material, ScheduleEntry } from '@/types';
+import type { Announcement, EventItem, Material } from '@/types';
 
 const opts = (o: Record<string, string>) => Object.entries(o).map(([value, label]) => ({ value, label }));
 
@@ -36,7 +36,7 @@ export function AdminMaterials() {
     { name: 'subject', label: 'Fənn', type: 'text', required: true, min: 2, max: 120 },
     { name: 'author', label: 'Müəllif', type: 'text', required: true, max: 120 },
     { name: 'fileType', label: 'Növ', type: 'select', options: opts(materialTypes), default: 'pdf' },
-    { name: 'url', label: 'Fayl və ya səhifə keçidi', type: 'url', required: true, max: 1000, hint: 'Yalnız https:// ilə başlayan keçid qəbul edilir (məs. Google Drive, universitet serveri)' },
+    { name: 'url', label: 'Fayl və ya səhifə keçidi', type: 'url', required: true, max: 1000, hint: 'Yalnız https:// ilə başlayan keçid qəbul edilir (məs. Google Drive)' },
     { name: 'description', label: 'Təsvir', type: 'textarea', max: 1500 },
   ];
   return <CrudPage<Material> title="Tədris materialları" text="Fayllar xarici keçid kimi əlavə olunur; saytda yalnız https:// keçidlər açılır." singular="Material" api={materialsApi} fields={fields}
@@ -70,28 +70,5 @@ export function AdminEvents() {
       { header: 'Vaxt', cell: (r) => formatDateTime(r.startsAt) },
       { header: 'Yer', cell: (r) => r.location },
       { header: 'Qeydiyyat', cell: (r) => (r.registrationOpen ? <Badge tone="success">Açıq</Badge> : <Badge>Yox</Badge>) },
-    ]} />;
-}
-
-export function AdminSchedule() {
-  useSeo('Cədvəl (admin)', undefined, { noindex: true });
-  const fields: FieldDef[] = [
-    { name: 'day', label: 'Gün', type: 'select', numeric: true, options: weekdays.map((w, i) => ({ value: i + 1, label: w })), default: 1 },
-    { name: 'startTime', label: 'Başlama saatı', type: 'time', required: true },
-    { name: 'endTime', label: 'Bitmə saatı', type: 'time', required: true },
-    { name: 'subject', label: 'Fənn', type: 'text', required: true, min: 2, max: 120 },
-    { name: 'teacher', label: 'Müəllim', type: 'text', required: true, max: 120 },
-    { name: 'room', label: 'Auditoriya', type: 'text', required: true, max: 40 },
-    { name: 'lessonType', label: 'Dərs növü', type: 'select', options: opts(lessonTypes), default: 'muhazire' },
-  ];
-  return <CrudPage<ScheduleEntry> title="Dərs cədvəli" text="Həftəlik cədvəli idarə edin." singular="Dərs" api={scheduleApi} fields={fields}
-    searchKeys={['subject', 'teacher', 'room']} filter={{ label: 'Gün', key: 'day', options: weekdays.map((w, i) => ({ value: String(i + 1), label: w })) }}
-    validate={(v) => (String(v.endTime) <= String(v.startTime) ? 'Bitmə saatı başlama saatından sonra olmalıdır' : null)}
-    columns={[
-      { header: 'Gün', cell: (r) => weekdays[r.day - 1] },
-      { header: 'Saat', cell: (r) => `${r.startTime} – ${r.endTime}` },
-      { header: 'Fənn', cell: (r) => <span className="font-semibold">{r.subject}</span> },
-      { header: 'Müəllim', cell: (r) => r.teacher },
-      { header: 'Auditoriya', cell: (r) => r.room },
     ]} />;
 }

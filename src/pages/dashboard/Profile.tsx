@@ -4,12 +4,13 @@ import { KeyRound } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useSeo } from '@/hooks/useSeo';
 import { useToast } from '@/components/Toast';
-import { Badge, Button, Card, ErrorBanner, PageHeader, SelectField, TextField } from '@/components/ui';
+import { Badge, Button, Card, ErrorBanner, PageHeader, TextField } from '@/components/ui';
+import { hasPlacementErrors, PlacementFields, validatePlacement, type Placement, type PlacementErrors } from '@/components/PlacementFields';
+import { isValidPlacement } from '@/data/timetable';
 import { friendlyError } from '@/utils/errors';
-import { degreeLabels, roleLabels } from '@/utils/labels';
-import type { Degree } from '@/types';
+import { roleLabels } from '@/utils/labels';
 
-interface Form { firstName: string; lastName: string; studentId: string; degree: Degree; course: number; group: string }
+interface Form { firstName: string; lastName: string; studentId: string }
 
 export default function Profile() {
   useSeo('Profil', undefined, { noindex: true });
@@ -17,15 +18,26 @@ export default function Profile() {
   const toast = useToast();
   const [err, setErr] = useState('');
   const [pwBusy, setPwBusy] = useState(false);
+  const saved: Placement = profile?.specialty && profile.group && isValidPlacement(profile.specialty, profile.group)
+    ? { specialty: profile.specialty, group: profile.group } : { specialty: '', group: '' };
+  const [placement, setPlacement] = useState<Placement>(saved);
+  const [placementErrors, setPlacementErrors] = useState<PlacementErrors>({});
+  const placementDirty = placement.specialty !== saved.specialty || placement.group !== saved.group;
   const { register, handleSubmit, formState: { errors, isSubmitting, isDirty } } = useForm<Form>({
-    defaultValues: { firstName: profile?.firstName ?? '', lastName: profile?.lastName ?? '', studentId: profile?.studentId ?? '', degree: profile?.degree ?? 'bakalavr', course: profile?.course ?? 1, group: profile?.group ?? '' },
+    defaultValues: { firstName: profile?.firstName ?? '', lastName: profile?.lastName ?? '', studentId: profile?.studentId ?? '' },
   });
 
-  const onSubmit = handleSubmit(async (v) => {
+  const run = handleSubmit(async (v) => {
     setErr('');
-    try { await updateProfile({ ...v, course: Number(v.course) }); toast.success('Profil yeniləndi'); }
+    if (hasPlacementErrors(validatePlacement(placement))) return;
+    try { await updateProfile({ ...v, specialty: placement.specialty, group: placement.group }); toast.success('Profil yeniləndi'); }
     catch (e) { setErr(friendlyError(e)); }
   });
+
+  const onSubmit = (e: React.FormEvent) => {
+    setPlacementErrors(validatePlacement(placement));
+    return run(e);
+  };
 
   const sendReset = async () => {
     if (!user?.email) return;
@@ -44,14 +56,11 @@ export default function Profile() {
               <TextField label="Ad" error={errors.firstName?.message} {...register('firstName', { required: 'Adı yazın', maxLength: { value: 60, message: 'Ən çox 60 simvol' } })} />
               <TextField label="Soyad" error={errors.lastName?.message} {...register('lastName', { required: 'Soyadı yazın', maxLength: { value: 60, message: 'Ən çox 60 simvol' } })} />
             </div>
-            <div className="grid gap-5 sm:grid-cols-3">
-              <SelectField label="Təhsil pilləsi" {...register('degree')}>{Object.entries(degreeLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</SelectField>
-              <SelectField label="Kurs" {...register('course', { valueAsNumber: true })}>{[1, 2, 3, 4, 5, 6].map((n) => <option key={n} value={n}>{n}</option>)}</SelectField>
-              <TextField label="Qrup" error={errors.group?.message} {...register('group', { maxLength: { value: 20, message: 'Ən çox 20 simvol' } })} />
-            </div>
+            {!saved.group && <p role="note" className="rounded-xl border border-accent/40 bg-accent-soft px-4 py-3 text-sm text-accent-ink dark:text-accent">İxtisas və qrup hələ seçilməyib. Dərs cədvəlinizin avtomatik görünməsi üçün onları seçin.</p>}
+            <PlacementFields value={placement} errors={placementErrors} onChange={(v) => { setPlacement(v); setPlacementErrors({}); }} />
             <TextField label="Tələbə bileti nömrəsi" error={errors.studentId?.message} {...register('studentId', { maxLength: { value: 30, message: 'Ən çox 30 simvol' } })} />
             {err && <ErrorBanner>{err}</ErrorBanner>}
-            <div><Button type="submit" loading={isSubmitting} disabled={!isDirty}>Dəyişiklikləri saxla</Button></div>
+            <div><Button type="submit" loading={isSubmitting} disabled={!isDirty && !placementDirty}>Dəyişiklikləri saxla</Button></div>
           </form>
         </Card>
         <div className="grid h-fit gap-6">

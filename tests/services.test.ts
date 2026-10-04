@@ -21,11 +21,12 @@ vi.mock('@/lib/supabase', () => ({
   NotConfiguredError: class extends Error {},
 }));
 
-import { announcementsApi, eventsApi, scheduleApi } from '@/services/content';
+import { announcementsApi, eventsApi } from '@/services/content';
 import { fromRow, toRow, isUuid } from '@/services/db';
 import { toProfile } from '@/services/profiles';
 import { setUserRole, listMessages } from '@/services/users';
 import { saveMaterial, markRead, isRegistered } from '@/services/personal';
+import { updateOwnProfile } from '@/services/profiles';
 import { sendContactMessage } from '@/services/contact';
 
 const UUID = '8f14e45f-ceea-467f-a0e6-1f6b0a9a3c11';
@@ -52,9 +53,9 @@ describe('sətir çevirmələri', () => {
     expect(isUuid('sample-a1')).toBe(false);
   });
 
-  it('profiles sətri UserProfile-a çevrilir (id→uid, group_name→group)', () => {
-    const p = toProfile({ id: UUID, first_name: 'Aysel', last_name: 'M', email: 'a@b.az', role: 'admin', student_id: null, degree: 'magistr', course: 2, group_name: 'SI-21', created_at: '2026-01-02T03:04:05Z', updated_at: null, firebase_uid: 'fb' });
-    expect(p).toMatchObject({ uid: UUID, firstName: 'Aysel', lastName: 'M', role: 'admin', degree: 'magistr', course: 2, group: 'SI-21', createdAt: '2026-01-02T03:04:05.000Z' });
+  it('profiles sətri UserProfile-a çevrilir (id→uid, group_name→group, specialty)', () => {
+    const p = toProfile({ id: UUID, first_name: 'Aysel', last_name: 'M', email: 'a@b.az', role: 'admin', student_id: null, specialty: 'Sİ', group_name: 'Sİ26/01SB', created_at: '2026-01-02T03:04:05Z', updated_at: null, firebase_uid: 'fb' });
+    expect(p).toMatchObject({ uid: UUID, firstName: 'Aysel', lastName: 'M', role: 'admin', specialty: 'Sİ', group: 'Sİ26/01SB', createdAt: '2026-01-02T03:04:05.000Z' });
     expect(p).not.toHaveProperty('studentId');
     expect(p).not.toHaveProperty('id');
   });
@@ -76,17 +77,6 @@ describe('məzmun repository-si', () => {
     h.state.result = { data: [], error: null };
     await announcementsApi.list({ includeDrafts: true });
     expect(called('eq')).toHaveLength(0);
-  });
-
-  it('cədvəl: schedule_entries cədvəlindən oxunur, gün və saata görə sıralanır', async () => {
-    h.state.result = { data: [
-      { id: 'b', day: 2, start_time: '09:00', end_time: '10:00', subject: 'B', teacher: '', room: '', lesson_type: 'seminar' },
-      { id: 'a', day: 1, start_time: '11:00', end_time: '12:00', subject: 'A', teacher: '', room: '', lesson_type: 'muhazire' },
-    ], error: null };
-    const list = await scheduleApi.list();
-    expect(h.state.table).toBe('schedule_entries');
-    expect(list.map((x) => x.id)).toEqual(['a', 'b']);
-    expect(list[0]).toMatchObject({ startTime: '11:00', lessonType: 'muhazire' });
   });
 
   it('get: etibarsız id üçün sorğu göndərmir, null qaytarır (olmayan səhifə boş vəziyyət göstərsin)', async () => {
@@ -142,6 +132,27 @@ describe('istifadəçi və mesaj əməliyyatları', () => {
     await sendContactMessage({ name: ' Aysel ', email: ' a@b.az ', subject: ' Sual ', message: ' Mesaj mətni ' });
     expect(called('insert')[0][0]).toEqual({ name: 'Aysel', email: 'a@b.az', subject: 'Sual', message: 'Mesaj mətni' });
     expect(h.state.table).toBe('contact_messages');
+  });
+});
+
+describe('profil yeniləməsi', () => {
+  it('ixtisas və qrup birlikdə göndərilir, köhnə degree/course heç vaxt göndərilmir', async () => {
+    h.state.result = { data: { id: UUID, first_name: 'A', last_name: 'B', email: 'a@b.az', role: 'student', specialty: 'Sİ', group_name: 'Sİ26/01SB', created_at: '2026-01-01T00:00:00Z' }, error: null };
+    const p = await updateOwnProfile(UUID, { firstName: ' A ', lastName: 'B', studentId: ' ', specialty: 'Sİ', group: 'Sİ26/01SB' });
+    const patch = called('update')[0][0] as Record<string, unknown>;
+    expect(patch).toEqual({ first_name: 'A', last_name: 'B', student_id: null, specialty: 'Sİ', group_name: 'Sİ26/01SB' });
+    expect(patch).not.toHaveProperty('degree');
+    expect(patch).not.toHaveProperty('course');
+    expect(patch).not.toHaveProperty('role');
+    expect(p).toMatchObject({ uid: UUID, specialty: 'Sİ', group: 'Sİ26/01SB' });
+  });
+
+  it('ixtisas/qrup verilməyibsə onlara toxunulmur', async () => {
+    h.state.result = { data: { id: UUID, first_name: 'A', last_name: 'B', email: 'a@b.az', role: 'student', created_at: '2026-01-01T00:00:00Z' }, error: null };
+    await updateOwnProfile(UUID, { firstName: 'A', lastName: 'B' });
+    const patch = called('update')[0][0] as Record<string, unknown>;
+    expect(patch).not.toHaveProperty('specialty');
+    expect(patch).not.toHaveProperty('group_name');
   });
 });
 

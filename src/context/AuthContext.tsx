@@ -2,13 +2,16 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState, type R
 import type { User } from '@supabase/supabase-js';
 import { supabase, isConfigured, NotConfiguredError } from '@/lib/supabase';
 import { fetchProfile, updateOwnProfile, type ProfileUpdate } from '@/services/profiles';
-import type { AuthUser, Degree, Role, UserProfile } from '@/types';
+import { isValidPlacement } from '@/data/timetable';
+import type { AuthUser, Role, UserProfile } from '@/types';
 
 export interface RegisterInput {
   firstName: string; lastName: string; email: string; password: string;
-  degree: Degree; course: number; studentId?: string;
+  specialty: string; group: string; studentId?: string;
 }
 export type { ProfileUpdate };
+
+const invalidPlacement = () => Object.assign(new Error('invalid-placement'), { code: 'invalid-placement' });
 
 /** E-poçt təsdiqi Supabase-də aktivdirsə, qeydiyyatdan sonra sessiya təsdiq keçidinə qədər açılmır. */
 export interface RegisterResult { needsEmailConfirmation: boolean }
@@ -91,6 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     async register(input) {
       if (!isConfigured) throw new NotConfiguredError();
+      if (!isValidPlacement(input.specialty, input.group)) throw invalidPlacement();
       // Profil sətri verilənlər bazasındakı tətik ilə yaranır; rol həmişə "student"-dir (metadata-dan oxunmur).
       const { data, error } = await supabase.auth.signUp({
         email: input.email.trim(),
@@ -100,8 +104,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           data: {
             first_name: input.firstName.trim(),
             last_name: input.lastName.trim(),
-            degree: input.degree,
-            course: input.course,
+            specialty: input.specialty,
+            group: input.group,
             ...(input.studentId?.trim() ? { student_id: input.studentId.trim() } : {}),
           },
         },
@@ -126,6 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     async updateProfile(data) {
       if (!isConfigured || !user) throw new NotConfiguredError();
+      if ((data.specialty !== undefined || data.group !== undefined) && !isValidPlacement(data.specialty ?? '', data.group ?? '')) throw invalidPlacement();
       setProfile(await updateOwnProfile(user.uid, data));
     },
   }), [user, profile, loading]);

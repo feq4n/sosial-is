@@ -86,6 +86,22 @@ def parse_sheet(ws, shift, report):
     return groups, lessons
 
 
+
+def group_seed_sql(groups):
+    """Supabase `public.groups` cədvəlini cədvəl məlumatı ilə sinxronlaşdıran təkrar işlədilə bilən SQL.
+    Köhnə qruplar silinmir (profillər onlara istinad edə bilər), yalnız active=false olur."""
+    values = ",\n".join(f"  ('{g['code']}', '{g['specialty']}')" for g in groups)
+    codes = ", ".join(f"'{g['code']}'" for g in groups)
+    return (
+        "-- Avtomatik yaradılıb: scripts/import-timetable.py. Əl ilə dəyişməyin.\n"
+        "-- Supabase SQL Editor-də işə salın; təkrar işlətmək təhlükəsizdir.\n"
+        "insert into public.groups (code, specialty, active) \nselect v.code, v.specialty, true from (values\n"
+        f"{values}\n) as v (code, specialty)\n"
+        "on conflict (code) do update set specialty = excluded.specialty, active = true;\n\n"
+        f"update public.groups set active = false where code not in ({codes});\n"
+    )
+
+
 def main():
     if len(sys.argv) < 2:
         raise SystemExit("İstifadə: python3 scripts/import-timetable.py <cədvəl.xlsx> [tədris ili] [semestr]")
@@ -126,14 +142,9 @@ def main():
     out = ROOT / "src" / "data" / "timetable.json"
     out.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
-    rules = ROOT / "firestore.rules"
-    body = ", ".join(f"'{g['code']}': '{g['specialty']}'" for g in groups_out)
-    new_line = f"    function groupMap() {{ return {{{body}}}; }}"
-    src_rules = rules.read_text(encoding="utf-8")
-    patched, n = re.subn(r"^ *function groupMap\(\).*$", lambda _: new_line, src_rules, flags=re.M)
-    if n != 1:
-        raise SystemExit("firestore.rules daxilində groupMap() funksiyası tapılmadı")
-    rules.write_text(patched, encoding="utf-8")
+    seed = ROOT / "supabase" / "seed" / "groups.sql"
+    seed.parent.mkdir(parents=True, exist_ok=True)
+    seed.write_text(group_seed_sql(groups_out), encoding="utf-8")
 
     pending = sum(1 for x in lessons_out if x["pending"])
     print(f"ixtisas: {len(specialties)}, qrup: {len(groups_out)}, dərs: {len(lessons_out)} (təyin olunmamış 'XXX': {pending})")

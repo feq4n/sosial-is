@@ -10,6 +10,8 @@ export function friendlyError(err: unknown): string {
   const name = e.name ? String(e.name) : '';
   const message = e.message ? String(e.message) : '';
 
+  if (code === 'invalid-placement' || message === 'invalid-placement') return 'Seçilmiş qrup bu ixtisasa aid deyil. İxtisası və qrupu yenidən seçin.';
+
   if (name === 'AuthRetryableFetchError' || /failed to fetch|networkerror|load failed/i.test(message)) {
     return 'Şəbəkə xətası. İnternet bağlantınızı yoxlayıb yenidən cəhd edin.';
   }
@@ -45,6 +47,8 @@ export function friendlyError(err: unknown): string {
     case 'PGRST116':
     case '22P02':
       return 'Axtarılan məlumat tapılmadı.';
+    case '23503':
+      return 'Seçilmiş qrup bu ixtisasa aid deyil. İxtisası və qrupu yenidən seçin.';
     case '23505':
       return 'Bu qeyd artıq mövcuddur.';
     case 'validation_failed':

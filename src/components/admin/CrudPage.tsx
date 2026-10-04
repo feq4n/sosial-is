@@ -22,7 +22,7 @@ export interface FieldDef {
 }
 
 type Rec = { id: string };
-const get = (r: unknown, k: string): unknown => (r as Record<string, unknown> | null | undefined)?.[k];
+const get = (r: unknown, k: string): unknown => (r as Record<string, unknown>)[k];
 const PAGE = 8;
 
 export function CrudPage<T extends Rec>({ title, text, singular, api, fields, columns, searchKeys, filter, validate, includeDrafts }: {

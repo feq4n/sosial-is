@@ -49,15 +49,23 @@ begin;
 
 -- ---------- Qeydiyyat tətiyi (GoTrue auth.users-ə yazır)
 insert into auth.users (id, email, raw_user_meta_data) values
-  ('00000000-0000-0000-0000-00000000000a', 'a@test.az', '{"first_name":"Aysel","last_name":"Əliyeva","degree":"bakalavr","course":2,"student_id":"S-1"}'),
-  ('00000000-0000-0000-0000-00000000000b', 'b@test.az', '{"first_name":"Bəhruz","last_name":"Quliyev","degree":"magistr","course":1}'),
+  ('00000000-0000-0000-0000-00000000000a', 'a@test.az', '{"first_name":"Aysel","last_name":"Əliyeva","specialty":"Sİ","group":"Sİ26/01SB","student_id":"S-1"}'),
+  ('00000000-0000-0000-0000-00000000000b', 'b@test.az', '{"first_name":"Bəhruz","last_name":"Quliyev"}'),
   ('00000000-0000-0000-0000-00000000000c', 'c@test.az', '{"first_name":"Cavid","last_name":"Həsənov","role":"admin"}'),
   ('00000000-0000-0000-0000-00000000000e', 'e@test.az', '{"first_name":"Elnur","last_name":"Rzayev"}');
 
 select t.ok('user_metadata-dakı role=admin YOXLANMIR, profil student yaranır',
   (select role from public.profiles where email = 'c@test.az') = 'student');
-select t.ok('metadata-dan ad/pillə/kurs/bilet götürülür',
-  (select first_name = 'Aysel' and degree = 'bakalavr' and course = 2 and student_id = 'S-1' from public.profiles where email = 'a@test.az'));
+select t.ok('metadata-dan ad/ixtisas/qrup/bilet götürülür; köhnə degree/course doldurulmur',
+  (select first_name = 'Aysel' and specialty = 'Sİ' and group_name = 'Sİ26/01SB' and student_id = 'S-1' and degree is null and course is null from public.profiles where email = 'a@test.az'));
+select t.ok('qrupsuz qeydiyyat (köçürülən köhnə hesablar) mümkündür',
+  (select specialty is null and group_name is null from public.profiles where email = 'b@test.az'));
+select t.throws('qrup ixtisasa aid deyilsə qeydiyyat rədd edilir',
+  $q$insert into auth.users (email, raw_user_meta_data) values ('p1@test.az', '{"first_name":"P","last_name":"P","specialty":"KŞATS","group":"Sİ26/01SB"}')$q$, 'P0001');
+select t.throws('mövcud olmayan qrup ilə qeydiyyat rədd edilir',
+  $q$insert into auth.users (email, raw_user_meta_data) values ('p2@test.az', '{"first_name":"P","last_name":"P","specialty":"Sİ","group":"uydurma"}')$q$, 'P0001');
+select t.throws('yalnız ixtisas verilib, qrup yoxdur: qeydiyyat rədd edilir',
+  $q$insert into auth.users (email, raw_user_meta_data) values ('p3@test.az', '{"first_name":"P","last_name":"P","specialty":"Sİ"}')$q$, 'P0001');
 select t.throws('boş ad ilə qeydiyyat rədd edilir',
   $q$insert into auth.users (email, raw_user_meta_data) values ('x@test.az', '{"first_name":"","last_name":"X"}')$q$, '23514');
 select t.throws('eyni e-poçt (böyük/kiçik hərf fərqi ilə) ikinci profil yarada bilmir',
@@ -104,7 +112,19 @@ select t.as_user('00000000-0000-0000-0000-00000000000a');
 select t.ok('tələbə yalnız öz profilini görür', t.cnt('select 1 from public.profiles') = 1);
 select t.ok('tələbə qaralama elanı görmür', t.cnt('select 1 from public.announcements') = 1);
 select t.ok('tələbə öz adını dəyişə bilir',
-  t.affected($q$update public.profiles set first_name = 'Aysel2', group_name = 'SI-21' where id = '00000000-0000-0000-0000-00000000000a'$q$) = 1);
+  t.affected($q$update public.profiles set first_name = 'Aysel2' where id = '00000000-0000-0000-0000-00000000000a'$q$) = 1);
+select t.ok('tələbə ixtisas və qrupunu düzgün cütlə dəyişə bilir',
+  t.affected($q$update public.profiles set specialty = 'KŞATS', group_name = 'KŞATS25/01SB' where id = '00000000-0000-0000-0000-00000000000a'$q$) = 1);
+select t.throws('tələbə qrupu başqa ixtisasa aid cütlə təyin edə bilmir',
+  $q$update public.profiles set specialty = 'Sİ', group_name = 'KŞATS25/01SB' where id = '00000000-0000-0000-0000-00000000000a'$q$, 'P0001');
+select t.throws('tələbə mövcud olmayan qrup təyin edə bilmir',
+  $q$update public.profiles set specialty = 'Sİ', group_name = 'uydurma' where id = '00000000-0000-0000-0000-00000000000a'$q$, 'P0001');
+select t.throws('tələbə yalnız ixtisası (qrupsuz) saxlaya bilmir',
+  $q$update public.profiles set group_name = null where id = '00000000-0000-0000-0000-00000000000a'$q$, '23514');
+select t.throws('tələbə köhnə degree sütununu dəyişə bilmir (sütun icazəsi)',
+  $q$update public.profiles set degree = 'magistr' where id = '00000000-0000-0000-0000-00000000000a'$q$, '42501');
+select t.throws('tələbə köhnə course sütununu dəyişə bilmir (sütun icazəsi)',
+  $q$update public.profiles set course = 3 where id = '00000000-0000-0000-0000-00000000000a'$q$, '42501');
 select t.throws('tələbə öz rolunu admin edə bilmir',
   $q$update public.profiles set role = 'admin' where id = '00000000-0000-0000-0000-00000000000a'$q$, '42501');
 select t.throws('tələbə e-poçtunu profildə dəyişə bilmir',
@@ -204,6 +224,26 @@ select t.throws('cədvəldə gün 8 ola bilmir',
   $q$insert into public.schedule_entries (day, start_time, end_time, subject) values (8, '09:00', '10:00', 'Fənn')$q$, '23514');
 select t.throws('firebase_id təkrarı rədd edilir',
   $q$insert into public.materials (firebase_id, title, subject, url) values ('fb1','Material A','Fənn','https://e.com/1'), ('fb1','Material B','Fənn','https://e.com/2')$q$, '23505');
+
+-- ---------- Qrup siyahısı yenilənəndə (seed ilə) : köhnə qrup silinmir, aktiv olmur
+select t.throws('service_role belə cüt FK ilə qorunur (trigger olmadan da)',
+  $q$update public.profiles set specialty = 'Sİ', group_name = 'KŞATS25/01SB' where email = 'a@test.az'$q$, '23503');
+update public.groups set active = false where code = 'Sİ25/01SB';
+select t.as_user('00000000-0000-0000-0000-00000000000b');
+select t.throws('qeyri-aktiv (köhnə) qrupa keçmək olmur',
+  $q$update public.profiles set specialty = 'Sİ', group_name = 'Sİ25/01SB' where id = '00000000-0000-0000-0000-00000000000b'$q$, 'P0001');
+select t.back();
+select t.throws('qeyri-aktiv qrupla yeni qeydiyyat rədd edilir',
+  $q$insert into auth.users (email, raw_user_meta_data) values ('p4@test.az', '{"first_name":"P","last_name":"P","specialty":"Sİ","group":"Sİ25/01SB"}')$q$, 'P0001');
+select t.ok('groups cədvəli anon üçün oxunaqlıdır, yazıla bilməz',
+  (select count(*) from public.groups) = 29);
+select t.as_user(null);
+select t.ok('anon qrup siyahısını oxuya bilir', t.cnt('select 1 from public.groups') = 29);
+select t.throws('anon qrup əlavə edə bilmir', $q$insert into public.groups (code, specialty) values ('X1', 'Sİ')$q$, '42501');
+select t.back();
+select t.as_user('00000000-0000-0000-0000-00000000000c');
+select t.throws('admin də groups cədvəlinə müştəri kimi yaza bilmir', $q$update public.groups set active = true$q$, '42501');
+select t.back();
 
 -- ---------- Cascade
 delete from auth.users where id = '00000000-0000-0000-0000-00000000000a';

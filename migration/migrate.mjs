@@ -58,7 +58,8 @@ const source = {
   },
 };
 
-const result = await runMigration({ source, sb, mode });
+const groups = JSON.parse(readFileSync(new URL('../src/data/timetable.json', import.meta.url), 'utf8')).groups;
+const result = await runMigration({ source, sb, mode, groups });
 
 // ---- Bərpa üçün: Firebase məlumatının yerli surəti + hesabat (Git-ə düşmür)
 mkdirSync(new URL('./backup/', import.meta.url), { recursive: true });

@@ -117,12 +117,12 @@ describe('giriş / qeydiyyat / şifrə', () => {
     await expect(ctx.login('a@b.az', 'yanlis')).rejects.toMatchObject({ code: 'invalid_credentials' });
   });
 
-  it('register: metadata-da ROL GÖNDƏRİLMİR; yalnız ad, soyad, pillə, kurs, bilet nömrəsi', async () => {
+  it('register: metadata-da ROL GÖNDƏRİLMİR; yalnız ad, soyad, ixtisas, qrup, bilet nömrəsi', async () => {
     h.s.signUp.mockResolvedValue({ data: { user: { identities: [{}] }, session: { access_token: 't' } }, error: null });
-    const res = await ctx.register({ firstName: ' Aysel ', lastName: 'M', email: ' a@b.az ', password: 'parol1234', degree: 'magistr', course: 2, studentId: ' S-1 ' });
+    const res = await ctx.register({ firstName: ' Aysel ', lastName: 'M', email: ' a@b.az ', password: 'parol1234', specialty: 'Sİ', group: 'Sİ26/01SB', studentId: ' S-1 ' });
     const arg = h.s.signUp.mock.calls[0][0];
     expect(arg.email).toBe('a@b.az');
-    expect(arg.options.data).toEqual({ first_name: 'Aysel', last_name: 'M', degree: 'magistr', course: 2, student_id: 'S-1' });
+    expect(arg.options.data).toEqual({ first_name: 'Aysel', last_name: 'M', specialty: 'Sİ', group: 'Sİ26/01SB', student_id: 'S-1' });
     expect(arg.options.data).not.toHaveProperty('role');
     expect(arg.options.emailRedirectTo).toMatch(/\/login$/);
     expect(res).toEqual({ needsEmailConfirmation: false });
@@ -130,13 +130,13 @@ describe('giriş / qeydiyyat / şifrə', () => {
 
   it('register: sessiya qaytarılmırsa e-poçt təsdiqi tələb olunur', async () => {
     h.s.signUp.mockResolvedValue({ data: { user: { identities: [{}] }, session: null }, error: null });
-    const res = await ctx.register({ firstName: 'A', lastName: 'M', email: 'a@b.az', password: 'parol1234', degree: 'bakalavr', course: 1 });
+    const res = await ctx.register({ firstName: 'A', lastName: 'M', email: 'a@b.az', password: 'parol1234', specialty: 'Sİ', group: 'Sİ26/01SB' });
     expect(res).toEqual({ needsEmailConfirmation: true });
   });
 
   it('register: mövcud e-poçt (boş identities) xəta kimi bildirilir', async () => {
     h.s.signUp.mockResolvedValue({ data: { user: { identities: [] }, session: null }, error: null });
-    await expect(ctx.register({ firstName: 'A', lastName: 'M', email: 'a@b.az', password: 'parol1234', degree: 'bakalavr', course: 1 }))
+    await expect(ctx.register({ firstName: 'A', lastName: 'M', email: 'a@b.az', password: 'parol1234', specialty: 'Sİ', group: 'Sİ26/01SB' }))
       .rejects.toMatchObject({ code: 'user_already_exists' });
   });
 
@@ -147,6 +147,12 @@ describe('giriş / qeydiyyat / şifrə', () => {
     h.s.update.mockResolvedValue({ error: null });
     await ctx.updatePassword('yeniParol123');
     expect(h.s.update).toHaveBeenCalledWith({ password: 'yeniParol123' });
+  });
+
+  it('register: qrup ixtisasa aid deyilsə sorğu göndərilmir və Azərbaycan dilində xəta kodu atılır', async () => {
+    await expect(ctx.register({ firstName: 'A', lastName: 'M', email: 'a@b.az', password: 'parol1234', specialty: 'KŞATS', group: 'Sİ26/01SB' }))
+      .rejects.toMatchObject({ code: 'invalid-placement' });
+    expect(h.s.signUp).not.toHaveBeenCalled();
   });
 
   it('logout supabase.auth.signOut çağırır', async () => {
@@ -162,6 +168,15 @@ describe('giriş / qeydiyyat / şifrə', () => {
 });
 
 describe('profil yeniləmə', () => {
+  it('yanlış ixtisas/qrup cütü serverə göndərilmir', async () => {
+    h.s.fetchProfile.mockResolvedValue(profile('student'));
+    mount();
+    await emit('SIGNED_IN', { user: { id: 'u1', email: 'a@b.az' } });
+    await waitFor(() => expect(ctx.profile).not.toBeNull());
+    await expect(ctx.updateProfile({ firstName: 'A', lastName: 'B', specialty: 'KŞATS', group: 'Sİ26/01SB' })).rejects.toMatchObject({ code: 'invalid-placement' });
+    expect(h.s.updateOwnProfile).not.toHaveBeenCalled();
+  });
+
   it('yeni profil serverdən qayıdan sətirlə əvəz olunur', async () => {
     h.s.fetchProfile.mockResolvedValue(profile('student'));
     h.s.updateOwnProfile.mockResolvedValue({ ...profile('student'), firstName: 'Yeni' });

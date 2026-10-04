@@ -1,6 +1,6 @@
 // Nümunə məzmun: yalnız Supabase qoşulmadıqda (yerli baxış üçün) göstərilir.
 // Real/rəsmi məlumat deyil — admin paneli ilə əvəz edilir. İnterfeysdə "Nümunə məzmun" xəbərdarlığı görünür.
-import type { Announcement, EventItem, Material, ScheduleEntry } from '@/types';
+import type { Announcement, EventItem, Material } from '@/types';
 
 const d = (offsetDays: number, h = 10, m = 0) => {
   const t = new Date();
@@ -23,9 +23,4 @@ export const sampleMaterials: Material[] = [
 export const sampleEvents: EventItem[] = [
   { id: 'sample-e1', title: 'Nümunə: Açıq mühazirə', description: 'Bu, nümunə tədbirdir. Real tədbirlər admin paneli ilə yaradılır.', category: 'seminar', location: 'Nümunə auditoriya', startsAt: d(5, 15), registrationOpen: true, createdAt: d(-2) },
   { id: 'sample-e2', title: 'Nümunə: Könüllülük günü', description: 'Nümunə təsvir.', category: 'goenullu', location: 'Nümunə məkan', startsAt: d(12, 11), registrationOpen: false, createdAt: d(-6) },
-];
-
-export const sampleSchedule: ScheduleEntry[] = [
-  { id: 'sample-s1', day: 1, startTime: '09:00', endTime: '10:20', subject: 'Nümunə fənn', teacher: 'Nümunə müəllim', room: '—', lessonType: 'muhazire' },
-  { id: 'sample-s2', day: 3, startTime: '11:00', endTime: '12:20', subject: 'Nümunə seminar', teacher: 'Nümunə müəllim', room: '—', lessonType: 'seminar' },
 ];
