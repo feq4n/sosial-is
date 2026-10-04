@@ -221,3 +221,37 @@ describe('fayl yoxlaması (uzantı + MIME + ilk baytlar)', () => {
     expect(friendlyError({ code: '23514', message: 'file-too-large' })).toContain('25 MB');
   });
 });
+
+describe('sayt parametrlərinin saxlanması', () => {
+  it('upsert yox, açar başına update (value) işlədir; sətir yoxdursa insert edir', async () => {
+    vi.resetModules();
+    const calls: [string, unknown][] = [];
+    let missing = new Set<string>();
+    vi.doMock('@/lib/supabase', () => ({
+      isConfigured: true,
+      NotConfiguredError: class extends Error {},
+      supabase: {
+        from: () => {
+          let key = '';
+          const b: Record<string, unknown> = {
+            update: (v: unknown) => { calls.push(['update', v]); return b; },
+            insert: (v: unknown) => { calls.push(['insert', v]); return Promise.resolve({ data: null, error: null }); },
+            upsert: () => { throw new Error('upsert istifadə olunmamalıdır'); },
+            eq: (_c: string, k: string) => { key = k; return b; },
+            select: () => Promise.resolve({ data: missing.has(key) ? [] : [{ key }], error: null }),
+          };
+          return b;
+        },
+      },
+    }));
+    const mod = await import('@/services/site');
+    missing = new Set(['contact_phone']);
+    await mod.saveSiteSettings({ siteName: ' Yeni ad ', contactPhone: '+994 12 000 00 00' });
+    expect(calls).toEqual([
+      ['update', { value: 'Yeni ad' }],
+      ['update', { value: '+994 12 000 00 00' }],
+      ['insert', { key: 'contact_phone', value: '+994 12 000 00 00' }],
+    ]);
+    vi.doUnmock('@/lib/supabase');
+  });
+});

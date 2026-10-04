@@ -85,7 +85,12 @@ export async function saveSiteSettings(patch: Partial<SiteSettings>) {
   need();
   const rows = (Object.entries(patch) as [keyof SiteSettings, string][]).map(([k, v]) => ({ key: SETTING_KEYS[k], value: String(v ?? '').trim() }));
   if (!rows.length) return;
-  unwrap(await supabase.from('site_settings').upsert(rows, { onConflict: 'key' }));
+  /* upsert işlətmirik: PostgREST `ON CONFLICT DO UPDATE SET key = ..., value = ...` yazır, `key` sütununa isə UPDATE icazəsi verilməyib (yalnız `value`).
+     Ona görə əvvəl yalnız `value` yenilənir; sətir yoxdursa (köhnə baza) əlavə olunur. */
+  for (const r of rows) {
+    const updated = unwrap(await supabase.from('site_settings').update({ value: r.value }).eq('key', r.key).select('key')) as unknown[] | null;
+    if (!updated?.length) unwrap(await supabase.from('site_settings').insert(r));
+  }
   await loadSiteSettings(true);
 }
 

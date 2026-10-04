@@ -360,6 +360,10 @@ select t.ok('admin FAQ əlavə edir və qeyri-aktivi görür', t.cnt('select 1 f
 select t.ok('admin FAQ-nı redaktə və sil', t.affected($q$update public.faq_items set answer = 'Dəyişdi' where question = 'Yeni sual?'$q$) = 1
   and t.affected($q$delete from public.faq_items where question = 'Yeni sual?'$q$) = 1);
 select t.ok('admin sayt adını dəyişir', t.affected($q$update public.site_settings set value = 'Sosial İş+' where key = 'site_name'$q$) = 1);
+select t.throws('PostgREST upsert forması (ON CONFLICT DO UPDATE SET key=...) sütun icazəsi səbəbilə rədd edilir: frontend upsert işlətməməlidir',
+  $q$insert into public.site_settings (key, value) values ('site_name', 'X') on conflict (key) do update set key = excluded.key, value = excluded.value$q$, '42501');
+select t.ok('update (yalnız value) admin üçün işləyir', t.affected($q$update public.site_settings set value = 'Sosial İş' where key = 'site_name'$q$) = 1);
+select t.ok('mövcud olmayan açar üçün update 0 sətir qaytarır (insert yoluna keçid üçün)', t.affected($q$update public.site_settings set value = 'x' where key = 'contact_phone_nope'$q$) = 0);
 select t.throws('boş sayt adı rədd edilir', $q$update public.site_settings set value = '  ' where key = 'site_name'$q$, '23514');
 select t.throws('naməlum parametr açarı rədd edilir', $q$insert into public.site_settings (key, value) values ('evil_key', 'x')$q$, '23514');
 select t.throws('düzgün olmayan əlaqə e-poçtu rədd edilir', $q$update public.site_settings set value = 'abc' where key = 'contact_email'$q$, '23514');
