@@ -22,16 +22,19 @@ export interface FieldDef {
 }
 
 type Rec = { id: string };
-const get = (r: unknown, k: string): unknown => (r as Record<string, unknown>)[k];
+const get = (r: unknown, k: string): unknown => (r as Record<string, unknown> | null)?.[k];
 const PAGE = 8;
 
-export function CrudPage<T extends Rec>({ title, text, singular, api, fields, columns, searchKeys, filter, validate, includeDrafts }: {
+export function CrudPage<T extends Rec>({ title, text, singular, api, fields, columns, searchKeys, filter, validate, includeDrafts, canCreate = true, canDelete = true }: {
   title: string; text: string; singular: string; api: Resource<T>; fields: FieldDef[];
   columns: { header: string; cell: (r: T) => ReactNode; className?: string }[];
   searchKeys: string[];
   filter?: { label: string; key: string; options: { value: string; label: string }[] };
   validate?: (v: Record<string, unknown>) => string | null;
   includeDrafts?: boolean;
+  /** false olduqda “Əlavə et” düyməsi gizlədilir (məs. ixtisaslar yalnız redaktə olunur). */
+  canCreate?: boolean;
+  canDelete?: boolean;
 }) {
   const toast = useToast();
   const { data, loading, error, reload } = useAsync(() => api.list({ includeDrafts }), []);
@@ -56,14 +59,14 @@ export function CrudPage<T extends Rec>({ title, text, singular, api, fields, co
 
   return (
     <>
-      <PageHeader title={title} text={text} actions={<Button onClick={() => setEditing('new')}><Plus className="size-4" aria-hidden />Əlavə et</Button>} />
+      <PageHeader title={title} text={text} actions={canCreate ? <Button onClick={() => setEditing('new')}><Plus className="size-4" aria-hidden />Əlavə et</Button> : undefined} />
       <div className={`mb-4 grid gap-3 ${filter ? 'sm:grid-cols-[1fr_14rem]' : ''}`} role="search">
         <div className="relative"><TextField label="Axtarış" type="search" value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} className="pl-10" /><Search className="pointer-events-none absolute bottom-3 left-3 size-5 text-muted" aria-hidden /></div>
         {filter && <SelectField label={filter.label} value={f} onChange={(e) => { setF(e.target.value); setPage(1); }}><option value="">Hamısı</option>{filter.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</SelectField>}
       </div>
 
       {loading ? <ListSkeleton rows={4} /> : error ? <ErrorState message={error} onRetry={reload} /> :
-        !rows.length ? <EmptyState title={data?.length ? 'Uyğun nəticə tapılmadı' : `Hələ ${singular.toLowerCase()} yoxdur`} text={data?.length ? 'Axtarışı və ya filtri dəyişin.' : '“Əlavə et” düyməsi ilə ilk qeydi yaradın.'} /> : (
+        !rows.length ? <EmptyState title={data?.length ? 'Uyğun nəticə tapılmadı' : `Hələ ${singular.toLowerCase()} yoxdur`} text={data?.length ? 'Axtarışı və ya filtri dəyişin.' : canCreate ? '“Əlavə et” düyməsi ilə ilk qeydi yaradın.' : undefined} /> : (
           <Card className="overflow-hidden">
             <div className="scroll-x">
               <table className="w-full min-w-[40rem] text-left text-sm">
@@ -74,8 +77,8 @@ export function CrudPage<T extends Rec>({ title, text, singular, api, fields, co
                     <tr key={r.id} className="border-t border-line">
                       {columns.map((c) => <td key={c.header} className={`px-4 py-3 align-top ${c.className ?? ''}`}>{c.cell(r)}</td>)}
                       <td className="px-4 py-3"><div className="flex justify-end gap-1">
-                        <Button size="sm" variant="ghost" onClick={() => setEditing(r)} aria-label={`Redaktə et: ${String(get(r, 'title') ?? get(r, 'subject') ?? '')}`}><Pencil className="size-4" /></Button>
-                        <Button size="sm" variant="ghost" className="text-danger" onClick={() => setDeleting(r)} aria-label={`Sil: ${String(get(r, 'title') ?? get(r, 'subject') ?? '')}`}><Trash2 className="size-4" /></Button>
+                        <Button size="sm" variant="ghost" onClick={() => setEditing(r)} aria-label={`Redaktə et: ${String(get(r, 'title') ?? get(r, 'subject') ?? get(r, 'name') ?? '')}`}><Pencil className="size-4" /></Button>
+                        {canDelete && <Button size="sm" variant="ghost" className="text-danger" onClick={() => setDeleting(r)} aria-label={`Sil: ${String(get(r, 'title') ?? get(r, 'subject') ?? get(r, 'name') ?? '')}`}><Trash2 className="size-4" /></Button>}
                       </div></td>
                     </tr>
                   ))}

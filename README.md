@@ -107,3 +107,12 @@ migration/      birdəfəlik Firebase → Supabase data miqrasiyası (ayrı pake
 - Repoda məxfi açar yoxdur; `.env` Git-ə əlavə edilmir. Supabase URL və publishable açar açıq məlumatdır, qoruma RLS siyasətləri ilədir; `service_role` açarı brauzerə verilmir.
 - Əlaqə formu `contact_messages`-ə yazır: hər kəs göndərə bilər (sahə uzunluqları CHECK məhdudiyyətləri ilə yoxlanılır), yalnız admin oxuya bilər. Kütləvi spam üçün sonradan CAPTCHA (Supabase Auth/Turnstile) və ya Edge Function ilə sürət limiti əlavə etmək məsləhətdir.
 - Axtarış sistemləri üçün `robots.txt` kabinet/admin/auth yollarını bağlayır, həmin səhifələr `noindex` meta və `X-Robots-Tag` ilə də qorunur.
+
+
+## İxtisaslar (Sosial İş, KŞATS, KŞŞİ)
+
+- Məlumat mənbəyi: `src/data/specialties.ts` (ilkin/fallback) və Supabase `public.specialties` cədvəli (`supabase/migrations/20261004000002_specialties.sql`). Sayt cədvəl varsa ondan, yoxdursa ilkin məlumatdan oxuyur.
+- Qrup siyahısı mərkəzi `src/data/timetable.json` + `public.groups` cədvəlindədir (29 qrup: Sİ 12, KŞATS 6, KŞŞİ 11). Qeydiyyat və cədvəl filtrləri buradan qidalanır; əl ilə təkrarlanmır.
+- Admin paneli → **İxtisaslar** (yalnız admin): ad, tam ad, kod, təsvir, müddət, semestr, kredit, qəbul balları, təsdiq bayrağı və aktivlik. Yeni ixtisas əlavə etmək SQL ilə aparılır (qruplara bağlıdır).
+- Qəbul balları yalnız `admission_confirmed = true` olduqda göstərilir. Rəsmi mənbə: https://adpk.edu.az/tedris/ixtisaslar
+- Yeni miqrasiyanı Supabase SQL Editor-də `20261004000001`-dən SONRA bir dəfə işə salın. Əvvəlki miqrasiyaları təkrar işlətməyin.

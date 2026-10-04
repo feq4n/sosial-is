@@ -1,6 +1,8 @@
 import raw from './timetable.json';
+import { findSpecialty } from '@/services/specialties';
 
-export interface Specialty { code: string; name?: string }
+/** Cədvəldəki ixtisas açarı. Ad/təsvir məlumatları src/data/specialties.ts-dədir (təkrar saxlanılmır). */
+export interface Specialty { code: string }
 export interface Group { code: string; specialty: string; course: string; shift: number }
 export interface Lesson {
   group: string;
@@ -56,9 +58,12 @@ export const groupsOfSpecialty = (code: string) => groups.filter((g) => g.specia
 export const lessonsOfGroup = (code: string | undefined | null) => (code ? lessonIndex.get(code) ?? [] : []);
 export const isValidPlacement = (specialty: string, group: string) => findGroup(group)?.specialty === specialty;
 
-export const specialtyLabel = (code: string) => {
-  const s = specialties.find((x) => x.code === code);
-  return s?.name ? `${s.name} (${code})` : code;
+/** Qısa ad (nişan, siyahı): Sosial İş, KŞATS, KŞŞİ. */
+export const specialtyLabel = (code: string) => findSpecialty(code)?.name ?? code;
+/** Seçim siyahıları üçün tam ad: “Kompüter Şəbəkəsi və Şəbəkə İnzibatçılığı (KŞŞİ)”. */
+export const specialtyFullLabel = (code: string) => {
+  const s = findSpecialty(code);
+  return !s ? code : s.fullName === s.name ? s.name : `${s.fullName} (${s.name})`;
 };
 export const shiftLabel = (shift: number) => `${shift === 1 ? 'I' : 'II'} növbə`;
 export const courseLabel = (course: string) => (course === 'H' ? 'H' : `${course} kurs`);

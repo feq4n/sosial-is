@@ -11,7 +11,7 @@ import { formatDate, matchesQuery } from '@/utils/format';
 import type { AnnouncementCategory } from '@/types';
 
 export function Announcements() {
-  useSeo('Elanlar', 'Sosial iş şöbəsinin son elanları: tədris, imtahan, təcrübə və tələbə həyatı.');
+  useSeo('Elanlar', 'ADPK ixtisaslarının (Sosial İş, KŞATS, KŞŞİ) son elanları: tədris, imtahan, təcrübə və tələbə həyatı.');
   const { data, loading, error, reload } = useAsync(() => announcementsApi.list(), []);
   const [q, setQ] = useState('');
   const [cat, setCat] = useState<'' | AnnouncementCategory>('');

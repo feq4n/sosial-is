@@ -38,12 +38,12 @@ beforeEach(signedOut);
 
 describe('ictimai səhifələr', () => {
   const cases: [string, RegExp][] = [
-    ['/', /Sosial iş tələbəsinin gündəlik iş masası/],
+    ['/', /Kollec tələbəsinin gündəlik iş masası/],
     ['/announcements', /^Elanlar$/],
     ['/materials', /Tədris materialları/],
     ['/schedule', /^Dərs cədvəli$/],
     ['/events', /^Tədbirlər$/],
-    ['/about', /Sosial iş ixtisası haqqında/],
+    ['/about', /İxtisaslar haqqında/],
     ['/contact', /^Əlaqə$/],
     ['/login', /^Daxil ol$/],
     ['/register', /^Qeydiyyat$/],

@@ -73,7 +73,7 @@ describe('rəsmi cədvəl məlumatı', () => {
     expect(isValidPlacement('Sİ', 'Sİ26/01SB')).toBe(true);
     expect(isValidPlacement('KŞATS', 'Sİ26/01SB')).toBe(false);
     expect(isValidPlacement('Sİ', 'uydurma')).toBe(false);
-    expect(specialtyLabel('Sİ')).toBe('Sosial iş (Sİ)');
+    expect(specialtyLabel('Sİ')).toBe('Sosial İş');
     expect(specialtyLabel('KŞATS')).toBe('KŞATS');
     expect(specialtyLabel('KŞŞİ')).toBe('KŞŞİ');
   });
@@ -104,7 +104,7 @@ describe('universitetə aid qalıqlar', () => {
   });
   it('mənbə kodunda universitet terminləri yoxdur', () => {
     const files = walk(join(process.cwd(), 'src')).filter((f) => /\.(ts|tsx|json|css)$/.test(f));
-    const bad = files.filter((f) => /universitet|bakalavr|magistr|doktorantura|fakültə|ADPU|Sosial İş Hub/i.test(readFileSync(f, 'utf-8')));
+    const bad = files.filter((f) => /universitet|(?<!sub)bakalavr|magistr|doktorantura|fakültə|ADPU|Sosial İş Hub/i.test(readFileSync(f, 'utf-8')));
     expect(bad).toEqual([]);
   });
 });

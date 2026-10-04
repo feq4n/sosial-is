@@ -4,9 +4,10 @@ import { useAuth } from '@/context/AuthContext';
 import { useSeo } from '@/hooks/useSeo';
 import { Badge, Button, Card, EmptyState, PageHeader, SelectField } from '@/components/ui';
 import { TimetableGrid } from '@/components/TimetableGrid';
+import { useSpecialties } from '@/services/specialties';
 import {
   courseLabel, courses, dayFromJsDate, dayHeading, findGroup, groups, lessonsOfGroup, shiftLabel, shifts,
-  specialties, specialtyLabel, timetable, timetableDays, type Group,
+  specialties, specialtyFullLabel, specialtyLabel, timetable, timetableDays, type Group,
 } from '@/data/timetable';
 
 const KEYS = ['specialty', 'course', 'shift', 'group', 'day'] as const;
@@ -27,6 +28,8 @@ function GroupTitle({ g }: { g: Group }) {
 export default function Schedule() {
   useSeo('Dərs cədvəli', 'Azərbaycan Dövlət Pedaqoji Kolleci üzrə rəsmi dərs cədvəli: ixtisas, qrup, kurs və növbəyə görə filtr.');
   const { profile } = useAuth();
+  const specList = useSpecialties();
+  const specOptions = [...specialties].sort((a, b) => (specList.findIndex((s) => s.code === a.code) + 1 || 99) - (specList.findIndex((s) => s.code === b.code) + 1 || 99));
   const [params, setParams] = useSearchParams();
   const own = findGroup(profile?.group);
   const useOwn = !params.has('f') && own && own.specialty === profile?.specialty ? own : undefined;
@@ -64,7 +67,7 @@ export default function Schedule() {
         <form role="search" aria-label="Cədvəl filtrləri" onSubmit={(e) => e.preventDefault()} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           <SelectField label="İxtisas" value={filters.specialty} onChange={(e) => update({ specialty: e.target.value })}>
             <option value="">Hamısı</option>
-            {specialties.map((s) => <option key={s.code} value={s.code}>{specialtyLabel(s.code)}</option>)}
+            {specOptions.map((s) => <option key={s.code} value={s.code}>{specialtyFullLabel(s.code)}</option>)}
           </SelectField>
           <SelectField label="Kurs" value={filters.course} onChange={(e) => update({ course: e.target.value })}>
             <option value="">Hamısı</option>

@@ -12,6 +12,8 @@ import { AnnouncementCard, EventCard, MaterialCard } from '@/components/cards';
 import { ButtonLink, Card, EmptyState, ErrorState, ListSkeleton, Reveal, SampleNotice } from '@/components/ui';
 import { advantages, faq } from '@/data/content';
 import { contact, hasContactInfo } from '@/config/site';
+import { SpecialtyCards } from '@/components/SpecialtyCard';
+import { useSpecialties } from '@/services/specialties';
 
 function TodayPanel() {
   const { profile } = useAuth();
@@ -86,7 +88,8 @@ function Faq() {
 }
 
 export default function Home() {
-  useSeo('Sosial İş', 'Sosial iş şöbəsinin tələbələri üçün elanlar, dərs materialları, dərs cədvəli və tədbirlər bir yerdə.');
+  useSeo('Sosial İş', 'Azərbaycan Dövlət Pedaqoji Kollecinin Sosial İş, KŞATS və KŞŞİ ixtisasları üçün elanlar, dərs materialları, dərs cədvəli və tədbirlər bir yerdə.');
+  const specs = useSpecialties();
   const ann = useAsync(() => announcementsApi.list(), []);
   const ev = useAsync(() => eventsApi.list(), []);
   const mat = useAsync(() => materialsApi.list(), []);
@@ -110,7 +113,7 @@ export default function Home() {
               <AdpkLogo className="size-12 sm:size-14" />
               <span className="max-w-[16rem] text-xs font-semibold leading-snug text-brand-dark dark:text-brand sm:text-sm">{ADPK_NAME}</span>
             </div>
-            <h1 className="max-w-2xl text-4xl font-extrabold leading-[1.05] sm:text-6xl">Sosial iş tələbəsinin gündəlik iş masası</h1>
+            <h1 className="max-w-2xl text-4xl font-extrabold leading-[1.05] sm:text-6xl">Kollec tələbəsinin gündəlik iş masası</h1>
             <p className="mt-5 max-w-xl text-lg text-muted">Elanlar, dərs materialları, cədvəl və tədbirlər bir səhifədə. Daxil olun, materialları yadda saxlayın, bildirişləri qaçırmayın.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink to="/register" size="lg">Qeydiyyatdan keç</ButtonLink>
@@ -123,6 +126,14 @@ export default function Home() {
 
       <div className="mx-auto max-w-7xl space-y-20 px-4 pt-14 sm:px-6">
         {isSampleMode && <SampleNotice />}
+
+        <section aria-labelledby="spec-h">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-2">
+            <div><h2 id="spec-h" className="text-3xl font-extrabold">İxtisaslar</h2><p className="mt-2 max-w-2xl text-muted">Platforma {ADPK_NAME}nın üç ixtisası üçün eyni səviyyədə xidmət göstərir.</p></div>
+            <Link to="/about" className="text-sm font-semibold text-brand hover:underline">Ətraflı</Link>
+          </div>
+          <SpecialtyCards items={specs} />
+        </section>
 
         <section aria-labelledby="quick-h">
           <h2 id="quick-h" className="sr-only">Əsas bölmələr</h2>
@@ -144,7 +155,7 @@ export default function Home() {
         <section aria-labelledby="about-h" className="grid gap-8 lg:grid-cols-[1fr_1.4fr] lg:items-center">
           <div>
             <h2 id="about-h" className="text-3xl font-extrabold">Platformanın məqsədi</h2>
-            <p className="mt-3 text-muted">“Sosial İş” şöbə tələbələrinin tədris həyatı ilə bağlı bütün məlumatlara bir yerdən, sürətli və rahat çıxışını təmin edir. Məzmunu şöbənin administratorları idarə edir.</p>
+            <p className="mt-3 text-muted">“Sosial İş” platforması Sosial İş, KŞATS və KŞŞİ ixtisaslarının tələbələrinin tədris həyatı ilə bağlı bütün məlumatlara bir yerdən, sürətli və rahat çıxışını təmin edir. Məzmunu administratorlar idarə edir.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {advantages.map((a, i) => (
@@ -180,7 +191,7 @@ export default function Home() {
           <h2 id="res-h" className="mb-6 text-3xl font-extrabold">Tələbələr üçün faydalı bölmələr</h2>
           <div className="grid gap-4 md:grid-cols-3">
             {[
-              { to: '/about', t: 'İxtisas haqqında', x: 'Sosial iş sahəsində öyrəniləcək bilik, bacarıq və karyera istiqamətləri.' },
+              { to: '/about', t: 'İxtisaslar haqqında', x: 'Üç ixtisasın təsviri, müddəti, krediti və qəbul balları.' },
               { to: '/dashboard/saved', t: 'Saxlanılan materiallar', x: 'İmtahan öncəsi lazım olan resursları şəxsi siyahıda toplayın.' },
               { to: '/dashboard/schedule', t: 'Şəxsi cədvəl və qeydlər', x: 'Dərs cədvəlinə öz qeydlərinizi əlavə edin.' },
             ].map((r) => (

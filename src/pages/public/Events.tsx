@@ -15,7 +15,7 @@ import { friendlyError } from '@/utils/errors';
 import type { EventCategory } from '@/types';
 
 export function Events() {
-  useSeo('Tədbirlər', 'Sosial iş şöbəsinin seminar, konfrans və könüllülük tədbirləri.');
+  useSeo('Tədbirlər', 'ADPK ixtisaslarının seminar, konfrans və könüllülük tədbirləri.');
   const { data, loading, error, reload } = useAsync(() => eventsApi.list(), []);
   const [cat, setCat] = useState<'' | EventCategory>('');
   const [showPast, setShowPast] = useState(false);

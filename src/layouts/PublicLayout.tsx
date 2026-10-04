@@ -14,7 +14,7 @@ const links = [
   { to: '/materials', label: 'Materiallar' },
   { to: '/schedule', label: 'Dərs cədvəli' },
   { to: '/events', label: 'Tədbirlər' },
-  { to: '/about', label: 'İxtisas haqqında' },
+  { to: '/about', label: 'İxtisaslar' },
   { to: '/contact', label: 'Əlaqə' },
 ];
 
@@ -69,7 +69,7 @@ export default function PublicLayout() {
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <Logo />
-            <p className="mt-4 max-w-sm text-sm text-muted">Sosial iş şöbəsinin tələbələri üçün elanlar, dərs materialları, cədvəl və tədbirlər bir yerdə.</p>
+            <p className="mt-4 max-w-sm text-sm text-muted">Sosial İş, KŞATS və KŞŞİ ixtisaslarının tələbələri üçün elanlar, dərs materialları, cədvəl və tədbirlər bir yerdə.</p>
             <div className="mt-5 flex max-w-sm items-center gap-3 rounded-2xl border border-line bg-surface-2 p-3">
               <AdpkLogo className="size-14" />
               <p className="text-sm font-semibold leading-snug text-brand-dark dark:text-brand">{ADPK_NAME}</p>

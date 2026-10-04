@@ -245,6 +245,45 @@ select t.as_user('00000000-0000-0000-0000-00000000000c');
 select t.throws('admin də groups cədvəlinə müştəri kimi yaza bilmir', $q$update public.groups set active = true$q$, '42501');
 select t.back();
 
+-- ---------- İxtisaslar (specialties)
+select t.ok('3 ixtisas və düzgün kodlar seed olunub',
+  (select string_agg(program_code, ',' order by sort_order) from public.specialties) = '040713,040533,040532');
+select t.ok('hər qrup mövcud ixtisasa bağlıdır (12/6/11)',
+  (select count(*) from public.groups g join public.specialties s on s.code = g.specialty where g.specialty = 'Sİ') = 12
+  and (select count(*) from public.groups where specialty = 'KŞATS') = 6
+  and (select count(*) from public.groups where specialty = 'KŞŞİ') = 11);
+select t.throws('mövcud olmayan ixtisasa qrup əlavə etmək olmur (FK)',
+  $q$insert into public.groups (code, specialty) values ('YOX25/01SB', 'YOX')$q$, '23503');
+select t.throws('qəbul balı rəqəm olmalıdır',
+  $q$update public.specialties set score_general_state = 'abc' where code = 'KŞŞİ'$q$, '23514');
+select t.as_user(null);
+select t.ok('anon aktiv ixtisasları oxuya bilir', t.cnt('select 1 from public.specialties') = 3);
+select t.throws('anon ixtisası dəyişə bilmir', $q$update public.specialties set description = 'Hack'$q$, '42501');
+select t.throws('anon ixtisas əlavə edə bilmir', $q$insert into public.specialties (code, name, full_name) values ('X', 'X', 'X')$q$, '42501');
+select t.back();
+select t.as_user('00000000-0000-0000-0000-00000000000b');
+select t.ok('tələbə ixtisası dəyişə bilmir (RLS: 0 sətir)',
+  t.affected($q$update public.specialties set description = 'Hack'$q$) = 0);
+select t.throws('tələbə ixtisası silə bilmir', 'delete from public.specialties', '42501');
+select t.back();
+select t.as_user('00000000-0000-0000-0000-00000000000e');
+select t.ok('redaktor ixtisası dəyişə bilmir (yalnız admin)',
+  t.affected($q$update public.specialties set description = 'Hack'$q$) = 0);
+select t.back();
+select t.as_user('00000000-0000-0000-0000-00000000000c');
+select t.ok('admin ixtisasın təsvirini və aktivliyini dəyişə bilir',
+  t.affected($q$update public.specialties set description = 'Yeni təsvir', active = false where code = 'KŞŞİ'$q$) = 1);
+select t.throws('admin ixtisas açarını dəyişə bilmir (sütun icazəsi)',
+  $q$update public.specialties set code = 'YENI' where code = 'KŞŞİ'$q$, '42501');
+select t.throws('admin ixtisası silə bilmir', 'delete from public.specialties', '42501');
+select t.ok('admin qeyri-aktiv ixtisası da görür', t.cnt('select 1 from public.specialties') = 3);
+select t.back();
+select t.as_user(null);
+select t.ok('anon qeyri-aktiv ixtisasları görmür', t.cnt('select 1 from public.specialties') = 2);
+select t.back();
+select t.ok('updated_at yenilənib', (select updated_at is not null from public.specialties where code = 'KŞŞİ'));
+update public.specialties set active = true where code = 'KŞŞİ';
+
 -- ---------- Cascade
 delete from auth.users where id = '00000000-0000-0000-0000-00000000000a';
 select t.ok('istifadəçi silinəndə profil və şəxsi məlumatlar cascade ilə silinir',
