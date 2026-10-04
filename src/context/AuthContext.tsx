@@ -7,7 +7,7 @@ import type { AuthUser, Role, UserProfile } from '@/types';
 
 export interface RegisterInput {
   firstName: string; lastName: string; email: string; password: string;
-  specialty: string; group: string; studentId?: string;
+  specialty: string; group: string;
 }
 export type { ProfileUpdate };
 
@@ -106,7 +106,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             last_name: input.lastName.trim(),
             specialty: input.specialty,
             group: input.group,
-            ...(input.studentId?.trim() ? { student_id: input.studentId.trim() } : {}),
           },
         },
       });

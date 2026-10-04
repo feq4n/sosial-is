@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { useSeo } from '@/hooks/useSeo';
 import { sendContactMessage, type ContactPayload } from '@/services/contact';
-import { contact, hasContactInfo } from '@/config/site';
+import { useContactInfo } from '@/services/site';
 import { Button, Card, ErrorBanner, PageHeader, SuccessBanner, TextArea, TextField } from '@/components/ui';
 import { friendlyError } from '@/utils/errors';
 
@@ -11,6 +11,7 @@ const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Contact() {
   useSeo('Əlaqə', 'Sosial İş platforması ilə əlaqə: sual, təklif və ya səhv barədə mesaj göndərin.');
+  const contact = useContactInfo();
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<ContactPayload>();
   const [status, setStatus] = useState<{ ok: boolean; text: string } | null>(null);
 
@@ -45,7 +46,7 @@ export default function Contact() {
         </Card>
         <Card className="h-fit p-6">
           <h2 className="text-lg font-bold">Rəsmi əlaqə məlumatları</h2>
-          {hasContactInfo ? (
+          {contact.has ? (
             <ul className="mt-4 grid gap-3 text-sm">
               {contact.email && <li className="flex gap-2.5"><Mail className="size-4 shrink-0 text-brand mt-0.5" aria-hidden /><a className="hover:underline" href={`mailto:${contact.email}`}>{contact.email}</a></li>}
               {contact.phone && <li className="flex gap-2.5"><Phone className="size-4 shrink-0 text-brand mt-0.5" aria-hidden /><a className="hover:underline" href={`tel:${contact.phone.replace(/\s/g, '')}`}>{contact.phone}</a></li>}

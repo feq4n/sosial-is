@@ -31,7 +31,7 @@ export default function AppShell({ items, title, extra }: { items: NavItem[]; ti
             className={({ isActive }) => cx('flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition', isActive ? 'bg-brand text-brand-ink shadow-card' : 'text-muted hover:bg-surface-2 hover:text-ink')}>
             <span aria-hidden className="shrink-0">{i.icon}</span>
             <span className="flex-1">{i.label}</span>
-            {!!i.badge && <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-bold text-accent-ink" aria-label={`${i.badge} oxunmamış`}>{i.badge}</span>}
+            {!!i.badge && <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-bold text-brand-ink" aria-label={`${i.badge} oxunmamış`}>{i.badge}</span>}
           </NavLink>
         ))}
       </nav>

@@ -6,7 +6,7 @@ Bu qovluq **birdəfəlik** köçürmə üçündür və əsas tətbiqdən ayrıd�
 ## Nə köçürülür
 | Firestore | Supabase |
 |---|---|
-| Firebase Auth hesabları + `users/{uid}` | `auth.users` + `public.profiles` (rol, ad, ixtisas, qrup, yaranma tarixi; köhnə `degree`/`course` də saxlanılır) |
+| Firebase Auth hesabları + `users/{uid}` | `auth.users` + `public.profiles` (rol, ad, ixtisas, qrup, yaranma tarixi; köhnə `degree` də saxlanılır; tələbə bileti nömrəsi və kurs köçürülmür) |
 | `announcements`, `materials`, `events`, `schedule`, `contact_messages` | eyni adlı cədvəllər (`schedule` → `schedule_entries`) |
 | `events/{id}/registrations/{uid}` | `event_registrations` |
 | `users/{uid}/saved`, `notes`, `notificationReads` | `saved_materials`, `personal_notes`, `notification_reads` |

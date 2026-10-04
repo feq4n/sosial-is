@@ -16,12 +16,12 @@ test('tsToIso: Timestamp, Date, ISO, {_seconds}, boş', () => {
 
 const GROUPS = new Map([['Sİ26/01SB', 'Sİ'], ['KŞATS25/01SB', 'KŞATS']]);
 
-test('mapProfile: rol, köhnə pillə/kurs, ixtisas+qrup və tarix qorunur; firebase_uid saxlanılır', () => {
+test('mapProfile: rol, köhnə pillə, ixtisas+qrup və tarix qorunur; bilet nömrəsi və kurs köçürülmür; firebase_uid saxlanılır', () => {
   const r = t.mapProfile(
     { firstName: ' Aysel ', lastName: 'Məmmədova', role: 'admin', degree: 'magistr', course: 2, studentId: 'S1', specialty: 'Sİ', group: 'Sİ26/01SB', createdAt: ts('2025-09-01T08:00:00Z') },
     { uid: 'fbUID123' }, GROUPS,
   );
-  assert.deepEqual(r, { firebase_uid: 'fbUID123', first_name: 'Aysel', last_name: 'Məmmədova', role: 'admin', student_id: 'S1', degree: 'magistr', course: 2, specialty: 'Sİ', group_name: 'Sİ26/01SB', created_at: '2025-09-01T08:00:00.000Z' });
+  assert.deepEqual(r, { firebase_uid: 'fbUID123', first_name: 'Aysel', last_name: 'Məmmədova', role: 'admin', degree: 'magistr', specialty: 'Sİ', group_name: 'Sİ26/01SB', created_at: '2025-09-01T08:00:00.000Z' });
 });
 
 test('placementOf: düzgün cüt saxlanılır; köhnə sərbəst mətn qrup, uyğunsuz və yarımçıq cüt təmizlənir (dropped=true)', () => {
@@ -34,14 +34,13 @@ test('placementOf: düzgün cüt saxlanılır; köhnə sərbəst mətn qrup, uy�
   assert.deepEqual(t.placementOf({ specialty: 'Sİ', group: 'Sİ26/01SB' }, null), { specialty: 'Sİ', group_name: 'Sİ26/01SB', dropped: false }, 'groupMap yoxdursa yoxlanmır');
 });
 
-test('mapProfile: yanlış rol/pillə/kurs təhlükəsiz defolta düşür (rol heç vaxt yüksəlmir)', () => {
+test('mapProfile: yanlış rol/pillə təhlükəsiz defolta düşür (rol heç vaxt yüksəlmir)', () => {
   const r = t.mapProfile({ firstName: 'A', lastName: 'B', role: 'superadmin', degree: 'x', course: 9 }, { uid: 'u' });
   assert.equal(r.role, 'student');
   assert.equal(r.degree, null);
-  assert.equal(r.course, null);
   assert.equal(r.specialty, null);
   assert.equal(r.group_name, null);
-  assert.equal(r.student_id, null);
+  assert.equal('student_id' in r || 'course' in r, false);
   assert.ok(!('created_at' in r));
 });
 

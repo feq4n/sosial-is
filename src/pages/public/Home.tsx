@@ -4,16 +4,18 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowRight, BookOpen, CalendarDays, ChevronDown, Clock, Megaphone, Sparkles, Users } from 'lucide-react';
 import { useAsync } from '@/hooks/useAsync';
 import { useSeo } from '@/hooks/useSeo';
-import { announcementsApi, eventsApi, isSampleMode, materialsApi } from '@/services/content';
+import { announcementsApi, eventsApi, faqApi, isSampleMode, materialsApi, teamApi } from '@/services/content';
 import { useAuth } from '@/context/AuthContext';
 import { dayFromJsDate, dayHeading, findGroup, lessonsOfGroup, lessonView } from '@/data/timetable';
 import { AdpkLogo, ADPK_NAME } from '@/components/Logo';
 import { AnnouncementCard, EventCard, MaterialCard } from '@/components/cards';
 import { ButtonLink, Card, EmptyState, ErrorState, ListSkeleton, Reveal, SampleNotice } from '@/components/ui';
-import { advantages, faq } from '@/data/content';
-import { contact, hasContactInfo } from '@/config/site';
+import { advantages } from '@/data/content';
+import { useContactInfo, useSiteSettings } from '@/services/site';
+import { TeamCard } from '@/components/TeamCard';
 import { SpecialtyCards } from '@/components/SpecialtyCard';
 import { useSpecialties } from '@/services/specialties';
+import type { FaqItem } from '@/types';
 
 function TodayPanel() {
   const { profile } = useAuth();
@@ -63,21 +65,21 @@ function Network() {
   );
 }
 
-function Faq() {
+function Faq({ items }: { items: FaqItem[] }) {
   const [open, setOpen] = useState<number | null>(0);
   return (
     <div className="grid gap-3">
-      {faq.map((f, i) => (
-        <Card key={f.q} className="overflow-hidden">
+      {items.map((f, i) => (
+        <Card key={f.id} className="overflow-hidden">
           <h3>
             <button className="flex w-full items-center justify-between gap-4 p-5 text-left font-bold" aria-expanded={open === i} aria-controls={`faq-${i}`} onClick={() => setOpen(open === i ? null : i)}>
-              {f.q}<ChevronDown className={`size-5 shrink-0 text-muted transition ${open === i ? 'rotate-180' : ''}`} aria-hidden />
+              {f.question}<ChevronDown className={`size-5 shrink-0 text-muted transition ${open === i ? 'rotate-180' : ''}`} aria-hidden />
             </button>
           </h3>
           <AnimatePresence initial={false}>
             {open === i && (
               <motion.div id={`faq-${i}`} initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
-                <p className="px-5 pb-5 text-muted">{f.a}</p>
+                <p className="whitespace-pre-line px-5 pb-5 text-muted">{f.answer}</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -90,6 +92,10 @@ function Faq() {
 export default function Home() {
   useSeo('Sosial İş', 'Azərbaycan Dövlət Pedaqoji Kollecinin Sosial İş, KŞATS və KŞŞİ ixtisasları üçün elanlar, dərs materialları, dərs cədvəli və tədbirlər bir yerdə.');
   const specs = useSpecialties();
+  const site = useSiteSettings();
+  const contact = useContactInfo();
+  const faqList = useAsync(() => faqApi.list(), []);
+  const team = useAsync(() => teamApi.list(), []);
   const ann = useAsync(() => announcementsApi.list(), []);
   const ev = useAsync(() => eventsApi.list(), []);
   const mat = useAsync(() => materialsApi.list(), []);
@@ -113,8 +119,8 @@ export default function Home() {
               <AdpkLogo className="size-12 sm:size-14" />
               <span className="max-w-[16rem] text-xs font-semibold leading-snug text-brand-dark dark:text-brand sm:text-sm">{ADPK_NAME}</span>
             </div>
-            <h1 className="max-w-2xl text-4xl font-extrabold leading-[1.05] sm:text-6xl">Kollec tələbəsinin gündəlik iş masası</h1>
-            <p className="mt-5 max-w-xl text-lg text-muted">Elanlar, dərs materialları, cədvəl və tədbirlər bir səhifədə. Daxil olun, materialları yadda saxlayın, bildirişləri qaçırmayın.</p>
+            <h1 className="max-w-2xl text-4xl font-extrabold leading-[1.05] sm:text-6xl">{site.homeTitle}</h1>
+            <p className="mt-5 max-w-xl text-lg text-muted">{site.homeText}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink to="/register" size="lg">Qeydiyyatdan keç</ButtonLink>
               <ButtonLink to="/announcements" variant="secondary" size="lg">Elanlara bax</ButtonLink>
@@ -154,8 +160,8 @@ export default function Home() {
 
         <section aria-labelledby="about-h" className="grid gap-8 lg:grid-cols-[1fr_1.4fr] lg:items-center">
           <div>
-            <h2 id="about-h" className="text-3xl font-extrabold">Platformanın məqsədi</h2>
-            <p className="mt-3 text-muted">“Sosial İş” platforması Sosial İş, KŞATS və KŞŞİ ixtisaslarının tələbələrinin tədris həyatı ilə bağlı bütün məlumatlara bir yerdən, sürətli və rahat çıxışını təmin edir. Məzmunu administratorlar idarə edir.</p>
+            <h2 id="about-h" className="text-3xl font-extrabold">{site.aboutTitle}</h2>
+            <p className="mt-3 whitespace-pre-line text-muted">{site.aboutText}</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {advantages.map((a, i) => (
@@ -200,10 +206,19 @@ export default function Home() {
           </div>
         </section>
 
-        <section aria-labelledby="faq-h" className="grid gap-8 lg:grid-cols-[1fr_1.6fr]">
-          <div><h2 id="faq-h" className="text-3xl font-extrabold">Tez-tez verilən suallar</h2><p className="mt-3 text-muted">Cavab tapmadınızsa, bizə yazın.</p></div>
-          <Faq />
-        </section>
+        {!!team.data?.length && (
+          <section aria-labelledby="team-h">
+            <div className="mb-6 flex items-end justify-between gap-4"><h2 id="team-h" className="text-3xl font-extrabold">Komandamız</h2><Link to="/team" className="text-sm font-semibold text-brand hover:underline">Hamısı</Link></div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{team.data.slice(0, 4).map((m) => <TeamCard key={m.id} m={m} />)}</div>
+          </section>
+        )}
+
+        {!!faqList.data?.length && (
+          <section aria-labelledby="faq-h" className="grid gap-8 lg:grid-cols-[1fr_1.6fr]">
+            <div><h2 id="faq-h" className="text-3xl font-extrabold">Tez-tez verilən suallar</h2><p className="mt-3 text-muted">Cavab tapmadınızsa, bizə yazın.</p></div>
+            <Faq items={faqList.data} />
+          </section>
+        )}
 
         <section aria-labelledby="contact-h">
           <Card className="grid gap-6 bg-brand p-8 text-brand-ink sm:p-10 md:grid-cols-[1.4fr_1fr] md:items-center">
@@ -212,9 +227,9 @@ export default function Home() {
               <p className="mt-2 opacity-90">Əlaqə formasını doldurun, mesajınız administratorlara çatacaq.</p>
               <ButtonLink to="/contact" variant="accent" className="mt-5">Mesaj göndər</ButtonLink>
             </div>
-            {hasContactInfo && (
+            {contact.has && (
               <ul className="grid gap-1.5 text-sm opacity-95">
-                {contact.email && <li>{contact.email}</li>}{contact.phone && <li>{contact.phone}</li>}{contact.address && <li>{contact.address}</li>}
+                {contact.email && <li className="break-all">{contact.email}</li>}{contact.phone && <li>{contact.phone}</li>}{contact.address && <li>{contact.address}</li>}
               </ul>
             )}
           </Card>

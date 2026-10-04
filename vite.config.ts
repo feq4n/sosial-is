@@ -24,5 +24,7 @@ export default defineConfig({
     globals: true,
     include: ['tests/**/*.test.{ts,tsx}'],
     css: false,
+    // /schedule 29 qrupun cədvəlini render edir; yavaş maşınlarda 5 san. kifayət etmir.
+    testTimeout: 20000,
   },
 });

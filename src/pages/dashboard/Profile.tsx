@@ -10,7 +10,7 @@ import { isValidPlacement } from '@/data/timetable';
 import { friendlyError } from '@/utils/errors';
 import { roleLabels } from '@/utils/labels';
 
-interface Form { firstName: string; lastName: string; studentId: string }
+interface Form { firstName: string; lastName: string }
 
 export default function Profile() {
   useSeo('Profil', undefined, { noindex: true });
@@ -24,7 +24,7 @@ export default function Profile() {
   const [placementErrors, setPlacementErrors] = useState<PlacementErrors>({});
   const placementDirty = placement.specialty !== saved.specialty || placement.group !== saved.group;
   const { register, handleSubmit, formState: { errors, isSubmitting, isDirty } } = useForm<Form>({
-    defaultValues: { firstName: profile?.firstName ?? '', lastName: profile?.lastName ?? '', studentId: profile?.studentId ?? '' },
+    defaultValues: { firstName: profile?.firstName ?? '', lastName: profile?.lastName ?? '' },
   });
 
   const run = handleSubmit(async (v) => {
@@ -58,7 +58,6 @@ export default function Profile() {
             </div>
             {!saved.group && <p role="note" className="rounded-xl border border-accent/40 bg-accent-soft px-4 py-3 text-sm text-accent-ink dark:text-accent">İxtisas və qrup hələ seçilməyib. Dərs cədvəlinizin avtomatik görünməsi üçün onları seçin.</p>}
             <PlacementFields value={placement} errors={placementErrors} onChange={(v) => { setPlacement(v); setPlacementErrors({}); }} />
-            <TextField label="Tələbə bileti nömrəsi" error={errors.studentId?.message} {...register('studentId', { maxLength: { value: 30, message: 'Ən çox 30 simvol' } })} />
             {err && <ErrorBanner>{err}</ErrorBanner>}
             <div><Button type="submit" loading={isSubmitting} disabled={!isDirty && !placementDirty}>Dəyişiklikləri saxla</Button></div>
           </form>

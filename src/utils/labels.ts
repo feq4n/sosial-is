@@ -18,6 +18,9 @@ export const materialTypes: Record<MaterialType, string> = {
   pdf: 'PDF',
   doc: 'Sənəd',
   ppt: 'Təqdimat',
+  xls: 'Cədvəl',
+  txt: 'Mətn',
+  zip: 'Arxiv',
   video: 'Video',
   link: 'Keçid',
 };

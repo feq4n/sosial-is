@@ -1,10 +1,12 @@
 import { NotConfiguredError } from '@/lib/supabase';
+import { UploadError } from '@/utils/upload';
 
 /** İstifadəçiyə texniki detalları göstərmədən, Azərbaycan dilində aydın mesaj qaytarır. */
 export function friendlyError(err: unknown): string {
   if (err instanceof NotConfiguredError) {
     return 'Xidmət hələ qoşulmayıb. Sayt sahibi Supabase konfiqurasiyasını tamamlamalıdır.';
   }
+  if (err instanceof UploadError) return err.message;
   const e = (typeof err === 'object' && err ? err : {}) as { code?: unknown; name?: unknown; message?: unknown; status?: unknown };
   const code = e.code ? String(e.code) : '';
   const name = e.name ? String(e.name) : '';
@@ -15,6 +17,11 @@ export function friendlyError(err: unknown): string {
   if (name === 'AuthRetryableFetchError' || /failed to fetch|networkerror|load failed/i.test(message)) {
     return 'Şəbəkə xətası. İnternet bağlantınızı yoxlayıb yenidən cəhd edin.';
   }
+
+  if (message === 'super-admin-protected') return 'Super Admin hesabı dəyişdirilə, silinə və ya deaktiv edilə bilməz.';
+  if (message === 'file-missing') return 'Fayl serverdə tapılmadı. Yenidən yükləyin.';
+  if (message === 'file-too-large') return 'Fayl 25 MB-dan böyük ola bilməz.';
+  if (message === 'file-type-mismatch') return 'Faylın tipi uzantısına uyğun gəlmir.';
 
   switch (code) {
     // ---- Supabase Auth

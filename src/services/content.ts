@@ -1,6 +1,8 @@
 import { supabase, isConfigured } from '@/lib/supabase';
-import type { Announcement, EventItem, Material } from '@/types';
+import type { Announcement, EventItem, FaqItem, FooterLink, Material, TeamMember } from '@/types';
 import { sampleAnnouncements, sampleEvents, sampleMaterials } from '@/data/sample';
+import { faq as defaultFaq } from '@/data/content';
+import { removeStoredFile } from './files';
 import { expectRows, fromRow, isUuid, need, toRow, unwrap } from './db';
 
 type WithId = { id: string };
@@ -13,7 +15,7 @@ export interface Resource<T extends WithId> {
   remove: (id: string) => Promise<void>;
 }
 
-function makeResource<T extends WithId>(
+export function makeResource<T extends WithId>(
   table: string,
   dateFields: string[],
   sample: T[],
@@ -60,8 +62,31 @@ const byNewest = <T extends { createdAt: string }>(a: T, b: T) => b.createdAt.lo
 export const announcementsApi = makeResource<Announcement>(
   'announcements', [], sampleAnnouncements, byNewest, { column: 'published', value: true },
 );
-export const materialsApi = makeResource<Material>('materials', [], sampleMaterials, byNewest);
+const baseMaterials = makeResource<Material>('materials', [], sampleMaterials, byNewest);
+/** Material silinəndə (və ya fayl dəyişəndə) Storage obyekti də təmizlənir; sətir silinməsə fayla toxunulmur. */
+export const materialsApi: Resource<Material> = {
+  ...baseMaterials,
+  async remove(id) {
+    need();
+    const row = unwrap(await supabase.from('materials').select('file_path').eq('id', id).maybeSingle()) as { file_path?: string | null } | null;
+    await baseMaterials.remove(id);
+    if (row?.file_path) await removeStoredFile('materials', row.file_path);
+  },
+};
 export const eventsApi = makeResource<EventItem>(
   'events', ['startsAt', 'endsAt'], sampleEvents, (a, b) => a.startsAt.localeCompare(b.startsAt),
 );
 export const isSampleMode = !isConfigured;
+
+const bySort = <T extends { sortOrder: number; createdAt: string }>(a: T, b: T) => a.sortOrder - b.sortOrder || a.createdAt.localeCompare(b.createdAt);
+
+const sampleFaq: FaqItem[] = defaultFaq.map((f, i) => ({ id: `sample-faq-${i}`, question: f.q, answer: f.a, sortOrder: i + 1, active: true, createdAt: new Date(0).toISOString() }));
+export const faqApi = makeResource<FaqItem>('faq_items', [], sampleFaq, bySort, { column: 'active', value: true });
+
+export const defaultFooterLinks: FooterLink[] = [
+  ['Elanlar', '/announcements'], ['Materiallar', '/materials'], ['Dərs cədvəli', '/schedule'], ['Tədbirlər', '/events'],
+  ['İxtisaslar', '/about'], ['Komandamız', '/team'], ['Əlaqə', '/contact'],
+].map(([label, url], i) => ({ id: `default-${i}`, label, url, sortOrder: i + 1, active: true, createdAt: new Date(0).toISOString() }));
+export const footerLinksApi = makeResource<FooterLink>('footer_links', [], defaultFooterLinks, bySort, { column: 'active', value: true });
+
+export const teamApi = makeResource<TeamMember>('team_members', [], [], bySort, { column: 'active', value: true });

@@ -56,10 +56,11 @@ insert into auth.users (id, email, raw_user_meta_data) values
 
 select t.ok('user_metadata-dakı role=admin YOXLANMIR, profil student yaranır',
   (select role from public.profiles where email = 'c@test.az') = 'student');
-select t.ok('metadata-dan ad/ixtisas/qrup/bilet götürülür; köhnə degree/course doldurulmur',
-  (select first_name = 'Aysel' and specialty = 'Sİ' and group_name = 'Sİ26/01SB' and student_id = 'S-1' and degree is null and course is null from public.profiles where email = 'a@test.az'));
-select t.ok('qrupsuz qeydiyyat (köçürülən köhnə hesablar) mümkündür',
-  (select specialty is null and group_name is null from public.profiles where email = 'b@test.az'));
+select t.ok('metadata-dan ad/ixtisas/qrup götürülür; köhnə metadata-dakı student_id sakitcə nəzərə alınmır',
+  (select first_name = 'Aysel' and specialty = 'Sİ' and group_name = 'Sİ26/01SB' and degree is null from public.profiles where email = 'a@test.az'));
+select t.ok('profiles-də student_id və course sütunları artıq yoxdur (degree saxlanılıb)',
+  (select count(*) from information_schema.columns where table_schema = 'public' and table_name = 'profiles' and column_name in ('student_id', 'course')) = 0
+  and (select count(*) from information_schema.columns where table_schema = 'public' and table_name = 'profiles' and column_name = 'degree') = 1);
 select t.throws('qrup ixtisasa aid deyilsə qeydiyyat rədd edilir',
   $q$insert into auth.users (email, raw_user_meta_data) values ('p1@test.az', '{"first_name":"P","last_name":"P","specialty":"KŞATS","group":"Sİ26/01SB"}')$q$, 'P0001');
 select t.throws('mövcud olmayan qrup ilə qeydiyyat rədd edilir',
@@ -123,8 +124,6 @@ select t.throws('tələbə yalnız ixtisası (qrupsuz) saxlaya bilmir',
   $q$update public.profiles set group_name = null where id = '00000000-0000-0000-0000-00000000000a'$q$, '23514');
 select t.throws('tələbə köhnə degree sütununu dəyişə bilmir (sütun icazəsi)',
   $q$update public.profiles set degree = 'magistr' where id = '00000000-0000-0000-0000-00000000000a'$q$, '42501');
-select t.throws('tələbə köhnə course sütununu dəyişə bilmir (sütun icazəsi)',
-  $q$update public.profiles set course = 3 where id = '00000000-0000-0000-0000-00000000000a'$q$, '42501');
 select t.throws('tələbə öz rolunu admin edə bilmir',
   $q$update public.profiles set role = 'admin' where id = '00000000-0000-0000-0000-00000000000a'$q$, '42501');
 select t.throws('tələbə e-poçtunu profildə dəyişə bilmir',
@@ -283,6 +282,169 @@ select t.ok('anon qeyri-aktiv ixtisasları görmür', t.cnt('select 1 from publi
 select t.back();
 select t.ok('updated_at yenilənib', (select updated_at is not null from public.specialties where code = 'KŞŞİ'));
 update public.specialties set active = true where code = 'KŞŞİ';
+
+-- ---------- Super Admin (feqangerayli@gmail.com)
+insert into auth.users (id, email, raw_user_meta_data) values
+  ('00000000-0000-0000-0000-0000000000f0', 'Feqangerayli@Gmail.com', '{"first_name":"Feqan","last_name":"Gəraylı","role":"admin"}');
+select t.ok('bootstrap: e-poçt təsdiqlənməyibsə yüksəltmir', public.bootstrap_super_admin() = 'unconfirmed');
+select t.ok('bootstrap hələ heç kimi Super Admin etməyib', (select count(*) from public.profiles where is_super_admin) = 0);
+update auth.users set email_confirmed_at = now() where id = '00000000-0000-0000-0000-0000000000f0';
+select t.ok('bootstrap təsdiqlənmiş hesabı (UID ilə) Super Admin edir', public.bootstrap_super_admin() = 'promoted');
+select t.ok('Super Admin: rol admin, bayraq true', (select role = 'admin' and is_super_admin from public.profiles where id = '00000000-0000-0000-0000-0000000000f0'));
+select t.ok('bootstrap təkrar işləyəndə heç nə etmir (idempotent)', public.bootstrap_super_admin() = 'exists');
+select t.throws('SQL/service_role: Super Admin-in rolunu dəyişmək olmur',
+  $q$update public.profiles set role = 'student' where is_super_admin$q$, '42501');
+select t.throws('SQL/service_role: Super Admin bayrağını götürmək olmur',
+  $q$update public.profiles set is_super_admin = false where is_super_admin$q$, '42501');
+select t.throws('SQL/service_role: Super Admin profilini silmək olmur',
+  $q$delete from public.profiles where is_super_admin$q$, '42501');
+select t.throws('Super Admin hesabını (auth.users) silmək olmur (cascade bloklanır)',
+  $q$delete from auth.users where id = '00000000-0000-0000-0000-0000000000f0'$q$, '42501');
+select t.throws('Super Admin hesabını ban etmək (deaktiv) olmur',
+  $q$update auth.users set banned_until = now() + interval '10 years' where id = '00000000-0000-0000-0000-0000000000f0'$q$, '42501');
+select t.throws('Super Admin hesabını yumşaq silmək olmur',
+  $q$update auth.users set deleted_at = now() where id = '00000000-0000-0000-0000-0000000000f0'$q$, '42501');
+select t.throws('başqa istifadəçiyə Super Admin bayrağı yazmaq olmur',
+  $q$update public.profiles set is_super_admin = true where email = 'e@test.az'$q$, '42501');
+select t.throws('ikinci Super Admin yaratmaq olmur (insert)',
+  $q$insert into public.profiles (id, email, first_name, last_name, is_super_admin) values (gen_random_uuid(), 'x2@test.az', 'X', 'X', true)$q$, '42501');
+
+select t.as_user('00000000-0000-0000-0000-00000000000c');
+select t.ok('admin Super Admin-in rolunu dəyişə bilmir (RLS: 0 sətir)',
+  t.affected($q$update public.profiles set role = 'student' where id = '00000000-0000-0000-0000-0000000000f0'$q$) = 0);
+select t.throws('admin Super Admin bayrağını dəyişə bilmir (sütun icazəsi)',
+  $q$update public.profiles set is_super_admin = true where id = '00000000-0000-0000-0000-00000000000c'$q$, '42501');
+select t.throws('admin profil silə bilmir', $q$delete from public.profiles where id = '00000000-0000-0000-0000-0000000000f0'$q$, '42501');
+select t.ok('admin Super Admin-i görür, rol dəyişməyib',
+  (select role = 'admin' and is_super_admin from public.profiles where id = '00000000-0000-0000-0000-0000000000f0'));
+select t.back();
+
+select t.as_user('00000000-0000-0000-0000-0000000000f0');
+select t.throws('Super Admin öz rolunu da azalda bilmir',
+  $q$update public.profiles set role = 'student' where id = '00000000-0000-0000-0000-0000000000f0'$q$, '42501');
+select t.ok('Super Admin başqasının rolunu dəyişə bilir',
+  t.affected($q$update public.profiles set role = 'student' where id = '00000000-0000-0000-0000-00000000000e'$q$) = 1);
+select t.back();
+update public.profiles set role = 'editor' where id = '00000000-0000-0000-0000-00000000000e';
+
+select set_config('app.allow_super_admin_changes', 'on', true);
+update public.profiles set role = 'admin' where is_super_admin;
+select set_config('app.allow_super_admin_changes', 'off', true);
+select t.ok('saxlama rejimi yalnız SQL sessiyasında işləyir və söndürüləndə qoruma qayıdır',
+  t.affected($q$update public.profiles set first_name = 'Feqan' where is_super_admin$q$) = 1);
+select t.throws('qoruma saxlama rejimindən sonra yenidən aktivdir',
+  $q$update public.profiles set role = 'student' where is_super_admin$q$, '42501');
+
+-- ---------- Sayt məzmunu (site_settings, faq_items, footer_links, team_members)
+select t.as_user(null);
+select t.ok('anon sayt parametrlərini oxuyur', t.cnt('select 1 from public.site_settings') = 9);
+select t.ok('anon aktiv FAQ və footer keçidlərini oxuyur', t.cnt('select 1 from public.faq_items') = 11 and t.cnt('select 1 from public.footer_links') = 7);
+select t.throws('anon FAQ əlavə edə bilmir', $q$insert into public.faq_items (question, answer) values ('Sual?', 'Cavab')$q$, '42501');
+select t.throws('anon parametr dəyişə bilmir', $q$update public.site_settings set value = 'Hack' where key = 'site_name'$q$, '42501');
+select t.back();
+
+select t.as_user('00000000-0000-0000-0000-00000000000a');
+select t.throws('tələbə FAQ əlavə edə bilmir', $q$insert into public.faq_items (question, answer) values ('Sual?', 'Cavab')$q$, '42501');
+select t.ok('tələbə sayt parametrini dəyişə bilmir (0 sətir)', t.affected($q$update public.site_settings set value = 'Hack' where key = 'site_name'$q$) = 0);
+select t.throws('tələbə komanda üzvü əlavə edə bilmir', $q$insert into public.team_members (full_name, job_title) values ('Ad Soyad', 'Vəzifə')$q$, '42501');
+select t.back();
+
+select t.as_user('00000000-0000-0000-0000-00000000000e');
+select t.throws('redaktor FAQ əlavə edə bilmir (yalnız admin)', $q$insert into public.faq_items (question, answer) values ('Sual?', 'Cavab')$q$, '42501');
+select t.ok('redaktor footer keçidini dəyişə bilmir (0 sətir)', t.affected($q$update public.footer_links set label = 'Hack'$q$) = 0);
+select t.back();
+
+select t.as_user('00000000-0000-0000-0000-00000000000c');
+insert into public.faq_items (question, answer, sort_order, active) values ('Yeni sual?', 'Yeni cavab', 99, false);
+select t.ok('admin FAQ əlavə edir və qeyri-aktivi görür', t.cnt('select 1 from public.faq_items') = 12);
+select t.ok('admin FAQ-nı redaktə və sil', t.affected($q$update public.faq_items set answer = 'Dəyişdi' where question = 'Yeni sual?'$q$) = 1
+  and t.affected($q$delete from public.faq_items where question = 'Yeni sual?'$q$) = 1);
+select t.ok('admin sayt adını dəyişir', t.affected($q$update public.site_settings set value = 'Sosial İş+' where key = 'site_name'$q$) = 1);
+select t.throws('boş sayt adı rədd edilir', $q$update public.site_settings set value = '  ' where key = 'site_name'$q$, '23514');
+select t.throws('naməlum parametr açarı rədd edilir', $q$insert into public.site_settings (key, value) values ('evil_key', 'x')$q$, '23514');
+select t.throws('düzgün olmayan əlaqə e-poçtu rədd edilir', $q$update public.site_settings set value = 'abc' where key = 'contact_email'$q$, '23514');
+select t.throws('parametri silmək olmur', $q$delete from public.site_settings where key = 'site_name'$q$, '42501');
+select t.throws('footer keçidi: // ilə başlayan xarici ünvan rədd edilir', $q$insert into public.footer_links (label, url) values ('Pis', '//evil.com')$q$, '23514');
+select t.throws('footer keçidi: javascript: rədd edilir', $q$insert into public.footer_links (label, url) values ('Pis', 'javascript:alert(1)')$q$, '23514');
+select t.throws('footer keçidi: http:// rədd edilir', $q$insert into public.footer_links (label, url) values ('Pis', 'http://example.com')$q$, '23514');
+insert into public.footer_links (label, url, sort_order) values ('Rəsmi sayt', 'https://adpk.edu.az', 20);
+select t.ok('footer: https:// keçidi qəbul edilir', t.cnt('select 1 from public.footer_links') = 8);
+select t.throws('komanda: yüklənməmiş şəkil yolu rədd edilir',
+  $q$insert into public.team_members (full_name, job_title, photo_path) values ('Ad Soyad', 'Vəzifə', '40000000-0000-0000-0000-0000000000aa.jpg')$q$, '23514');
+select t.throws('komanda: javascript: şəxsi sayt linki rədd edilir',
+  $q$insert into public.team_members (full_name, job_title, website_url) values ('Ad Soyad', 'Vəzifə', 'javascript:alert(1)')$q$, '23514');
+insert into storage.objects (bucket_id, name, metadata) values ('team-photos', '40000000-0000-0000-0000-0000000000aa.jpg', '{"size":1000,"mimetype":"image/jpeg"}');
+select t.ok('admin team-photos bucket-ə düzgün adla yükləyir', true);
+select t.throws('admin team-photos-a pis adla (path traversal) yükləyə bilmir',
+  $q$insert into storage.objects (bucket_id, name, metadata) values ('team-photos', '../x.jpg', '{"size":1,"mimetype":"image/jpeg"}')$q$, '42501');
+select t.throws('admin team-photos-a icazəsiz uzantı (.svg) yükləyə bilmir',
+  $q$insert into storage.objects (bucket_id, name, metadata) values ('team-photos', '40000000-0000-0000-0000-0000000000ab.svg', '{"size":1,"mimetype":"image/svg+xml"}')$q$, '42501');
+insert into public.team_members (full_name, job_title, bio, photo_path, website_url, sort_order)
+  values ('Feqan Gəraylı', 'Developer', 'Qısa bio', '40000000-0000-0000-0000-0000000000aa.jpg', 'https://feqan.dev', 1);
+select t.ok('admin komanda üzvü əlavə edir (şəkil və sayt linki ilə)', t.cnt('select 1 from public.team_members') = 1);
+select t.back();
+
+select t.as_user('00000000-0000-0000-0000-00000000000a');
+select t.throws('tələbə team-photos-a şəkil yükləyə bilmir',
+  $q$insert into storage.objects (bucket_id, name, metadata) values ('team-photos', '40000000-0000-0000-0000-0000000000ac.jpg', '{"size":1,"mimetype":"image/jpeg"}')$q$, '42501');
+select t.ok('tələbə komanda üzvlərini oxuyur', t.cnt('select 1 from public.team_members') = 1);
+select t.back();
+select t.as_user('00000000-0000-0000-0000-00000000000e');
+select t.throws('redaktor team-photos-a şəkil yükləyə bilmir (yalnız admin)',
+  $q$insert into storage.objects (bucket_id, name, metadata) values ('team-photos', '40000000-0000-0000-0000-0000000000ad.jpg', '{"size":1,"mimetype":"image/jpeg"}')$q$, '42501');
+select t.back();
+update public.team_members set active = false;
+select t.as_user(null);
+select t.ok('anon qeyri-aktiv komanda üzvünü görmür', t.cnt('select 1 from public.team_members') = 0);
+select t.back();
+update public.team_members set active = true;
+
+-- ---------- Material faylları
+select t.as_user('00000000-0000-0000-0000-00000000000e');
+select t.throws('fayl Storage-də yoxdursa material yazılmır',
+  $q$insert into public.materials (title, subject, url, file_path, file_name, file_size, mime_type, file_type)
+     values ('Fayl', 'Fənn', null, '40000000-0000-0000-0000-0000000000b1.pdf', 'a.pdf', 10, 'application/pdf', 'pdf')$q$, '23514');
+insert into storage.objects (bucket_id, name, metadata) values
+  ('materials', '40000000-0000-0000-0000-0000000000b1.pdf', '{"size":1000,"mimetype":"application/pdf"}'),
+  ('materials', '40000000-0000-0000-0000-0000000000b2.docx', '{"size":2000,"mimetype":"application/pdf"}'),
+  ('materials', '40000000-0000-0000-0000-0000000000b3.zip', '{"size":30000000,"mimetype":"application/zip"}'),
+  ('materials', '40000000-0000-0000-0000-0000000000b4.zip', '{"size":4000,"mimetype":"application/x-zip-compressed"}');
+select t.ok('redaktor materials bucket-ə düzgün adla yükləyir', true);
+select t.throws('redaktor materials bucket-ə .exe yükləyə bilmir',
+  $q$insert into storage.objects (bucket_id, name, metadata) values ('materials', '40000000-0000-0000-0000-0000000000b5.exe', '{"size":1,"mimetype":"application/octet-stream"}')$q$, '42501');
+insert into public.materials (title, subject, url, file_path, file_name, file_size, mime_type, file_type, specialty, group_name)
+  values ('PDF fayl', 'Fənn', null, '40000000-0000-0000-0000-0000000000b1.pdf', 'konspekt.pdf', 5, 'text/plain', 'pdf', 'Sİ', 'Sİ26/01SB');
+select t.ok('server fayl ölçüsünü və MIME-i Storage-dən götürür (müştərinin dəyəri əzilir)',
+  (select file_size = 1000 and mime_type = 'application/pdf' from public.materials where title = 'PDF fayl'));
+select t.throws('uzantı ilə MIME uyğun gəlmirsə (docx ↔ pdf) material yazılmır',
+  $q$insert into public.materials (title, subject, url, file_path, file_name, file_size, mime_type, file_type)
+     values ('Saxta docx', 'Fənn', null, '40000000-0000-0000-0000-0000000000b2.docx', 'a.docx', 1, 'x', 'doc')$q$, '23514');
+select t.throws('25 MB-dan böyük fayl ölçü yoxlamasından keçmir',
+  $q$insert into public.materials (title, subject, url, file_path, file_name, file_size, mime_type, file_type)
+     values ('Böyük zip', 'Fənn', null, '40000000-0000-0000-0000-0000000000b3.zip', 'a.zip', 1, 'x', 'zip')$q$, '23514');
+insert into public.materials (title, subject, url, file_path, file_name, file_size, mime_type, file_type)
+  values ('ZIP fayl', 'Fənn', null, '40000000-0000-0000-0000-0000000000b4.zip', 'a.zip', 1, 'x', 'zip');
+select t.ok('zip (x-zip-compressed) qəbul edilir', t.cnt('select 1 from public.materials where file_type = $$zip$$') = 1);
+select t.throws('material həm keçid, həm fayl ola bilməz',
+  $q$insert into public.materials (title, subject, url, file_path, file_name, file_size, mime_type, file_type)
+     values ('İkili', 'Fənn', 'https://e.com/x', '40000000-0000-0000-0000-0000000000b1.pdf', 'a.pdf', 1, 'x', 'pdf')$q$, '23514');
+select t.throws('material nə keçid, nə fayl olmadan yazılmır',
+  $q$insert into public.materials (title, subject) values ('Boş', 'Fənn')$q$, '23514');
+select t.throws('qrup ixtisassız göstərilə bilməz',
+  $q$insert into public.materials (title, subject, url, group_name) values ('Qrup', 'Fənn', 'https://e.com/x', 'Sİ26/01SB')$q$, '23514');
+select t.throws('qrup başqa ixtisasa aiddirsə material yazılmır',
+  $q$insert into public.materials (title, subject, url, specialty, group_name) values ('Qrup', 'Fənn', 'https://e.com/x', 'KŞATS', 'Sİ26/01SB')$q$, '23503');
+select t.back();
+
+select t.as_user('00000000-0000-0000-0000-00000000000a');
+select t.throws('tələbə materials bucket-ə fayl yükləyə bilmir',
+  $q$insert into storage.objects (bucket_id, name, metadata) values ('materials', '40000000-0000-0000-0000-0000000000b6.pdf', '{"size":1,"mimetype":"application/pdf"}')$q$, '42501');
+select t.ok('tələbə material fayl obyektini silə bilmir (0 sətir)', t.affected($q$delete from storage.objects where bucket_id = 'materials'$q$) = 0);
+select t.ok('tələbə fayllı materialı görür', t.cnt($q$select 1 from public.materials where file_path is not null$q$) = 2);
+select t.back();
+select t.as_user(null);
+select t.ok('anon fayl obyektlərini oxuya bilir (ictimai bucket)', t.cnt($q$select 1 from storage.objects where bucket_id = 'materials'$q$) = 4);
+select t.back();
 
 -- ---------- Cascade
 delete from auth.users where id = '00000000-0000-0000-0000-00000000000a';

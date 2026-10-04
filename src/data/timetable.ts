@@ -3,7 +3,8 @@ import { findSpecialty } from '@/services/specialties';
 
 /** Cədvəldəki ixtisas açarı. Ad/təsvir məlumatları src/data/specialties.ts-dədir (təkrar saxlanılmır). */
 export interface Specialty { code: string }
-export interface Group { code: string; specialty: string; course: string; shift: number }
+/** Növbə (1 = I növbə, 2 = II növbə) rəsmi cədvəldən götürülür; kurs anlayışı saytda istifadə olunmur. */
+export interface Group { code: string; specialty: string; shift: number }
 export interface Lesson {
   group: string;
   day: number;
@@ -27,8 +28,6 @@ export const specialties = timetable.specialties;
 export const groups = timetable.groups;
 export const lessons = timetable.lessons;
 
-const courseRank = ['H', 'I', 'II', 'III', 'IV'];
-export const courses = [...new Set(groups.map((g) => g.course))].sort((a, b) => courseRank.indexOf(a) - courseRank.indexOf(b));
 export const shifts = [...new Set(groups.map((g) => g.shift))].sort((a, b) => a - b);
 
 export const timetableDays = [
@@ -66,7 +65,6 @@ export const specialtyFullLabel = (code: string) => {
   return !s ? code : s.fullName === s.name ? s.name : `${s.fullName} (${s.name})`;
 };
 export const shiftLabel = (shift: number) => `${shift === 1 ? 'I' : 'II'} növbə`;
-export const courseLabel = (course: string) => (course === 'H' ? 'H' : `${course} kurs`);
 
 const clean = (value: string) => value.replace(/\bX{2,}\b/gi, '—').replace(/\s*\/\s*/g, ' / ').trim();
 

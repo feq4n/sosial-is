@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { SITE_NAME } from '@/config/site';
+import { useSiteSettings } from '@/services/site';
 
 export const ADPK_NAME = 'Azərbaycan Dövlət Pedaqoji Kolleci';
 
@@ -24,10 +24,11 @@ export function AdpkLogo({ className = 'size-10' }: { className?: string }) {
 }
 
 export function Logo({ to = '/', logoClass = 'size-10', textClass = 'text-xl' }: { to?: string; logoClass?: string; textClass?: string }) {
+  const { siteName } = useSiteSettings();
   return (
-    <Link to={to} className="inline-flex min-w-0 items-center gap-2.5" aria-label={`${SITE_NAME} — ana səhifə`}>
+    <Link to={to} className="inline-flex min-w-0 items-center gap-2.5" aria-label={`${siteName} — ana səhifə`}>
       <AdpkLogo className={logoClass} />
-      <span className={`truncate font-display font-extrabold tracking-tight ${textClass}`}>{SITE_NAME}</span>
+      <span className={`truncate font-display font-extrabold tracking-tight ${textClass}`}>{siteName}</span>
     </Link>
   );
 }

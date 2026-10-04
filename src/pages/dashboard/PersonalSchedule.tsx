@@ -52,7 +52,7 @@ export default function PersonalSchedule() {
         </form>
       </Card>
       {group ? (
-        <p className="mb-4 text-sm text-muted">Qrup: <strong className="text-ink">{group.code}</strong> · {specialtyLabel(group.specialty)} · Kurs: {group.course} · {shiftLabel(group.shift)}</p>
+        <p className="mb-4 text-sm text-muted">Qrup: <strong className="text-ink">{group.code}</strong> · {specialtyLabel(group.specialty)} · {shiftLabel(group.shift)}</p>
       ) : (
         <Card className="mb-6 p-2"><EmptyState title="Qrupunuz seçilməyib" text="Şəxsi dərs cədvəlinizin görünməsi üçün profilinizdə ixtisas və qrupu seçin." action={<ButtonLink to="/dashboard/profile" size="sm">Profilə keç</ButtonLink>} /></Card>
       )}

@@ -18,6 +18,7 @@ const Events = lazy(() => named(import('@/pages/public/Events'), 'Events'));
 const EventDetail = lazy(() => named(import('@/pages/public/Events'), 'EventDetail'));
 const About = lazy(() => import('@/pages/public/About'));
 const Contact = lazy(() => import('@/pages/public/Contact'));
+const Team = lazy(() => import('@/pages/public/Team'));
 const NotFound = lazy(() => import('@/pages/public/NotFound'));
 
 const Login = lazy(() => import('@/pages/auth/Login'));
@@ -38,6 +39,10 @@ const AdminEvents = lazy(() => named(import('@/pages/admin/Content'), 'AdminEven
 const AdminSpecialties = lazy(() => named(import('@/pages/admin/Specialties'), 'AdminSpecialties'));
 const AdminUsers = lazy(() => named(import('@/pages/admin/People'), 'AdminUsers'));
 const AdminMessages = lazy(() => named(import('@/pages/admin/People'), 'AdminMessages'));
+const AdminSite = lazy(() => named(import('@/pages/admin/Site'), 'AdminSite'));
+const AdminFaq = lazy(() => named(import('@/pages/admin/Site'), 'AdminFaq'));
+const AdminFooter = lazy(() => named(import('@/pages/admin/Site'), 'AdminFooter'));
+const AdminTeam = lazy(() => named(import('@/pages/admin/Team'), 'AdminTeam'));
 
 export default function AppRoutes() {
   return (
@@ -53,6 +58,7 @@ export default function AppRoutes() {
           <Route path="events" element={<Events />} />
           <Route path="events/:id" element={<EventDetail />} />
           <Route path="about" element={<About />} />
+          <Route path="team" element={<Team />} />
           <Route path="contact" element={<Contact />} />
         </Route>
 
@@ -82,6 +88,10 @@ export default function AppRoutes() {
               <Route path="events" element={<AdminEvents />} />
               <Route element={<RequireRole roles={['admin']} />}>
                 <Route path="specialties" element={<AdminSpecialties />} />
+                <Route path="team" element={<AdminTeam />} />
+                <Route path="faq" element={<AdminFaq />} />
+                <Route path="footer" element={<AdminFooter />} />
+                <Route path="site" element={<AdminSite />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="messages" element={<AdminMessages />} />
               </Route>

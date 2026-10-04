@@ -30,7 +30,7 @@ export function PlacementFields({ value, onChange, errors }: { value: Placement;
         </SelectField>
       </div>
       {value.specialty && <p className="break-words text-sm text-muted">Seçilmiş ixtisas: <strong className="text-ink">{specialtyFullLabel(value.specialty)}</strong></p>}
-      {g && <p className="text-sm text-muted">Kurs: <strong className="text-ink">{g.course}</strong> · <strong className="text-ink">{shiftLabel(g.shift)}</strong></p>}
+      {g && <p className="text-sm text-muted">Növbə: <strong className="text-ink">{shiftLabel(g.shift)}</strong></p>}
     </>
   );
 }

@@ -8,7 +8,7 @@ import { hasPlacementErrors, PlacementFields, validatePlacement, type Placement,
 import { friendlyError } from '@/utils/errors';
 import { AuthLayout } from './AuthLayout';
 
-interface Form { firstName: string; lastName: string; email: string; password: string; confirm: string; studentId: string }
+interface Form { firstName: string; lastName: string; email: string; password: string; confirm: string }
 
 export default function Register() {
   useSeo('Qeydiyyat', undefined, { noindex: true });
@@ -24,7 +24,7 @@ export default function Register() {
     setErr('');
     if (hasPlacementErrors(validatePlacement(placement))) return;
     try {
-      const res = await signUp({ firstName: v.firstName, lastName: v.lastName, email: v.email, password: v.password, specialty: placement.specialty, group: placement.group, studentId: v.studentId });
+      const res = await signUp({ firstName: v.firstName, lastName: v.lastName, email: v.email, password: v.password, specialty: placement.specialty, group: placement.group });
       // Supabase-də e-poçt təsdiqi aktivdirsə, sessiya təsdiq keçidindən sonra açılır.
       if (res?.needsEmailConfirmation) { setInfo('Hesab yaradıldı. E-poçtunuza göndərilən təsdiq keçidinə klikləyin, sonra daxil olun.'); return; }
       nav('/dashboard', { replace: true });
@@ -45,7 +45,6 @@ export default function Register() {
         </div>
         <TextField label="E-poçt ünvanı" type="email" autoComplete="email" error={errors.email?.message} {...register('email', { required: 'E-poçt ünvanını yazın', pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'E-poçt ünvanı düzgün deyil' } })} />
         <PlacementFields value={placement} errors={placementErrors} onChange={(v) => { setPlacement(v); setPlacementErrors({}); }} />
-        <TextField label="Tələbə bileti nömrəsi (könüllü)" error={errors.studentId?.message} {...register('studentId', { maxLength: { value: 30, message: 'Ən çox 30 simvol' } })} />
         <TextField label="Şifrə" type="password" autoComplete="new-password" hint="Ən azı 8 simvol, hərf və rəqəm" error={errors.password?.message}
           {...register('password', { required: 'Şifrəni yazın', minLength: { value: 8, message: 'Şifrə ən azı 8 simvol olmalıdır' }, validate: (p) => (/[A-Za-zƏəİıÖöÜüŞşÇçĞğ]/.test(p) && /\d/.test(p)) || 'Şifrədə hərf və rəqəm olmalıdır' })} />
         <TextField label="Şifrəni təkrarlayın" type="password" autoComplete="new-password" error={errors.confirm?.message}

@@ -40,7 +40,6 @@ export default function Overview() {
               <div className="flex justify-between gap-3"><dt className="text-muted">E-poçt</dt><dd className="truncate font-semibold">{user?.email}</dd></div>
               <div className="flex justify-between gap-3"><dt className="text-muted">İxtisas</dt><dd className="font-semibold">{group ? specialtyLabel(group.specialty) : '—'}</dd></div>
               <div className="flex justify-between gap-3"><dt className="text-muted">Qrup</dt><dd className="font-semibold">{group?.code ?? '—'}</dd></div>
-              <div className="flex justify-between gap-3"><dt className="text-muted">Kurs</dt><dd className="font-semibold">{group?.course ?? '—'}</dd></div>
               <div className="flex justify-between gap-3"><dt className="text-muted">Növbə</dt><dd className="font-semibold">{group ? shiftLabel(group.shift) : '—'}</dd></div>
             </dl>
             <Link to="/dashboard/notifications" className="mt-4 flex items-center justify-between rounded-xl bg-brand-soft px-3 py-2.5 text-sm font-semibold text-brand"><span className="flex items-center gap-2"><Bell className="size-4" aria-hidden />Bildirişlər</span>{n.unread > 0 ? <Badge tone="accent">{n.unread} yeni</Badge> : <span className="text-muted">Yeni yoxdur</span>}</Link>

@@ -84,7 +84,8 @@ describe('dərs cədvəli', () => {
     await user.selectOptions(screen.getByLabelText('Qrup'), 'Sİ26/01SB');
     expect((await screen.findAllByText('Qasımlı Əsmər')).length).toBeGreaterThan(0);
     expect(screen.getByRole('heading', { level: 3, name: 'I gün · Bazar ertəsi' })).toBeInTheDocument();
-    expect(screen.getByText('Kurs: H')).toBeInTheDocument();
+    expect(screen.queryByText(/Kurs/)).not.toBeInTheDocument();
+    expect(screen.getAllByText('I növbə').length).toBeGreaterThan(1);
   });
 
   it('növbə filtri qrup siyahısını məhdudlaşdırır', async () => {
@@ -179,7 +180,8 @@ describe('qeydiyyatda ixtisas və qrup seçimi', () => {
     expect(values).toHaveLength(6);
     expect(values.every((v) => v!.startsWith('KŞATS'))).toBe(true);
     await user.selectOptions(group, 'KŞATS25/01SB');
-    expect(screen.getByText(/Kurs:/).textContent).toMatch(/I.*II növbə/);
+    expect(screen.getByText(/Növbə:/).textContent).toMatch(/Növbə: II növbə/);
+    expect(screen.queryByText(/Kurs/)).not.toBeInTheDocument();
     await user.selectOptions(screen.getByLabelText('İxtisas'), 'Sİ');
     expect(screen.getByLabelText('Qrup')).toHaveValue('');
   });

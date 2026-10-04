@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { SITE_NAME } from '@/config/site';
+import { useSiteSettings } from '@/services/site';
 
 function setMeta(selector: string, attr: 'name' | 'property', key: string, content: string) {
   let el = document.head.querySelector<HTMLMetaElement>(selector);
@@ -12,8 +13,9 @@ function setMeta(selector: string, attr: 'name' | 'property', key: string, conte
 }
 
 export function useSeo(title: string, description?: string, opts: { noindex?: boolean } = {}) {
+  const { siteName } = useSiteSettings();
   useEffect(() => {
-    const full = title === SITE_NAME ? SITE_NAME : `${title} · ${SITE_NAME}`;
+    const full = title === SITE_NAME || title === siteName ? siteName : `${title} · ${siteName}`;
     document.title = full;
     setMeta('meta[property="og:title"]', 'property', 'og:title', full);
     if (description) {
@@ -21,5 +23,5 @@ export function useSeo(title: string, description?: string, opts: { noindex?: bo
       setMeta('meta[property="og:description"]', 'property', 'og:description', description);
     }
     setMeta('meta[name="robots"]', 'name', 'robots', opts.noindex ? 'noindex, nofollow' : 'index, follow');
-  }, [title, description, opts.noindex]);
+  }, [title, description, opts.noindex, siteName]);
 }

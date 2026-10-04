@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Mail, MailOpen, Search, Trash2 } from 'lucide-react';
+import { Mail, MailOpen, Search, ShieldCheck, Trash2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useAsync } from '@/hooks/useAsync';
 import { useSeo } from '@/hooks/useSeo';
@@ -23,7 +23,7 @@ export function AdminUsers() {
   const [pending, setPending] = useState<{ u: UserProfile; role: Role } | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const rows = useMemo(() => (data ?? []).filter((u) => (!roleF || u.role === roleF) && matchesQuery(q, u.firstName, u.lastName, u.email, u.studentId, u.group, u.specialty)), [data, q, roleF]);
+  const rows = useMemo(() => (data ?? []).filter((u) => (!roleF || u.role === roleF) && matchesQuery(q, u.firstName, u.lastName, u.email, u.group, u.specialty)), [data, q, roleF]);
   const pages = Math.max(1, Math.ceil(rows.length / 10));
   const cur = Math.min(page, pages);
 
@@ -45,14 +45,14 @@ export function AdminUsers() {
         <Card className="overflow-hidden">
           <div className="scroll-x"><table className="w-full min-w-[48rem] text-left text-sm">
             <caption className="sr-only">İstifadəçilər</caption>
-            <thead className="bg-surface-2 text-muted"><tr><th scope="col" className="px-4 py-3">Ad</th><th scope="col" className="px-4 py-3">E-poçt</th><th scope="col" className="px-4 py-3">İxtisas / qrup / kurs</th><th scope="col" className="px-4 py-3">Rol</th></tr></thead>
+            <thead className="bg-surface-2 text-muted"><tr><th scope="col" className="px-4 py-3">Ad</th><th scope="col" className="px-4 py-3">E-poçt</th><th scope="col" className="px-4 py-3">İxtisas / qrup / növbə</th><th scope="col" className="px-4 py-3">Rol</th></tr></thead>
             <tbody>{rows.slice((cur - 1) * 10, cur * 10).map((u) => (
               <tr key={u.uid} className="border-t border-line">
                 <td className="px-4 py-3 font-semibold">{u.firstName} {u.lastName}</td>
                 <td className="px-4 py-3">{u.email}</td>
-                <td className="px-4 py-3">{(() => { const g = findGroup(u.group); return g && g.specialty === u.specialty ? `${specialtyLabel(g.specialty)} · ${g.code} · kurs ${g.course} · ${shiftLabel(g.shift)}` : '—'; })()}</td>
+                <td className="px-4 py-3">{(() => { const g = findGroup(u.group); return g && g.specialty === u.specialty ? `${specialtyLabel(g.specialty)} · ${g.code} · ${shiftLabel(g.shift)}` : '—'; })()}</td>
                 <td className="px-4 py-3">
-                  {u.uid === user?.uid ? <Badge tone="brand">{roleLabels[u.role]} (siz)</Badge> : (
+                  {u.isSuperAdmin ? <Badge tone="brand"><ShieldCheck className="size-3" aria-hidden />Super Admin{u.uid === user?.uid ? ' (siz)' : ''}</Badge> : u.uid === user?.uid ? <Badge tone="brand">{roleLabels[u.role]} (siz)</Badge> : (
                     <select aria-label={`${u.firstName} ${u.lastName} üçün rol`} value={u.role} onChange={(e) => setPending({ u, role: e.target.value as Role })} className="rounded-lg border border-line bg-surface px-2 py-1.5">
                       {Object.entries(roleLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                     </select>)}

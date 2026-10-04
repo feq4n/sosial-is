@@ -50,11 +50,11 @@ npm test
 #   supabase/seed/groups.sql
 ```
 
-- Skript ixtisas, qrup, kurs, növbə, gün, dərs, saat, fənn, müəllim və otaqları oxuyur; qrupun ixtisas, kurs və növbəsi yalnız cədvəldən götürülür.
+- Skript ixtisas, qrup, növbə, gün, dərs, saat, fənn, müəllim və otaqları oxuyur; qrupun ixtisas və növbəsi yalnız cədvəldən götürülür.
 - “XXX” kimi qeydlər olduğu kimi saxlanılır, saytda “Fənn hələ təyin olunmayıb” kimi göstərilir. Boş xanalar doldurulmur.
 - İxtisasların tam adları `scripts/specialty-names.json` faylında yalnız təsdiqlənmiş olduqda yazılır; qalanları kodla göstərilir.
 - Skript `supabase/seed/groups.sql` faylını da yeniləyir. Qeydiyyatda və profildə ixtisas-qrup əlaqəsi serverdə `public.groups` cədvəli (composite FK + tətik) ilə yoxlanılır, buna görə həmin SQL yenidən işlədilməlidir. Siyahıdan çıxan qruplar silinmir, `active=false` olur: köhnə profillər qalır, amma yeni seçim/qeydiyyat üçün qəbul edilmir. `npm test` seed-in `timetable.json` ilə üst-üstə düşdüyünü yoxlayır.
-- İstifadəçinin `profiles` sətrində yalnız `specialty` və `group_name` saxlanılır; kurs və növbə cədvəldən hesablanır. Köhnə `degree` və `course` sütunları silinmir, istifadə olunmur və müştəri onları dəyişə bilməz. Qrupu seçilməmiş mövcud istifadəçilər profildə ixtisas və qrup seçməlidir.
+- İstifadəçinin `profiles` sətrində yalnız `specialty` və `group_name` saxlanılır; növbə cədvəldən hesablanır. Tələbə bileti nömrəsi və kurs saxlanılmır (aşağıdakı “Yeniləmə” bölməsinə baxın).
 - `schedule_entries` cədvəli (köhnə admin cədvəli) tətbiqdə artıq istifadə olunmur; məlumat itməsin deyə saxlanılır.
 
 ## Test və yoxlama
@@ -116,3 +116,32 @@ migration/      birdəfəlik Firebase → Supabase data miqrasiyası (ayrı pake
 - Admin paneli → **İxtisaslar** (yalnız admin): ad, tam ad, kod, təsvir, müddət, semestr, kredit, qəbul balları, təsdiq bayrağı və aktivlik. Yeni ixtisas əlavə etmək SQL ilə aparılır (qruplara bağlıdır).
 - Qəbul balları yalnız `admission_confirmed = true` olduqda göstərilir. Rəsmi mənbə: https://adpk.edu.az/tedris/ixtisaslar
 - Yeni miqrasiyanı Supabase SQL Editor-də `20261004000001`-dən SONRA bir dəfə işə salın. Əvvəlki miqrasiyaları təkrar işlətməyin.
+
+
+## Yeniləmə: Super Admin, admin tərəfindən idarə olunan məzmun, material faylları
+
+### Miqrasiyalar (SQL Editor-də, ardıcıllıqla, hər biri bir dəfə)
+
+1. `20261005000001_detach_student_id_and_course.sql`: bilet nömrəsi yazılmasını dayandırır (məlumat silmir).
+2. `20261005000002_super_admin.sql`: dəyişdirilməz Super Admin (RLS + tətiklər). Hesab hələ yoxdursa heç kimi yüksəltmir.
+3. `20261005000003_site_content.sql`: `site_settings`, `faq_items`, `footer_links`, `team_members`, `team-photos` bucket-i. İlkin məlumat yalnız boş cədvələ yazılır.
+4. `20261005000004_materials_files.sql`: material faylları (`materials` bucket-i, ixtisas/qrup sütunları). Mövcud materiallar toxunulmaz qalır.
+5. Yeni frontend-i yerləşdirin (Vercel), yoxlayın, **sonra** `20261005000005_drop_legacy_profile_columns.sql`. Bu, `profiles.student_id` və `profiles.course` sütunlarını silir; dolu dəyərlər əvvəlcə `_legacy_profile_columns_backup` cədvəlinə köçürülür. Köhnə frontend sütunları hələ yazdığı üçün bu fayl frontend-dən ƏVVƏL işlədilməməlidir.
+
+### Super Admin
+
+- Hesab: `feqangerayli@gmail.com`, Supabase Auth-dakı real UID ilə tanınır (`profiles.is_super_admin`). E-poçt, rol və ya `user_metadata` heç vaxt Super Admin vermir.
+- Hesab yoxdursa: `SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... SUPER_ADMIN_PASSWORD='...' node scripts/bootstrap-super-admin.mjs`. Hesab artıq varsa və e-poçtu təsdiqlənibsə, SQL Editor-də `select public.bootstrap_super_admin();` kifayətdir. Parol heç yerdə saxlanılmır, `service_role` açarı frontend-ə verilmir.
+- Qorunur: silinmə (`auth.users` cascade daxil), rol dəyişikliyi, deaktiv/ban, bayrağın dəyişdirilməsi, ikinci Super Admin. Qoruma SQL tətikləri ilə `service_role` üçün də tətbiq olunur. Yeganə yol: layihə sahibi SQL Editor-də `set local app.allow_super_admin_changes = 'on';` təyin edir (API müştəriləri bunu edə bilmir).
+
+### Admin paneli
+
+`/admin/site` (sayt adı, ana səhifə mətnləri, əlaqə, footer mətni), `/admin/faq`, `/admin/footer`, `/admin/team`, `/admin/materials` (fayl yükləmə). Bu bölmələrin yazma icazəsi yalnız `admin` rolundadır (materiallar: redaktor və admin). Developer qeydi (“Developed by Feqan Gəraylı”, https://feqan.dev) kodda sabitdir (`src/config/site.ts`), admin paneli onu dəyişə bilmir.
+
+### Fayl yükləmə
+
+Dəstəklənən tiplər: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, TXT, ZIP (≤ 25 MB); komanda şəkli: JPG, PNG, WEBP (≤ 2 MB). Yoxlama iki qatdadır: brauzerdə uzantı, MIME və faylın ilk baytları; serverdə Storage bucket-in ölçü/MIME limiti, `storage.objects` siyasətləri (rol, ad şablonu `<uuid>.<uzantı>`) və `materials` tətiyi (fayl mövcuddur, ölçü və MIME Storage-dən götürülür, uzantıya uyğundur). **Məhdudiyyət:** Storage MIME-i sorğu başlığından götürür və baytlara baxmır, ona görə bayt (magic bytes) yoxlaması yalnız brauzerdədir. Yalnız adminin/redaktorun yükləyə bildiyini nəzərə alsaq, risk aşağıdır; tam server tərəfi yoxlama üçün Edge Function lazımdır. Bucket-lər ictimai oxunur (materiallar da ictimaidir).
+
+### Testlər
+
+`bash supabase/tests/run-local-pg.sh` (lokal PostgreSQL; Super Admin, məzmun, Storage və material siyasətlərini əhatə edir), `npm test`, `npm run lint`, `cd migration && npm test`.

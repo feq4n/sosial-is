@@ -12,7 +12,7 @@ export interface UserProfile {
   lastName: string;
   email: string;
   role: Role;
-  studentId?: string;
+  isSuperAdmin?: boolean;
   specialty?: string;
   group?: string;
   createdAt?: string;
@@ -31,7 +31,7 @@ export interface Announcement {
   createdAt: string;
 }
 
-export type MaterialType = 'pdf' | 'doc' | 'ppt' | 'video' | 'link';
+export type MaterialType = 'pdf' | 'doc' | 'ppt' | 'xls' | 'txt' | 'zip' | 'video' | 'link';
 
 export interface Material {
   id: string;
@@ -39,8 +39,14 @@ export interface Material {
   subject: string;
   author: string;
   description: string;
-  url: string;
+  url?: string;
   fileType: MaterialType;
+  filePath?: string;
+  fileName?: string;
+  fileSize?: number;
+  mimeType?: string;
+  specialty?: string;
+  groupName?: string;
   createdAt: string;
 }
 
@@ -83,4 +89,38 @@ export interface NotificationItem {
   href: string;
   date: string;
   read: boolean;
+}
+
+export interface FaqItem {
+  id: string;
+  question: string;
+  answer: string;
+  sortOrder: number;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface FooterLink {
+  id: string;
+  label: string;
+  url: string;
+  sortOrder: number;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface TeamMember {
+  id: string;
+  fullName: string;
+  jobTitle: string;
+  bio: string;
+  photoPath?: string;
+  websiteUrl?: string;
+  linkedinUrl?: string;
+  instagramUrl?: string;
+  githubUrl?: string;
+  telegramUrl?: string;
+  sortOrder: number;
+  active: boolean;
+  createdAt: string;
 }

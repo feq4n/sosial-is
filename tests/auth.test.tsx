@@ -117,12 +117,12 @@ describe('giriş / qeydiyyat / şifrə', () => {
     await expect(ctx.login('a@b.az', 'yanlis')).rejects.toMatchObject({ code: 'invalid_credentials' });
   });
 
-  it('register: metadata-da ROL GÖNDƏRİLMİR; yalnız ad, soyad, ixtisas, qrup, bilet nömrəsi', async () => {
+  it('register: metadata-da ROL GÖNDƏRİLMİR; yalnız ad, soyad, ixtisas və qrup (bilet nömrəsi yoxdur)', async () => {
     h.s.signUp.mockResolvedValue({ data: { user: { identities: [{}] }, session: { access_token: 't' } }, error: null });
-    const res = await ctx.register({ firstName: ' Aysel ', lastName: 'M', email: ' a@b.az ', password: 'parol1234', specialty: 'Sİ', group: 'Sİ26/01SB', studentId: ' S-1 ' });
+    const res = await ctx.register({ firstName: ' Aysel ', lastName: 'M', email: ' a@b.az ', password: 'parol1234', specialty: 'Sİ', group: 'Sİ26/01SB' });
     const arg = h.s.signUp.mock.calls[0][0];
     expect(arg.email).toBe('a@b.az');
-    expect(arg.options.data).toEqual({ first_name: 'Aysel', last_name: 'M', specialty: 'Sİ', group: 'Sİ26/01SB', student_id: 'S-1' });
+    expect(arg.options.data).toEqual({ first_name: 'Aysel', last_name: 'M', specialty: 'Sİ', group: 'Sİ26/01SB' });
     expect(arg.options.data).not.toHaveProperty('role');
     expect(arg.options.emailRedirectTo).toMatch(/\/login$/);
     expect(res).toEqual({ needsEmailConfirmation: false });

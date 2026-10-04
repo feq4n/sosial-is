@@ -70,8 +70,8 @@ export async function runMigration({ source, sb, mode = 'dry-run', log = console
       email: au.email,
       email_confirm: true, // köhnə sistem təsdiqi məcburi etmirdi; istifadəçi parolu e-poçt keçidi ilə yeniləyəcək
       password: t.randomPassword(),
-      // handle_new_user tətiyi yalnız bunları oxuyur; köhnə degree/course sonrakı update ilə yazılır.
-      user_metadata: { first_name: row.first_name, last_name: row.last_name, student_id: row.student_id, specialty: row.specialty, group: row.group_name },
+      // handle_new_user tətiyi yalnız bunları oxuyur; köhnə degree sonrakı update ilə yazılır.
+      user_metadata: { first_name: row.first_name, last_name: row.last_name, specialty: row.specialty, group: row.group_name },
       ...(au.disabled ? { ban_duration: '876000h' } : {}),
     });
     if (error) { problem('users', au.uid, `Supabase Auth: ${error.code ?? ''} ${error.message}`, 'failed'); continue; }

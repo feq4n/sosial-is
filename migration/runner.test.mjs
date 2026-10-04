@@ -34,7 +34,7 @@ function fakeSupabase() {
       if (T.profiles.some((p) => p.email.toLowerCase() === a.email.toLowerCase())) return { data: null, error: { code: 'email_exists', message: 'exists' } };
       const id = randomUUID();
       const m = a.user_metadata;
-      T.profiles.push({ id, email: a.email, first_name: m.first_name, last_name: m.last_name, degree: null, course: null, specialty: m.specialty ?? null, group_name: m.group ?? null, student_id: m.student_id, role: 'student', firebase_uid: null }); // handle_new_user tətiyi
+      T.profiles.push({ id, email: a.email, first_name: m.first_name, last_name: m.last_name, degree: null, specialty: m.specialty ?? null, group_name: m.group ?? null, role: 'student', firebase_uid: null }); // handle_new_user tətiyi
       return { data: { user: { id } }, error: null };
     },
     deleteUser: async (id) => {
@@ -121,12 +121,12 @@ test('apply: hesablar, rollar, FK-lar, tarixlər və bildiriş açarları düzg�
   assert.equal(admin.role, 'admin', 'admin rolu qorunur');
   assert.equal(admin.created_at, '2025-01-01T00:00:00.000Z');
   const aysel = sb.T.profiles.find((p) => p.firebase_uid === 'u2');
-  assert.deepEqual([aysel.role, aysel.specialty, aysel.group_name, aysel.student_id], ['student', 'Sİ', 'Sİ26/01SB', 'S-1']);
-  // köhnə sxemli admin: degree/course saxlanılır, sərbəst mətn qrup təmizlənir (hesabatda bildirilir)
-  assert.deepEqual([admin.degree, admin.course, admin.specialty, admin.group_name], ['magistr', 1, null, null]);
+  assert.deepEqual([aysel.role, aysel.specialty, aysel.group_name, 'student_id' in aysel], ['student', 'Sİ', 'Sİ26/01SB', false]);
+  // köhnə sxemli admin: degree saxlanılır, sərbəst mətn qrup təmizlənir (hesabatda bildirilir)
+  assert.deepEqual([admin.degree, admin.specialty, admin.group_name], ['magistr', null, null]);
   assert.ok(r.problems.some((p) => p.area === 'users' && p.id === 'u1' && /ixtisas\/qrup keçərsizdir/.test(p.reason)));
   assert.equal(r.verification.find((v) => v.area === 'users').skipped, 1, 'təmizlənən qrup istifadəçini atlanmışlara əlavə etmir');
-  assert.deepEqual(sb.log.createUser.find((a) => a.email === 'aysel@x.az').user_metadata, { first_name: 'Aysel', last_name: 'Məmmədova', student_id: 'S-1', specialty: 'Sİ', group: 'Sİ26/01SB' });
+  assert.deepEqual(sb.log.createUser.find((a) => a.email === 'aysel@x.az').user_metadata, { first_name: 'Aysel', last_name: 'Məmmədova', specialty: 'Sİ', group: 'Sİ26/01SB' });
 
   // createUser: parolsuz köçürmə (təsadüfi parol), rol metadata-da yoxdur, bloklu hesab bloklanıb
   assert.equal(sb.log.createUser.length, 3);

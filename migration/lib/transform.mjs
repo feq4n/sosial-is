@@ -36,20 +36,17 @@ export function placementOf(d, groupMap) {
   return { specialty, group_name: group, dropped: false };
 }
 
-/** Profil: ad və soyad olmadan hesab yaradılmır (DB tətiyi də rədd edər). Köhnə degree/course sütunlarda saxlanılır (istifadə olunmur). */
+/** Profil: ad və soyad olmadan hesab yaradılmır (DB tətiyi də rədd edər). Tələbə bileti nömrəsi və kurs artıq köçürülmür (sütunlar silinib); köhnə degree saxlanılır (istifadə olunmur). */
 export function mapProfile(d, authUser, groupMap = null) {
   const first = str(d.firstName), last = str(d.lastName);
   if (first.length < 1 || first.length > 60) throw new Error('firstName boşdur və ya 60 simvoldan uzundur');
   if (last.length < 1 || last.length > 60) throw new Error('lastName boşdur və ya 60 simvoldan uzundur');
-  const course = Number(d.course);
   const row = {
     firebase_uid: authUser.uid,
     first_name: first,
     last_name: last,
     role: pick(d.role, ROLES, 'student'),
-    student_id: str(d.studentId).slice(0, 30) || null,
     degree: pick(d.degree, DEGREES, null),
-    course: Number.isInteger(course) && course >= 1 && course <= 6 ? course : null,
   };
   const { dropped, ...placement } = placementOf(d, groupMap);
   void dropped;

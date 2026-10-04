@@ -6,11 +6,11 @@ import { Badge, Button, Card, EmptyState, PageHeader, SelectField } from '@/comp
 import { TimetableGrid } from '@/components/TimetableGrid';
 import { useSpecialties } from '@/services/specialties';
 import {
-  courseLabel, courses, dayFromJsDate, dayHeading, findGroup, groups, lessonsOfGroup, shiftLabel, shifts,
+  dayFromJsDate, dayHeading, findGroup, groups, lessonsOfGroup, shiftLabel, shifts,
   specialties, specialtyFullLabel, specialtyLabel, timetable, timetableDays, type Group,
 } from '@/data/timetable';
 
-const KEYS = ['specialty', 'course', 'shift', 'group', 'day'] as const;
+const KEYS = ['specialty', 'shift', 'group', 'day'] as const;
 type Key = (typeof KEYS)[number];
 type Filters = Record<Key, string>;
 
@@ -19,14 +19,13 @@ function GroupTitle({ g }: { g: Group }) {
     <span className="flex flex-wrap items-center gap-2">
       <span className="text-lg font-bold">{g.code}</span>
       <Badge tone="brand">{specialtyLabel(g.specialty)}</Badge>
-      <Badge>Kurs: {g.course}</Badge>
       <Badge>{shiftLabel(g.shift)}</Badge>
     </span>
   );
 }
 
 export default function Schedule() {
-  useSeo('Dərs cədvəli', 'Azərbaycan Dövlət Pedaqoji Kolleci üzrə rəsmi dərs cədvəli: ixtisas, qrup, kurs və növbəyə görə filtr.');
+  useSeo('Dərs cədvəli', 'Azərbaycan Dövlət Pedaqoji Kolleci üzrə rəsmi dərs cədvəli: ixtisas, qrup və növbəyə görə filtr.');
   const { profile } = useAuth();
   const specList = useSpecialties();
   const specOptions = [...specialties].sort((a, b) => (specList.findIndex((s) => s.code === a.code) + 1 || 99) - (specList.findIndex((s) => s.code === b.code) + 1 || 99));
@@ -36,7 +35,6 @@ export default function Schedule() {
 
   const filters: Filters = {
     specialty: params.get('specialty') ?? useOwn?.specialty ?? '',
-    course: params.get('course') ?? '',
     shift: params.get('shift') ?? '',
     group: params.get('group') ?? useOwn?.code ?? '',
     day: params.get('day') ?? '',
@@ -45,7 +43,7 @@ export default function Schedule() {
   const update = (patch: Partial<Filters>) => {
     const next = { ...filters, ...patch };
     const g = findGroup(next.group);
-    if (g && ((next.specialty && g.specialty !== next.specialty) || (next.course && g.course !== next.course) || (next.shift && String(g.shift) !== next.shift))) next.group = '';
+    if (g && ((next.specialty && g.specialty !== next.specialty) || (next.shift && String(g.shift) !== next.shift))) next.group = '';
     const out = new URLSearchParams({ f: '1' });
     for (const k of KEYS) if (next[k]) out.set(k, next[k]);
     setParams(out, { replace: true });
@@ -53,8 +51,7 @@ export default function Schedule() {
 
   const groupOptions = useMemo(() => groups.filter((g) =>
     (!filters.specialty || g.specialty === filters.specialty)
-    && (!filters.course || g.course === filters.course)
-    && (!filters.shift || String(g.shift) === filters.shift)), [filters.specialty, filters.course, filters.shift]);
+    && (!filters.shift || String(g.shift) === filters.shift)), [filters.specialty, filters.shift]);
   const matched = groupOptions.filter((g) => !filters.group || g.code === filters.group);
   const days = filters.day ? [Number(filters.day)] : timetableDays.map((d) => d.no);
   const today = dayFromJsDate(new Date().getDay());
@@ -64,14 +61,10 @@ export default function Schedule() {
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
       <PageHeader title="Dərs cədvəli" text={`${timetable.meta.academicYear} tədris ili, ${timetable.meta.semester} semestri. Rəsmi cədvəl üzrə günlər I gündən V günədək göstərilir.`} />
       <Card className="mb-6 p-4 sm:p-5">
-        <form role="search" aria-label="Cədvəl filtrləri" onSubmit={(e) => e.preventDefault()} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <form role="search" aria-label="Cədvəl filtrləri" onSubmit={(e) => e.preventDefault()} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <SelectField label="İxtisas" value={filters.specialty} onChange={(e) => update({ specialty: e.target.value })}>
             <option value="">Hamısı</option>
             {specOptions.map((s) => <option key={s.code} value={s.code}>{specialtyFullLabel(s.code)}</option>)}
-          </SelectField>
-          <SelectField label="Kurs" value={filters.course} onChange={(e) => update({ course: e.target.value })}>
-            <option value="">Hamısı</option>
-            {courses.map((c) => <option key={c} value={c}>{courseLabel(c)}</option>)}
           </SelectField>
           <SelectField label="Növbə" value={filters.shift} onChange={(e) => update({ shift: e.target.value })}>
             <option value="">Hamısı</option>

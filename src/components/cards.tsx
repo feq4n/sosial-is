@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
-import { Bookmark, BookmarkCheck, Calendar, ExternalLink, FileText, Film, Link2, MapPin, Presentation, Star } from 'lucide-react';
+import { Bookmark, BookmarkCheck, Calendar, Download, ExternalLink, FileArchive, FileSpreadsheet, FileText, Film, Link2, MapPin, Presentation, Star } from 'lucide-react';
 import type { Announcement, EventItem, Material, MaterialType } from '@/types';
 import { announcementCategories, eventCategories, materialTypes } from '@/utils/labels';
 import { dayAndMonth, formatDate, formatTime, isSafeHttpsUrl } from '@/utils/format';
+import { formatBytes } from '@/utils/upload';
+import { publicFileUrl } from '@/services/files';
 import { Badge, Button, Card, cx } from './ui';
 
 export function AnnouncementCard({ a }: { a: Announcement }) {
@@ -39,11 +41,17 @@ export function EventCard({ e }: { e: EventItem }) {
   );
 }
 
-const typeIcon: Record<MaterialType, typeof FileText> = { pdf: FileText, doc: FileText, ppt: Presentation, video: Film, link: Link2 };
+const typeIcon: Record<MaterialType, typeof FileText> = { pdf: FileText, doc: FileText, ppt: Presentation, xls: FileSpreadsheet, txt: FileText, zip: FileArchive, video: Film, link: Link2 };
+
+/** Faylı olan material üçün endirmə ünvanı (Storage `?download=`), keçidli material üçün https keçidi. */
+export const materialAction = (m: Material): { href: string; download: boolean } | null => {
+  if (m.filePath) { const href = publicFileUrl('materials', m.filePath, m.fileName ?? 'material'); return href ? { href, download: true } : null; }
+  return m.url && isSafeHttpsUrl(m.url) ? { href: m.url, download: false } : null;
+};
 
 export function MaterialCard({ m, saved, onToggle, signedIn }: { m: Material; saved?: boolean; onToggle?: () => void; signedIn?: boolean }) {
   const Icon = typeIcon[m.fileType];
-  const safe = isSafeHttpsUrl(m.url);
+  const action = materialAction(m);
   return (
     <Card className="flex flex-col p-5">
       <div className="flex items-start gap-3">
@@ -63,9 +71,9 @@ export function MaterialCard({ m, saved, onToggle, signedIn }: { m: Material; sa
         <Badge>{materialTypes[m.fileType]}</Badge>
         <span>{m.author}</span><span aria-hidden>·</span><time dateTime={m.createdAt}>{formatDate(m.createdAt)}</time>
       </div>
-      {safe && (
-        <a href={m.url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:underline">
-          <ExternalLink className="size-4" aria-hidden />Aç
+      {action && (
+        <a href={action.href} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:underline">
+          {action.download ? <Download className="size-4" aria-hidden /> : <ExternalLink className="size-4" aria-hidden />}{action.download ? `Endir${m.fileSize ? ` (${formatBytes(m.fileSize)})` : ''}` : 'Aç'}
         </a>
       )}
     </Card>

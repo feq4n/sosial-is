@@ -1,24 +1,23 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { courses, findGroup, groups, isValidPlacement, lessons, lessonsOfGroup, lessonView, shifts, specialties, specialtyLabel } from '@/data/timetable';
+import { findGroup, groups, isValidPlacement, lessons, lessonsOfGroup, lessonView, shifts, specialties, specialtyLabel } from '@/data/timetable';
 
 describe('rəsmi cədvəl məlumatı', () => {
   it('3 ixtisas, 29 qrup və hər iki növbə var', () => {
     expect(specialties.map((s) => s.code)).toEqual(['KŞATS', 'KŞŞİ', 'Sİ']);
     expect(groups).toHaveLength(29);
     expect(shifts).toEqual([1, 2]);
-    expect(courses).toEqual(['H', 'I', 'II']);
     expect(groups.filter((g) => g.shift === 1)).toHaveLength(16);
     expect(groups.filter((g) => g.shift === 2)).toHaveLength(13);
   });
 
-  it('kurs və növbə qrup kodundan təxmin edilmir, cədvəldən götürülür', () => {
-    expect(findGroup('Sİ26/01SB')).toMatchObject({ specialty: 'Sİ', course: 'H', shift: 1 });
-    expect(findGroup('Sİ25/01SB')).toMatchObject({ specialty: 'Sİ', course: 'I', shift: 2 });
-    expect(findGroup('Sİ25/03SB')).toMatchObject({ specialty: 'Sİ', course: 'II', shift: 1 });
-    expect(findGroup('KŞATS25/01SB')).toMatchObject({ course: 'I', shift: 2 });
-    expect(findGroup('KŞATS25/02SB')).toMatchObject({ course: 'II', shift: 1 });
+  it('növbə qrup kodundan təxmin edilmir, cədvəldən götürülür', () => {
+    expect(findGroup('Sİ26/01SB')).toMatchObject({ specialty: 'Sİ', shift: 1 });
+    expect(findGroup('Sİ25/01SB')).toMatchObject({ specialty: 'Sİ', shift: 2 });
+    expect(findGroup('Sİ25/03SB')).toMatchObject({ specialty: 'Sİ', shift: 1 });
+    expect(findGroup('KŞATS25/01SB')).toMatchObject({ shift: 2 });
+    expect(findGroup('KŞATS25/02SB')).toMatchObject({ shift: 1 });
   });
 
   it('hər dərs mövcud qrupa bağlıdır, saatlar düzgündür və yerlər təkrarlanmır', () => {

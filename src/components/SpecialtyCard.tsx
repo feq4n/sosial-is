@@ -33,7 +33,7 @@ export function SpecialtyCard({ s }: { s: SpecialtyInfo }) {
         <div className="mt-auto">
           {groups.length > 0 ? (
             <div className="overflow-hidden rounded-2xl border border-line">
-              <p className="bg-brand-dark px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-accent">Qəbul balları — Az. bölməsi (əyani)</p>
+              <p className="bg-brand-dark px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-brand-ink">Qəbul balları — Az. bölməsi (əyani)</p>
               <div className="grid gap-3 p-4">
                 {groups.map((g) => (
                   <div key={g.title}>

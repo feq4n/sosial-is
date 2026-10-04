@@ -1,4 +1,4 @@
-import { BookOpen, CalendarDays, GraduationCap, LayoutDashboard, Mail, Megaphone, Users } from 'lucide-react';
+import { BookOpen, CalendarDays, CircleHelp, GraduationCap, LayoutDashboard, Mail, Megaphone, PanelBottom, Settings, UserRound, Users } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import AppShell, { type NavItem } from './AppShell';
 
@@ -11,6 +11,10 @@ export default function AdminLayout() {
     { to: '/admin/events', label: 'Tədbirlər', icon: <CalendarDays className="size-5" /> },
     ...(role === 'admin' ? [
       { to: '/admin/specialties', label: 'İxtisaslar', icon: <GraduationCap className="size-5" /> },
+      { to: '/admin/team', label: 'Komandamız', icon: <UserRound className="size-5" /> },
+      { to: '/admin/faq', label: 'SSS', icon: <CircleHelp className="size-5" /> },
+      { to: '/admin/footer', label: 'Footer', icon: <PanelBottom className="size-5" /> },
+      { to: '/admin/site', label: 'Sayt parametrləri', icon: <Settings className="size-5" /> },
       { to: '/admin/users', label: 'İstifadəçilər', icon: <Users className="size-5" /> },
       { to: '/admin/messages', label: 'Mesajlar', icon: <Mail className="size-5" /> },
     ] : []),

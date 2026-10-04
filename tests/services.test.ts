@@ -54,9 +54,10 @@ describe('sətir çevirmələri', () => {
   });
 
   it('profiles sətri UserProfile-a çevrilir (id→uid, group_name→group, specialty)', () => {
-    const p = toProfile({ id: UUID, first_name: 'Aysel', last_name: 'M', email: 'a@b.az', role: 'admin', student_id: null, specialty: 'Sİ', group_name: 'Sİ26/01SB', created_at: '2026-01-02T03:04:05Z', updated_at: null, firebase_uid: 'fb' });
+    const p = toProfile({ id: UUID, first_name: 'Aysel', last_name: 'M', email: 'a@b.az', role: 'admin', student_id: 'S-1', course: 2, specialty: 'Sİ', group_name: 'Sİ26/01SB', created_at: '2026-01-02T03:04:05Z', updated_at: null, firebase_uid: 'fb' });
     expect(p).toMatchObject({ uid: UUID, firstName: 'Aysel', lastName: 'M', role: 'admin', specialty: 'Sİ', group: 'Sİ26/01SB', createdAt: '2026-01-02T03:04:05.000Z' });
     expect(p).not.toHaveProperty('studentId');
+    expect(p).not.toHaveProperty('course');
     expect(p).not.toHaveProperty('id');
   });
 });
@@ -138,9 +139,9 @@ describe('istifadəçi və mesaj əməliyyatları', () => {
 describe('profil yeniləməsi', () => {
   it('ixtisas və qrup birlikdə göndərilir, köhnə degree/course heç vaxt göndərilmir', async () => {
     h.state.result = { data: { id: UUID, first_name: 'A', last_name: 'B', email: 'a@b.az', role: 'student', specialty: 'Sİ', group_name: 'Sİ26/01SB', created_at: '2026-01-01T00:00:00Z' }, error: null };
-    const p = await updateOwnProfile(UUID, { firstName: ' A ', lastName: 'B', studentId: ' ', specialty: 'Sİ', group: 'Sİ26/01SB' });
+    const p = await updateOwnProfile(UUID, { firstName: ' A ', lastName: 'B', specialty: 'Sİ', group: 'Sİ26/01SB' });
     const patch = called('update')[0][0] as Record<string, unknown>;
-    expect(patch).toEqual({ first_name: 'A', last_name: 'B', student_id: null, specialty: 'Sİ', group_name: 'Sİ26/01SB' });
+    expect(patch).toEqual({ first_name: 'A', last_name: 'B', specialty: 'Sİ', group_name: 'Sİ26/01SB' });
     expect(patch).not.toHaveProperty('degree');
     expect(patch).not.toHaveProperty('course');
     expect(patch).not.toHaveProperty('role');
