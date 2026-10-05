@@ -89,13 +89,16 @@ describe('admin Formlar', () => {
     signIn('admin');
     h.api.getById.mockResolvedValue(form());
     h.api.responses.mockResolvedValue([
-      { id: 'r1', submittedAt: '2026-10-04T08:00:00.000Z', answers: { q1: 'Aysel', q2: 'Ofis' } },
-      { id: 'r2', submittedAt: '2026-10-04T09:00:00.000Z', answers: { q1: 'Bəhruz', q2: 'Ofis' } },
+      { id: 'r1', submittedAt: '2026-10-04T08:00:00.000Z', answers: { q1: 'Aysel', q2: 'Ofis' }, respondentName: 'Aysel Məmmədova', respondentEmail: 'aysel@example.az', respondentKind: 'student' },
+      { id: 'r2', submittedAt: '2026-10-04T09:00:00.000Z', answers: { q1: 'Bəhruz', q2: 'Ofis' }, respondentKind: 'anonymous' },
+      { id: 'r3', submittedAt: '2026-10-04T10:00:00.000Z', answers: { q1: 'Köhnə', q2: 'Ofis' }, respondentKind: 'anonymous' },
     ]);
     renderAt('/admin/forms/11111111-1111-1111-1111-111111111111/responses');
     expect(await screen.findByText('Aysel')).toBeInTheDocument();
     expect(screen.getByText('Bəhruz')).toBeInTheDocument();
-    expect(screen.getByText(/Cavab sayı: 2/)).toBeInTheDocument();
+    expect(screen.getByText('Aysel Məmmədova')).toBeInTheDocument();
+    expect(screen.getAllByText('Anonim')).toHaveLength(2);
+    expect(screen.getByText(/Cavab sayı: 3/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /CSV yüklə/ })).toBeEnabled();
   });
 });
@@ -118,11 +121,26 @@ describe('tələbə Formlar və doldurma', () => {
     renderAt('/dashboard/forms');
     expect(await screen.findByText(/Hazırda sizin üçün açıq form yoxdur/)).toBeInTheDocument();
   });
-  it('/f/:slug giriş etməyibsə loginə yönləndirir', async () => {
+  it('/f/:slug giriş etməyən istifadəçini loginə atmır və ad/soyad/e-poçt soruşmur; cavab anonim göndərilir', async () => {
     Object.assign(h.auth, { user: null, profile: null, role: 'student', loading: false });
+    h.api.getBySlug.mockResolvedValue(form());
     renderAt('/f/abc123def456');
-    expect(await screen.findByRole('heading', { name: 'Daxil ol' })).toBeInTheDocument();
-    expect(h.api.getBySlug).not.toHaveBeenCalled();
+    expect(await screen.findByRole('heading', { name: 'Praktika sorğusu' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Daxil ol' })).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/^Soyad/)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/^E-poçt/)).not.toBeInTheDocument();
+    expect(h.api.hasSubmitted).not.toHaveBeenCalled();
+    await userEvent.type(screen.getByLabelText(/Adınız/), 'Fidan');
+    await userEvent.click(screen.getByRole('button', { name: 'Göndər' }));
+    await waitFor(() => expect(h.api.submit).toHaveBeenCalledWith('11111111-1111-1111-1111-111111111111', { q1: 'Fidan' }));
+    expect(await screen.findByText('Cavabınız qəbul edildi')).toBeInTheDocument();
+  });
+  it('qonaq üçün görünməyən (məhdud auditoriyalı) form: «Daxil ol» təklifi', async () => {
+    Object.assign(h.auth, { user: null, profile: null, role: 'student', loading: false });
+    h.api.getBySlug.mockResolvedValue(null);
+    renderAt('/f/abc123def456');
+    expect(await screen.findByText('Form tapılmadı')).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: 'Daxil ol' }).every((a) => a.getAttribute('href') === '/login')).toBe(true);
   });
   it('tələbə formu doldurub göndərir', async () => {
     signIn('student');

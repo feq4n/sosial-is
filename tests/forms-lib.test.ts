@@ -118,14 +118,22 @@ describe('CSV', () => {
   it('BOM + ; ayırıcı + sütun sırası; mənfi ədəd dəyişmir, mətn qorunur', () => {
     const fields = [f({ id: 'q1', type: 'text', label: 'Ad' }), f({ id: 'q2', type: 'number', label: 'Say' }), f({ id: 'q3', type: 'checkbox', label: 'Seç', options: ['A', 'B'] })];
     const csv = responsesToCsv(fields, [
-      { id: '1', submittedAt: '2026-10-04T10:00:00Z', answers: { q1: '=cmd|x', q2: -5, q3: ['A', 'B'] } },
-      { id: '2', submittedAt: '2026-10-04T11:00:00Z', answers: { q1: 'Əli; "Vəli"' } },
+      { id: '1', submittedAt: '2026-10-04T10:00:00Z', answers: { q1: '=cmd|x', q2: -5, q3: ['A', 'B'] }, respondentName: 'Aysel Məmmədova', respondentEmail: 'aysel@example.az', respondentKind: 'student' },
+      { id: '2', submittedAt: '2026-10-04T11:00:00Z', answers: { q1: 'Əli; "Vəli"' }, respondentName: '=SUM(A1)', respondentEmail: 'x@example.az', respondentKind: 'student' },
+      { id: '3', submittedAt: '2026-10-04T12:00:00Z', answers: { q1: 'Köhnə' } },
     ]);
-    expect(csv.startsWith('\ufeff"№";"Tarix";"Ad";"Say";"Seç"\r\n')).toBe(true);
+    expect(csv.startsWith('\ufeff"№";"Tarix";"Ad soyad";"E-poçt";"Növ";"Ad";"Say";"Seç"\r\n')).toBe(true);
     const lines = csv.slice(1).split('\r\n');
-    expect(lines).toHaveLength(3);
-    expect(lines[1].split(';').slice(2)).toEqual([`"'=cmd|x"`, '"-5"', '"A, B"']);
+    expect(lines).toHaveLength(4);
+    expect(lines[1].split(';').slice(2)).toEqual(['"Aysel Məmmədova"', '"aysel@example.az"', '"Qeydiyyatlı"', `"'=cmd|x"`, '"-5"', '"A, B"']);
+    expect(lines[2].split(';')[2]).toBe(`"'=SUM(A1)"`); // ad xanası da düstur inyeksiyasına qarşı qorunur
+    expect(lines[2].split(';')[4]).toBe('"Qeydiyyatlı"');
     expect(lines[2]).toContain('"Əli; ""Vəli"""');
+    expect(lines[3].split(';').slice(2, 5)).toEqual(['""', '""', '"Anonim"']); // qonaq/köhnə cavab: kimlik yoxdur
+  });
+  it('vaxt dəqiqə dəqiqliyi ilə yazılır (artıq saata yuvarlaqlaşdırılmır)', () => {
+    const csv = responsesToCsv([f({ id: 'q1', type: 'text', label: 'Ad' })], [{ id: '1', submittedAt: new Date(2026, 9, 4, 10, 37).toISOString(), answers: {} }]);
+    expect(csv).toContain('2026-10-04 10:37');
   });
 });
 

@@ -214,16 +214,24 @@ const stamp = (iso: string) => {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return '';
   const p = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:00`;
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
 };
 
-export interface ResponseRow { id: string; submittedAt: string; answers: Record<string, unknown> }
+/** Cavab verən: qeydiyyatlı istifadəçi (ad/e-poçt profildən) və ya anonim (qonaq və ya köhnə cavab). */
+export type RespondentKind = 'student' | 'anonymous';
+export const RESPONDENT_LABELS: Record<RespondentKind, string> = { student: 'Qeydiyyatlı', anonymous: 'Anonim' };
+
+export interface ResponseRow {
+  id: string; submittedAt: string; answers: Record<string, unknown>;
+  respondentName?: string; respondentEmail?: string; respondentKind?: RespondentKind;
+}
 
 /** UTF-8 BOM + `;` ayırıcı: Azərbaycan lokalında Excel-də düzgün açılır. */
 export function responsesToCsv(fields: FormField[], rows: ResponseRow[]): string {
-  const head = ['№', 'Tarix', ...fields.map((f) => f.label)];
+  const head = ['№', 'Tarix', 'Ad soyad', 'E-poçt', 'Növ', ...fields.map((f) => f.label)];
   const body = rows.map((r, i) => [
     String(i + 1), stamp(r.submittedAt),
+    csvCell(r.respondentName ?? ''), csvCell(r.respondentEmail ?? ''), csvCell(RESPONDENT_LABELS[r.respondentKind ?? 'anonymous']),
     ...fields.map((f) => {
       const t = answerText(r.answers[f.id]);
       // Ədəd/qiymət sahələri yalnız rəqəm ola bilər (mənfi ədəd "-5" düstur sayılmasın)

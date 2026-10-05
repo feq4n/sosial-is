@@ -10,6 +10,7 @@ const FORM_ERRORS: Record<string, string> = {
   'invalid-answers': 'Cavablar düzgün deyil. Sahələri yoxlayıb yenidən göndərin.',
   'invalid-form': 'Formun sualları düzgün deyil. Sual mətnlərini və variantları yoxlayın.',
   'invalid-audience': 'Seçilmiş ixtisas və ya qrup tapılmadı.',
+  'login-required': 'Bu form yalnız daxil olmuş tələbələr üçündür. Zəhmət olmasa daxil olun.',
 };
 
 /** İstifadəçiyə texniki detalları göstərmədən, Azərbaycan dilində aydın mesaj qaytarır. */

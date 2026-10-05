@@ -124,9 +124,9 @@ Ayrıca xidmət yoxdur: formlar portalın içində, Supabase cədvəllərində i
 
 - **Admin → Formlar:** yeni form (başlıq, təsvir, suallar, status, son tarix), auditoriya (bütün tələbələr və ya seçilmiş ixtisas/qruplar), önizləmə, paylaşım linki, cavab cədvəli, xülasə və CSV ixracı.
 - **Sual növləri:** qısa mətn, uzun mətn, ədəd, e-poçt, tarix, bir seçim (düymə/siyahı), çox seçim, qiymət (1–5). Hər sual məcburi ola bilər.
-- **Tələbə:** Kabinet → Formlar (yalnız öz ixtisas/qrupuna açıq olanlar) və ya paylaşım linki `/f/<kod>` (giriş tələb edir).
-- **Təhlükəsizlik (hamısı serverdə, RLS + `submit_form`):** tələbə yalnız dərc olunmuş və öz auditoriyasına aid formu görür; cavab sualların təyininə görə yoxlanılır (məcburilik, variant, tarix, e-poçt, 1–5); bir tələbə bir dəfə doldura bilər; qaralama və vaxtı bitmiş formlar qəbul olunmur; yalnız admin form yarada/dəyişə/cavablara baxa bilər.
-- **Anonimlik:** `form_responses` cədvəlində istifadəçi identifikatoru yoxdur, vaxt saata yuvarlaqlaşdırılır; kimin doldurduğu ayrıca `form_submissions` cədvəlindədir və admin onu oxuya bilmir.
+- **Tələbə:** Kabinet → Formlar (yalnız öz ixtisas/qrupuna açıq olanlar) və ya paylaşım linki `/f/<kod>` (giriş tələb ETMİR: qeydiyyatsız istifadəçi formu birbaşa doldurur, ad/e-poçt soruşulmur).
+- **Təhlükəsizlik (hamısı serverdə, RLS + `submit_form`):** tələbə yalnız dərc olunmuş və öz auditoriyasına aid formu görür; cavab sualların təyininə görə yoxlanılır (məcburilik, variant, tarix, e-poçt, 1–5); qeydiyyatlı istifadəçi bir dəfə doldura bilər (qonağı təkrardan qorumaq mümkün deyil); qaralama və vaxtı bitmiş formlar qəbul olunmur; yalnız admin form yarada/dəyişə/cavablara baxa bilər.
+- **Cavab verən:** girişli istifadəçinin cavabında `respondent_name`/`respondent_email` serverdə profildən yazılır və admin cavablar səhifəsində, CSV-də görünür. Giriş etməyən (qonaq) cavabı anonimdir: ad, soyad və e-poçt soruşulmur və saxlanılmır. Qonaq yalnız auditoriyası «hamı» olan formu görür; ixtisas/qrup üçün məhdud formlar giriş tələb edir. Əvvəlki cavablar anonim qalır.
 - **Məhdudiyyət:** cavab tələbələrə göstərilmir; fayl yükləmə yoxdur; formu dərc etdikdən sonra sualları dəyişsəniz köhnə cavablar yeni suallarla uyğun gəlməyə bilər.
 
 ## Yeniləmə: Super Admin, admin tərəfindən idarə olunan məzmun, material faylları

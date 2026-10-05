@@ -144,22 +144,32 @@ export const formsApi = {
     expectRows(unwrap(await supabase.from('forms').delete().eq('id', id).select('id')));
   },
 
-  /** Cavabı serverdə yoxlayıb yazır (RPC `submit_form`): auditoriya, son tarix, bir dəfə doldurma və sual qaydaları. */
+  /**
+   * Cavabı serverdə yoxlayıb yazır (RPC `submit_form`): auditoriya, son tarix, bir dəfə doldurma və sual qaydaları.
+   * Giriş edibsə cavab ad/e-poçtla (profildən, serverdə) yazılır; qonaq (giriş etməyən) cavabı anonimdir.
+   */
   async submit(formId: string, answers: Record<string, AnswerValue>): Promise<void> {
     need();
     unwrap(await supabase.rpc('submit_form', { p_form_id: formId, p_answers: answers }));
   },
 
-  /** Admin: bütün cavablar (1000-lik səhifələrlə). Cavablarda tələbə identifikatoru yoxdur. */
+  /** Admin: bütün cavablar (1000-lik səhifələrlə), cavab verənin adı və e-poçtu ilə (yalnız girişli istifadəçilər). Qonaq və köhnə cavablar anonimdir. */
   async responses(formId: string): Promise<ResponseRow[]> {
     need();
     const out: ResponseRow[] = [];
     for (let from = 0; ; from += PAGE) {
-      const rows = unwrap<Array<{ id: string; answers: unknown; submitted_at: string }>>(
-        await supabase.from('form_responses').select('id,answers,submitted_at').eq('form_id', formId)
+      const rows = unwrap<Array<{ id: string; answers: unknown; submitted_at: string; respondent_id: string | null; respondent_name: string | null; respondent_email: string | null }>>(
+        await supabase.from('form_responses').select('id,answers,submitted_at,respondent_id,respondent_name,respondent_email').eq('form_id', formId)
           .order('submitted_at', { ascending: true }).order('id', { ascending: true }).range(from, from + PAGE - 1),
       );
-      for (const r of rows) out.push({ id: r.id, submittedAt: iso(r.submitted_at), answers: (r.answers && typeof r.answers === 'object' ? r.answers : {}) as Record<string, unknown> });
+      for (const r of rows) {
+        out.push({
+          id: r.id, submittedAt: iso(r.submitted_at), answers: (r.answers && typeof r.answers === 'object' ? r.answers : {}) as Record<string, unknown>,
+          ...(r.respondent_name ? { respondentName: r.respondent_name } : {}),
+          ...(r.respondent_email ? { respondentEmail: r.respondent_email } : {}),
+          respondentKind: r.respondent_id ? 'student' : 'anonymous',
+        });
+      }
       if (rows.length < PAGE) break;
     }
     return out;

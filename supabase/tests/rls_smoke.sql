@@ -520,9 +520,15 @@ select t.as_user('00000000-0000-0000-0000-00000000000e');
 select t.throws('redaktor form yarada bilmir (yalnız admin)', $q$insert into public.forms (title) values ('Hack')$q$, '42501');
 select t.back();
 select t.as_user(null);
-select t.throws('anon formları oxuya bilmir', 'select 1 from public.forms', '42501');
-select t.throws('anon submit_form çağıra bilmir',
-  $q$select public.submit_form('f0000000-0000-0000-0000-000000000001', '{}'::jsonb)$q$, '42501');
+select t.ok('anon yalnız dərc olunmuş «hamı» formlarını görür', t.cnt('select 1 from public.forms') = 2 and t.cnt($q$select 1 from public.forms where status <> 'published' or audience_mode <> 'all'$q$) = 0);
+select t.throws('anon forms.created_by oxuya bilmir', 'select created_by from public.forms', '42501');
+select t.throws('anon forma yaza bilmir', $q$insert into public.forms (title) values ('Hack')$q$, '42501');
+select t.throws('anon cavab cədvəlini oxuya bilmir', 'select 1 from public.form_responses', '42501');
+select t.throws_msg('qonaq «məhdud» formu doldura bilmir',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000002', '{"q1":"X"}'::jsonb)$q$, 'login-required');
+select t.throws_msg('qonaq üçün də cavab sualların təyininə görə yoxlanılır',
+  $q$select public.submit_form('f0000000-0000-0000-0000-000000000001', '{"q2":"Bəli"}'::jsonb)$q$, 'invalid-answers');
+select public.submit_form('f0000000-0000-0000-0000-000000000001', '{"q1":"Qonaq","q2":"Bəli"}'::jsonb);
 select t.back();
 select t.as_user('00000000-0000-0000-0000-00000000000c');
 select t.ok('admin bütün formları görür (qaralama daxil)', t.cnt('select 1 from public.forms') = 5);
@@ -583,20 +589,20 @@ select public.submit_form('f0000000-0000-0000-0000-000000000003', '{"q1":"Qrup c
 select t.back();
 
 select t.ok('cavablar yazılıb, mətn kəsilib, təyində olmayan açar atılıb',
-  (select count(*) from public.form_responses where form_id = 'f0000000-0000-0000-0000-000000000001') = 2
+  (select count(*) from public.form_responses where form_id = 'f0000000-0000-0000-0000-000000000001') = 3
   and (select count(*) from public.form_responses where answers ? 'zzz') = 0
   and exists (select 1 from public.form_responses where answers ->> 'q1' = 'Fidan' and answers ->> 'q2' = 'Xeyr'));
-select t.ok('cavab cədvəlində istifadəçi identifikatoru sütunu YOXDUR (anonimlik)',
-  not exists (select 1 from information_schema.columns
-              where table_schema = 'public' and table_name = 'form_responses' and column_name ~ '(user|uid|profile)'));
-select t.ok('vaxt saata yuvarlaqlaşdırılır',
-  (select bool_and(submitted_at = date_trunc('hour', submitted_at)) from public.form_responses));
+select t.ok('qeydiyyatlının cavabında ad və e-poçt serverdə profildən yazılır',
+  exists (select 1 from public.form_responses where respondent_id = '00000000-0000-0000-0000-00000000000a' and respondent_name is not null and respondent_email is not null));
+select t.ok('qonaq cavabı anonimdir: ad, e-poçt və respondent_id boşdur',
+  exists (select 1 from public.form_responses where answers ->> 'q1' = 'Qonaq' and respondent_id is null and respondent_name is null and respondent_email is null));
 
 select t.as_user('00000000-0000-0000-0000-00000000000c');
-select t.ok('admin cavabları oxuya bilir', t.cnt('select 1 from public.form_responses') = 3);
+select t.ok('admin cavabları oxuya bilir', t.cnt('select 1 from public.form_responses') = 4);
+select t.ok('admin girişli istifadəçilərin ad və e-poçtunu görür, qonaq cavabı anonimdir', t.cnt('select 1 from public.form_responses where respondent_email is not null') = 3 and t.cnt('select 1 from public.form_responses where respondent_email is null') = 1);
 select t.ok('admin doldurma qeydlərini görmür (tələbə ilə cavab əlaqələndirilmir)', t.cnt('select 1 from public.form_submissions') = 0);
 select t.ok('admin cavab sayını form siyahısında ala bilir',
-  (select count(*) from public.form_responses where form_id = 'f0000000-0000-0000-0000-000000000001') = 2);
+  (select count(*) from public.form_responses where form_id = 'f0000000-0000-0000-0000-000000000001') = 3);
 select t.ok('admin formu silə bilir', t.affected($q$delete from public.forms where title = 'Admin yaratdı'$q$) = 1);
 select t.back();
 

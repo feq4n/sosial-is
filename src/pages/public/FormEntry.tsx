@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { CheckCircle2, ClipboardList, Clock, Eye } from 'lucide-react';
 import { ButtonLink, Card, EmptyState, ErrorState } from '@/components/ui';
 import { FormRenderer } from '@/components/forms/FormRenderer';
@@ -12,32 +12,40 @@ import { isClosed, type AnswerValue } from '@/lib/forms';
 import { formsApi } from '@/services/forms';
 
 /**
- * /f/:slug — paylaşım linki. Giriş (RequireAuth) tələb edir; form və auditoriya yoxlaması serverdədir (RLS + submit_form).
+ * /f/:slug — paylaşım linki. Giriş tələb ETMİR: giriş etməyən istifadəçi (qonaq) formu birbaşa doldurur, cavabı anonim olur.
+ * Giriş edibsə cavab ad/e-poçtla (profildən, serverdə) qeydə alınır.
+ * Form və auditoriya yoxlaması serverdədir (RLS + submit_form): qonaq yalnız auditoriyası «hamı» olan formu görür.
  * Admin formu önizləmə rejimində görür (cavab göndərilmir).
  */
 export default function FormEntry() {
   useSeo('Form', undefined, { noindex: true });
   const { slug = '' } = useParams();
-  const { role } = useAuth();
+  const { user, role, loading: authLoading } = useAuth();
   const isAdmin = role === 'admin';
   const [done, setDone] = useState(false);
 
   const { data, loading, error, reload } = useAsync(async () => {
+    if (authLoading) return { form: null, submitted: false };
     const form = await formsApi.getBySlug(slug);
     if (!form) return { form: null, submitted: false };
-    const submitted = isAdmin ? false : await formsApi.hasSubmitted(form.id);
+    const submitted = isAdmin || !user ? false : await formsApi.hasSubmitted(form.id);
     return { form, submitted };
-  }, [slug]);
+  }, [slug, user?.uid, authLoading, isAdmin]);
 
-  if (loading) return <PageLoader />;
-  const back = <ButtonLink to="/dashboard/forms" variant="secondary">Mənim formlarım</ButtonLink>;
+  if (loading || authLoading) return <PageLoader />;
+  const back = user
+    ? <ButtonLink to="/dashboard/forms" variant="secondary">Mənim formlarım</ButtonLink>
+    : <ButtonLink to="/" variant="secondary">Ana səhifə</ButtonLink>;
   const wrap = (node: React.ReactNode) => <div className="mx-auto max-w-2xl px-4 py-12">{node}</div>;
 
   if (error) return wrap(<ErrorState message={error} onRetry={reload} />);
   const form = data?.form;
   if (!form) {
     return wrap(<EmptyState icon={<ClipboardList className="size-7" aria-hidden />} title="Form tapılmadı"
-      text="Bu form mövcud deyil, bağlanıb və ya sizin ixtisas/qrupunuz üçün nəzərdə tutulmayıb." action={back} />);
+      text={user
+        ? 'Bu form mövcud deyil, bağlanıb və ya sizin ixtisas/qrupunuz üçün nəzərdə tutulmayıb.'
+        : 'Bu form mövcud deyil, bağlanıb və ya yalnız müəyyən ixtisas/qrup tələbələri üçündür. Qeydiyyatlısınızsa, daxil olub yenidən yoxlayın.'}
+      action={user ? back : <ButtonLink to="/login" state={{ from: `/f/${slug}` }}>Daxil ol</ButtonLink>} />);
   }
   if (done || data?.submitted) {
     return wrap(<EmptyState icon={<CheckCircle2 className="size-7" aria-hidden />} title={done ? 'Cavabınız qəbul edildi' : 'Siz bu formu artıq doldurmusunuz'}
@@ -47,7 +55,10 @@ export default function FormEntry() {
     return wrap(<EmptyState icon={<Clock className="size-7" aria-hidden />} title="Bu formun qəbul müddəti bitib" text="Yeni form dərc olunduqda “Formlar” bölməsində görünəcək." action={back} />);
   }
 
-  const submit = async (answers: Record<string, AnswerValue>) => { await formsApi.submit(form.id, answers); setDone(true); };
+  const submit = async (answers: Record<string, AnswerValue>) => {
+    await formsApi.submit(form.id, answers);
+    setDone(true);
+  };
 
   return wrap(
     <Card className="p-6 sm:p-8">
@@ -57,7 +68,8 @@ export default function FormEntry() {
       <h1 className="break-words text-2xl font-extrabold sm:text-3xl">{form.title}</h1>
       {form.description && <p className="mt-3 whitespace-pre-line text-muted">{form.description}</p>}
       {form.closesAt && <p className="mt-3 text-sm text-muted">Son tarix: {formatDateTime(form.closesAt)}</p>}
-      <p className="mt-3 text-sm text-muted">Admin panelində cavab sizin adınızla göstərilmir.</p>
+      {user && !isAdmin && <p className="mt-3 text-sm text-muted">Cavabınız hesabınızın adı və e-poçtu ilə qeydə alınacaq.</p>}
+      {!user && <p className="mt-3 text-sm text-muted">Giriş tələb olunmur, cavabınız anonim qeydə alınacaq. Hesabınız varsa, <Link className="font-semibold text-brand hover:underline" to="/login" state={{ from: `/f/${slug}` }}>daxil ola bilərsiniz</Link>.</p>}
       <div className="mt-8"><FormRenderer fields={form.fields} onSubmit={submit} preview={isAdmin} /></div>
     </Card>,
   );

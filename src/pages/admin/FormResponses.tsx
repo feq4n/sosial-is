@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Button, ButtonLink, Card, EmptyState, ErrorState, ListSkeleton, PageHeader } from '@/components/ui';
 import { useAsync } from '@/hooks/useAsync';
 import { useSeo } from '@/hooks/useSeo';
-import { answerText, responsesToCsv, summarize, type FormField } from '@/lib/forms';
+import { answerText, RESPONDENT_LABELS, responsesToCsv, summarize, type FormField } from '@/lib/forms';
 import { formatDateTime } from '@/utils/format';
 import { formsApi } from '@/services/forms';
 
@@ -17,7 +17,7 @@ function downloadCsv(name: string, csv: string) {
 
 const pct = (n: number, total: number) => (total ? Math.round((n / total) * 100) : 0);
 
-/** /admin/forms/:id/responses — cavab cədvəli, xülasə və CSV ixracı. Cavablarda tələbə adı/e-poçtu yoxdur. */
+/** /admin/forms/:id/responses — cavab cədvəli, xülasə və CSV ixracı. Girişli istifadəçilərin cavabında ad və e-poçt göstərilir, qonaq və köhnə cavablar anonimdir. */
 export function AdminFormResponses() {
   useSeo('Form cavabları (admin)', undefined, { noindex: true });
   const { id = '' } = useParams();
@@ -38,7 +38,7 @@ export function AdminFormResponses() {
 
   return (
     <>
-      <PageHeader title={form.title} text={`Cavab sayı: ${rows.length}. Cavablar anonimdir: kimin doldurduğu göstərilmir. Vaxt saat dəqiqliyi ilə yazılır.`}
+      <PageHeader title={form.title} text={`Cavab sayı: ${rows.length}. Giriş etmiş istifadəçilərin cavabında ad və e-poçt göstərilir. Giriş etməyən (qonaq) və köhnə cavablar anonimdir.`}
         actions={<div className="flex flex-wrap gap-2">
           {back}
           <Button onClick={() => downloadCsv(`${form.slug}-cavablar.csv`, responsesToCsv(fields, rows))} disabled={rows.length === 0}><Download className="size-4" aria-hidden />CSV yüklə</Button>
@@ -74,11 +74,12 @@ export function AdminFormResponses() {
           </div>
 
           <Card className="overflow-x-auto">
-            <table className="w-full min-w-[40rem] text-left text-sm">
+            <table className="w-full min-w-[48rem] text-left text-sm">
               <thead>
                 <tr className="border-b border-line bg-surface-2">
                   <th scope="col" className="px-4 py-3 font-semibold">№</th>
                   <th scope="col" className="px-4 py-3 font-semibold">Tarix</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Cavab verən</th>
                   {fields.map((f) => <th key={f.id} scope="col" className="px-4 py-3 font-semibold">{f.label}</th>)}
                 </tr>
               </thead>
@@ -87,6 +88,15 @@ export function AdminFormResponses() {
                   <tr key={r.id} className="border-b border-line last:border-0 align-top">
                     <td className="px-4 py-3 text-muted">{i + 1}</td>
                     <td className="whitespace-nowrap px-4 py-3 text-muted">{formatDateTime(r.submittedAt)}</td>
+                    <td className="max-w-[14rem] break-words px-4 py-3">
+                      {r.respondentName || r.respondentEmail ? (
+                        <>
+                          <span className="block font-semibold">{r.respondentName ?? '—'}</span>
+                          {r.respondentEmail && <span className="block break-all text-xs text-muted">{r.respondentEmail}</span>}
+                          <span className="mt-0.5 block text-xs text-muted">{RESPONDENT_LABELS[r.respondentKind ?? 'anonymous']}</span>
+                        </>
+                      ) : <span className="text-muted">{RESPONDENT_LABELS.anonymous}</span>}
+                    </td>
                     {fields.map((f) => <td key={f.id} className="max-w-xs whitespace-pre-line break-words px-4 py-3">{answerText(r.answers[f.id]) || '—'}</td>)}
                   </tr>
                 ))}

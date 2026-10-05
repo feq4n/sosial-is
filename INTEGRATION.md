@@ -15,8 +15,8 @@ Sual növləri (mətn, uzun mətn, ədəd, e-poçt, tarix, bir/çox seçim, 1–
 - Hər qayda serverdədir (Postgres RLS + `submit_form` funksiyası); interfeys yalnız rahatlıqdır.
 - Rol yalnız `profiles.role`-dan oxunur. Yalnız `admin` form yarada/dəyişə/silə və cavabları oxuya bilər (redaktor da yox).
 - Tələbə yalnız dərc olunmuş **və öz ixtisas/qrupuna aid** formu görür. İxtisası/qrupu olmayan tələbə məhdud formları görmür və doldura bilmir.
-- `submit_form`: giriş tələb edir; auditoriyanı profildən yoxlayır; son tarix və statusu yoxlayır; hər cavabı sualın təyininə görə yoxlayır (məcburilik, variant, tarix, e-poçt, 1–5, uzunluq); təyində olmayan açarları atır; bir tələbə yalnız bir dəfə doldura bilər. Cavab cədvəlinə birbaşa yazmaq mümkün deyil.
-- Anonimlik: `form_responses`-da istifadəçi identifikatoru yoxdur və vaxt saata yuvarlaqlaşdırılır; «kim doldurub» ayrıca cədvəldədir və admin onu oxuya bilmir. Qeyd: bu, sıx qrupda (məs. bir nəfərlik auditoriya) və ya DB-yə birbaşa girişi olan şəxsə qarşı tam anonimlik deyil.
+- `submit_form`: giriş tələb ETMİR (qonaq anonim göndərir; «məhdud» auditoriya üçün giriş lazımdır); girişlidə auditoriyanı profildən yoxlayır; son tarix və statusu yoxlayır; hər cavabı sualın təyininə görə yoxlayır (məcburilik, variant, tarix, e-poçt, 1–5, uzunluq); təyində olmayan açarları atır; girişli istifadəçi bir dəfə doldura bilər, qonaq təkrar doldura bilər. Cavab cədvəlinə birbaşa yazmaq mümkün deyil.
+- Kimlik: `form_responses`-da `respondent_id/name/email` yalnız girişli istifadəçi üçün (profildən, serverdə) yazılır; qonaq cavabında NULL-dur (anonim). Qonaq endpoint-i açıqdır və təkrar doldurmanı əngəlləmir: spam üçün CAPTCHA/rate-limit əlavə edilməsi tövsiyə olunur. Silinmiş hesabın cavabları ad/e-poçtla qalır (`respondent_id` NULL olur).
 - CSV: Excel düstur inyeksiyasına qarşı `= + - @` ilə başlayan mətnlərin əvvəlinə `'` qoyulur.
 - Form və sual strukturu DB trigger-i ilə də yoxlanılır (naməlum növ, təkrar açar, boş sual, uydurma ixtisas/qrup rədd edilir).
 

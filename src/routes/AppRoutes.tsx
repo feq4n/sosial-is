@@ -76,6 +76,9 @@ export default function AppRoutes() {
         {/* Şifrə bərpası keçidi istifadəçini müvəqqəti sessiya ilə daxil edir, ona görə GuestOnly xaricindədir */}
         <Route path="reset-password" element={<ResetPassword />} />
 
+        {/* Formun paylaşım linki: giriş tələb etmir. Qonaq ad, soyad və e-poçt yazıb davam edir; məhdud auditoriyalı formlar yenə də giriş istəyir. */}
+        <Route element={<PublicLayout />}><Route path="f/:slug" element={<FormEntry />} /></Route>
+
         <Route element={<RequireAuth />}>
           <Route path="dashboard" element={<DashboardLayout />}>
             <Route index element={<Overview />} />
@@ -85,9 +88,6 @@ export default function AppRoutes() {
             <Route path="schedule" element={<PersonalSchedule />} />
             <Route path="forms" element={<StudentForms />} />
           </Route>
-
-          {/* Formun paylaşım linki: portalın daxilindədir, giriş tələb edir */}
-          <Route element={<PublicLayout />}><Route path="f/:slug" element={<FormEntry />} /></Route>
 
           <Route element={<RequireRole roles={['admin', 'editor']} />}>
             <Route path="admin" element={<AdminLayout />}>
