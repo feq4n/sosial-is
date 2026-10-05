@@ -15,7 +15,7 @@ const links = [
   { to: '/schedule', label: 'Dərs cədvəli' },
   { to: '/events', label: 'Tədbirlər' },
   { to: '/about', label: 'İxtisaslar' },
-  { to: '/team', label: 'Komandamız' },
+  { to: '/staff', label: 'Şöbə əməkdaşları' },
   { to: '/contact', label: 'Əlaqə' },
 ];
 

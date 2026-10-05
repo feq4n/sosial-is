@@ -27,15 +27,15 @@ const fields: FieldDef[] = [
 const urlKeys = ['websiteUrl', 'linkedinUrl', 'instagramUrl', 'githubUrl', 'telegramUrl'] as const;
 
 export function AdminTeam() {
-  useSeo('Komandamız (admin)', undefined, { noindex: true });
-  return <CrudPage<TeamMember> title="Komandamız" text="Komanda üzvlərini əlavə edin, redaktə edin, sıralayın, gizlədin və ya silin." singular="Üzv" api={teamAdminApi} fields={fields} includeDrafts sortKey="sortOrder"
+  useSeo('Şöbə əməkdaşları (admin)', undefined, { noindex: true });
+  return <CrudPage<TeamMember> title="Şöbə əməkdaşları" text="Şöbə rəhbərliyini, müəllimləri və əməkdaşları əlavə edin, redaktə edin, sıralayın, gizlədin və ya silin." singular="Əməkdaş" api={teamAdminApi} fields={fields} includeDrafts sortKey="sortOrder"
     searchKeys={['fullName', 'jobTitle']}
     validate={(v) => {
       if (urlKeys.some((k) => v[k] && !isSafeHttpsUrl(String(v[k])))) return 'Keçidlər düzgün https:// ünvanı olmalıdır';
       return Number.isInteger(v.sortOrder) ? null : 'Sıra nömrəsi tam ədəd olmalıdır';
     }}
     columns={[
-      { header: 'Üzv', cell: (r) => {
+      { header: 'Əməkdaş', cell: (r) => {
         const src = publicFileUrl('team-photos', r.photoPath);
         return (
           <span className="flex items-center gap-3">

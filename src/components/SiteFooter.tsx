@@ -41,7 +41,6 @@ export function SiteFooter() {
             {c.email && <li className="flex gap-2"><Mail className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden /><a className={`${linkCls} break-all`} href={`mailto:${c.email}`}>{c.email}</a></li>}
             {c.phone && <li className="flex gap-2"><Phone className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden /><a className={linkCls} href={`tel:${c.phone.replace(/\s/g, '')}`}>{c.phone}</a></li>}
             {c.address && <li className="flex gap-2"><MapPin className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden /><span>{c.address}</span></li>}
-            <li><Link className="font-semibold text-brand hover:underline" to="/contact">Mesaj göndər</Link></li>
           </ul>
         </div>
       </div>

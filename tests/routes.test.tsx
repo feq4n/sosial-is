@@ -83,7 +83,7 @@ describe('dərs cədvəli', () => {
     await user.selectOptions(screen.getByLabelText('İxtisas'), 'Sİ');
     await user.selectOptions(screen.getByLabelText('Qrup'), 'Sİ26/01SB');
     expect((await screen.findAllByText('Qasımlı Əsmər')).length).toBeGreaterThan(0);
-    expect(screen.getByRole('heading', { level: 3, name: 'I gün · Bazar ertəsi' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: /^I gün · Bazar ertəsi/ })).toBeInTheDocument();
     expect(screen.queryByText(/Kurs/)).not.toBeInTheDocument();
     expect(screen.getAllByText('I növbə').length).toBeGreaterThan(1);
   });
@@ -100,10 +100,10 @@ describe('dərs cədvəli', () => {
   it('gün filtri yalnız seçilmiş günü göstərir', async () => {
     const user = userEvent.setup();
     renderAt('/schedule?f=1&group=S%C4%B026%2F01SB');
-    await screen.findByRole('heading', { level: 3, name: 'III gün · Çərşənbə' });
+    await screen.findByRole('heading', { level: 3, name: /^III gün · Çərşənbə/ });
     await user.selectOptions(screen.getByLabelText('Gün'), '3');
-    expect(screen.queryByRole('heading', { level: 3, name: 'I gün · Bazar ertəsi' })).not.toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 3, name: 'III gün · Çərşənbə' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 3, name: /^I gün · Bazar ertəsi/ })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: /^III gün · Çərşənbə/ })).toBeInTheDocument();
   });
 
   it('qrupu seçilmiş tələbə üçün cədvəl avtomatik açılır', async () => {
@@ -111,7 +111,7 @@ describe('dərs cədvəli', () => {
     Object.assign(h.auth, { profile: { ...(h.auth.profile as object), specialty: 'Sİ', group: 'Sİ26/01SB' } });
     renderAt('/schedule');
     expect(await screen.findByLabelText('Qrup')).toHaveValue('Sİ26/01SB');
-    expect(screen.getByRole('heading', { level: 3, name: 'I gün · Bazar ertəsi' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: /^I gün · Bazar ertəsi/ })).toBeInTheDocument();
   });
 });
 
@@ -129,26 +129,27 @@ describe('axtarış və filtr', () => {
   });
 });
 
-describe('əlaqə formu', () => {
-  it('boş göndərildikdə Azərbaycan dilində validasiya xətaları göstərir', async () => {
-    const user = userEvent.setup();
+describe('əlaqə səhifəsi', () => {
+  it('mesaj göndərmə formu yoxdur, yalnız rəsmi əlaqə məlumatları göstərilir', async () => {
     renderAt('/contact');
-    await user.click(await screen.findByRole('button', { name: 'Göndər' }));
-    expect(await screen.findByText('Ad və soyadı yazın')).toBeInTheDocument();
-    expect(screen.getByText('E-poçt ünvanını yazın')).toBeInTheDocument();
-    expect(screen.getByText('Mövzunu yazın')).toBeInTheDocument();
-    expect(screen.getByText('Mesajı yazın')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: 'Əlaqə' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Göndər' })).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Mesaj')).not.toBeInTheDocument();
   });
+});
 
-  it('düzgün doldurulsa belə, backend qoşulmayıbsa aydın xəta göstərir (uğurlu saxta mesaj yox)', async () => {
-    const user = userEvent.setup();
-    renderAt('/contact');
-    await user.type(await screen.findByLabelText('Ad və soyad'), 'Aysel Məmmədova');
-    await user.type(screen.getByLabelText('E-poçt ünvanı'), 'aysel@example.com');
-    await user.type(screen.getByLabelText('Mövzu'), 'Sual');
-    await user.type(screen.getByLabelText('Mesaj'), 'Bu bir sınaq mesajıdır.');
-    await user.click(screen.getByRole('button', { name: 'Göndər' }));
-    expect(await screen.findByRole('alert')).toHaveTextContent(/hələ qoşulmayıb/);
+describe('Home', () => {
+  it('qısadır: FAQ, komanda, faydalı bölmələr, haqqımızda və mesaj formu yoxdur; üç ixtisas bərabər göstərilir', async () => {
+    renderAt('/');
+    expect(await screen.findByRole('heading', { level: 2, name: 'İxtisaslar' })).toBeInTheDocument();
+    for (const t of ['Tez-tez verilən suallar', 'Komandamız', 'Tələbələr üçün faydalı bölmələr', 'Sualınız var?']) expect(screen.queryByText(t)).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Mesaj göndər' })).not.toBeInTheDocument();
+    for (const code of ['Sİ', 'KŞATS', 'KŞŞİ']) expect(screen.getByTestId(`specialty-${code}`)).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: /Ətraflı bax/ })[0]).toHaveAttribute('href', '/specialties/S%C4%B0');
+  });
+  it('«Ətraflı bax» ixtisasın tam məlumat səhifəsinə aparır', async () => {
+    renderAt('/specialties/K%C5%9EATS');
+    expect(await screen.findByTestId('specialty-KŞATS')).toBeInTheDocument();
   });
 });
 

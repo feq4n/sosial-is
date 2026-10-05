@@ -93,7 +93,8 @@ describe('footer', () => {
     const nav = screen.getByRole('navigation', { name: 'Alt naviqasiya' });
     const labels = within(nav).getAllByRole('link').map((a) => a.textContent);
     expect(new Set(labels).size).toBe(labels.length);
-    expect(labels).toContain('Komandamız');
+    expect(labels).toContain('Şöbə əməkdaşları');
+    expect(labels).not.toContain('Komandamız');
   });
 
   it('footer keçidi yalnız daxili yol və ya https ola bilər', () => {
@@ -104,27 +105,33 @@ describe('footer', () => {
   });
 });
 
-describe('Komandamız', () => {
+describe('Şöbə əməkdaşları', () => {
   const member = (o: Partial<TeamMember>): TeamMember => ({ id: 'm1', fullName: 'Aysel Əliyeva', jobTitle: 'Layihə rəhbəri', bio: 'Qısa bio', sortOrder: 1, active: true, createdAt: '2026-01-01T00:00:00Z', ...o });
 
   it('üzv yoxdursa boş vəziyyət göstərir', async () => {
-    renderAt('/team');
-    expect(await screen.findByText('Komanda üzvləri hələ əlavə olunmayıb')).toBeInTheDocument();
+    renderAt('/staff');
+    expect(await screen.findByRole('heading', { level: 1, name: 'Şöbə əməkdaşları' })).toBeInTheDocument();
+    expect(await screen.findByText('Əməkdaş məlumatları hələ əlavə olunmayıb')).toBeInTheDocument();
   });
 
   it('üzv kartı ad, vəzifə, bio və yalnız təhlükəsiz https keçidlərini göstərir', async () => {
     h.team = [member({ websiteUrl: 'https://feqan.dev', githubUrl: 'javascript:alert(1)' })];
-    renderAt('/team');
+    renderAt('/staff');
     expect(await screen.findByRole('heading', { level: 3, name: 'Aysel Əliyeva' })).toBeInTheDocument();
     expect(screen.getByText('Layihə rəhbəri')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Aysel Əliyeva: Şəxsi sayt' })).toHaveAttribute('href', 'https://feqan.dev');
     expect(screen.queryByRole('link', { name: /GitHub/ })).not.toBeInTheDocument();
   });
 
-  it('ana səhifədə üzv varsa “Komandamız” bölməsi görünür', async () => {
+  it('ana səhifədə əməkdaş/komanda bölməsi göstərilmir; köhnə /team ünvanı /staff-a yönləndirir', async () => {
     h.team = [member({})];
-    renderAt('/');
-    expect(await screen.findByRole('heading', { level: 2, name: 'Komandamız' })).toBeInTheDocument();
+    const home = renderAt('/');
+    expect(await screen.findByRole('heading', { level: 2, name: 'Son elanlar' })).toBeInTheDocument();
+    expect(screen.queryByText('Komandamız')).not.toBeInTheDocument();
+    expect(screen.queryByText('Aysel Əliyeva')).not.toBeInTheDocument();
+    home.unmount();
+    renderAt('/team');
+    expect(await screen.findByRole('heading', { level: 1, name: 'Şöbə əməkdaşları' })).toBeInTheDocument();
   });
 
   it('admin paneli yalnız adminə açıqdır (redaktor yönləndirilmir, lakin icazəsiz görür)', async () => {
@@ -143,10 +150,11 @@ describe('SSS', () => {
     expect(all).not.toMatch(/bilet/i);
   });
 
-  it('ana səhifədə suallar göstərilir', async () => {
+  it('ana səhifədə suallar göstərilmir (Home qısadır)', async () => {
     renderAt('/');
-    expect(await screen.findByRole('heading', { level: 2, name: 'Tez-tez verilən suallar' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: faq[0].q })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 2, name: 'Son elanlar' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Tez-tez verilən suallar' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: faq[0].q })).not.toBeInTheDocument();
   });
 });
 

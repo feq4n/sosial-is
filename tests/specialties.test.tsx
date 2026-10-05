@@ -91,8 +91,8 @@ describe('Supabase sətir çevirmələri (specialties)', () => {
 });
 
 describe('ana səhifə və ixtisaslar səhifəsi', () => {
-  it.each(['/', '/about'])('%s: üç ixtisas kartı eyni quruluşla göstərilir', async (path) => {
-    renderAt(path);
+  it('/about: üç ixtisas kartı eyni quruluşla göstərilir', async () => {
+    renderAt('/about');
     const cards = await Promise.all(['Sİ', 'KŞATS', 'KŞŞİ'].map((c) => screen.findByTestId(`specialty-${c}`)));
     for (const [i, card] of cards.entries()) {
       const s = defaultSpecialties[i];
@@ -109,6 +109,20 @@ describe('ana səhifə və ixtisaslar səhifəsi', () => {
     expect(within(cards[0]).getByText('40,4 bal')).toBeInTheDocument();
     expect(within(cards[1]).queryByText('40,4 bal')).not.toBeInTheDocument();
     expect(document.body.textContent).not.toMatch(/ADPU/);
+  });
+
+  it('/: üç ixtisas yığcam kartla, eyni quruluşla göstərilir (qəbul balları və statistika Home-da yoxdur)', async () => {
+    renderAt('/');
+    const cards = await Promise.all(['Sİ', 'KŞATS', 'KŞŞİ'].map((c) => screen.findByTestId(`specialty-${c}`)));
+    for (const [i, card] of cards.entries()) {
+      const s = defaultSpecialties[i];
+      const q = within(card);
+      expect(q.getByRole('heading', { level: 3, name: s.fullName })).toBeInTheDocument();
+      expect(q.getByText(s.description)).toBeInTheDocument();
+      expect(q.getByText(`${s.degree} · ${s.duration} il`)).toBeInTheDocument();
+      expect(q.getByRole('link', { name: /Ətraflı bax/ })).toHaveAttribute('href', `/specialties/${encodeURIComponent(s.code)}`);
+      expect(q.queryByText(/Qəbul balları/)).not.toBeInTheDocument();
+    }
   });
 });
 

@@ -9,11 +9,11 @@ export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Bool
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'accent';
 const base = 'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition active:scale-[0.98] disabled:opacity-55 disabled:pointer-events-none select-none';
 const variants: Record<Variant, string> = {
-  primary: 'bg-brand text-brand-ink hover:brightness-110 shadow-card',
-  accent: 'bg-brand-dark text-brand-ink hover:brightness-110 shadow-card',
+  primary: 'bg-brand text-brand-ink hover:brightness-110 dark:hover:brightness-105 shadow-card',
+  accent: 'bg-brand-dark text-brand-ink hover:brightness-110 dark:hover:brightness-105 shadow-card',
   secondary: 'bg-surface text-ink border border-line hover:bg-surface-2',
   ghost: 'text-ink hover:bg-surface-2',
-  danger: 'bg-danger text-white hover:brightness-110',
+  danger: 'bg-danger text-danger-ink hover:brightness-110',
 };
 const sizes = { sm: 'h-9 px-3 text-sm', md: 'h-11 px-5 text-[0.95rem]', lg: 'h-12 px-6 text-base' };
 export const btnClass = (v: Variant = 'primary', s: keyof typeof sizes = 'md', extra?: string) => cx(base, variants[v], sizes[s], extra);
@@ -104,7 +104,7 @@ function FieldShell({ label, error, hint, id, children }: FieldShellProps) {
     </div>
   );
 }
-const inputCls = (err?: string) => cx('w-full rounded-xl border bg-surface px-3.5 py-2.5 text-[0.95rem] placeholder:text-muted/70 transition focus:border-brand', err ? 'border-danger' : 'border-line');
+const inputCls = (err?: string) => cx('w-full rounded-xl border bg-field px-3.5 py-2.5 text-[0.95rem] text-ink placeholder:text-placeholder transition focus:border-brand disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-muted', err ? 'border-danger' : 'border-field-line');
 
 type FieldBase = { label: string; error?: string; hint?: string };
 export const TextField = forwardRef<HTMLInputElement, FieldBase & InputHTMLAttributes<HTMLInputElement>>(function TextField({ label, error, hint, className, ...rest }, ref) {
@@ -166,7 +166,7 @@ export function Modal({ open, onClose, title, children, wide }: { open: boolean;
   return (
     <AnimatePresence>
       {open && (
-        <motion.div className="fixed inset-0 z-[60] grid place-items-end sm:place-items-center bg-black/50 p-0 sm:p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+        <motion.div className="fixed inset-0 z-[60] grid place-items-end sm:place-items-center bg-overlay p-0 sm:p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
           <motion.div ref={ref} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby={titleId}
             className={cx('w-full max-h-[92dvh] overflow-y-auto rounded-t-3xl sm:rounded-3xl bg-surface p-6 shadow-pop outline-none', wide ? 'sm:max-w-2xl' : 'sm:max-w-md')}
             initial={reduce ? false : { y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={reduce ? undefined : { y: 30, opacity: 0 }} transition={{ duration: 0.22 }}>

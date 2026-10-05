@@ -85,7 +85,7 @@ export const faqApi = makeResource<FaqItem>('faq_items', [], sampleFaq, bySort, 
 
 export const defaultFooterLinks: FooterLink[] = [
   ['Elanlar', '/announcements'], ['Materiallar', '/materials'], ['Dərs cədvəli', '/schedule'], ['Tədbirlər', '/events'],
-  ['İxtisaslar', '/about'], ['Komandamız', '/team'], ['Əlaqə', '/contact'],
+  ['İxtisaslar', '/about'], ['Şöbə əməkdaşları', '/staff'], ['Əlaqə', '/contact'],
 ].map(([label, url], i) => ({ id: `default-${i}`, label, url, sortOrder: i + 1, active: true, createdAt: new Date(0).toISOString() }));
 export const footerLinksApi = makeResource<FooterLink>('footer_links', [], defaultFooterLinks, bySort, { column: 'active', value: true });
 

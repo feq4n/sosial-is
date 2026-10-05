@@ -62,7 +62,7 @@ export default function PersonalSchedule() {
             const list = (notes.data ?? []).filter((n) => n.day === d);
             return list.length ? (
               <ul className="mt-3 grid gap-2 border-t border-line pt-3" aria-label="Şəxsi qeydlər">
-                {list.map((n) => <li key={n.id} className="flex items-start gap-2 rounded-xl bg-accent-soft p-2.5 text-sm text-accent-ink dark:text-accent"><span className="min-w-0 flex-1 break-words">{n.text}</span><button onClick={() => del(n.id)} aria-label="Qeydi sil" className="rounded p-1 hover:bg-black/10"><Trash2 className="size-4" /></button></li>)}
+                {list.map((n) => <li key={n.id} className="flex items-start gap-2 rounded-xl bg-accent-soft p-2.5 text-sm text-accent-ink dark:text-accent"><span className="min-w-0 flex-1 break-words">{n.text}</span><button onClick={() => del(n.id)} aria-label="Qeydi sil" className="rounded p-1 hover:bg-ink/10"><Trash2 className="size-4" /></button></li>)}
               </ul>
             ) : null;
           }} />

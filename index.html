@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sosial İş</title>
     <meta name="description" content="Sosial İş — Azərbaycan Dövlət Pedaqoji Kollecinin Sosial İş, KŞATS və KŞŞİ ixtisaslarının tələbələri üçün elanlar, dərs materialları, cədvəl və tədbirlər bir yerdə." />
+    <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#087A50" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:type" content="website" />
@@ -18,10 +19,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <script>
+      /* Tema: saxlanılmış seçim (light | dark | system). Yoxdursa sistem teması. Səhifə çəkilməzdən əvvəl tətbiq olunur (yanıb-sönmə olmasın). */
       try {
-        var t = localStorage.getItem('sosial-is-theme');
-        var d = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (d) document.documentElement.classList.add('dark');
+        var p = localStorage.getItem('sosial-is-theme');
+        var d = p === 'dark' || (p !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        var r = document.documentElement;
+        if (d) r.classList.add('dark');
+        r.style.colorScheme = d ? 'dark' : 'light';
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', d ? '#0f1311' : '#087A50');
       } catch (e) {}
     </script>
   </head>

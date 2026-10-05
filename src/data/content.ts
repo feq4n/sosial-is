@@ -12,12 +12,5 @@ export const faq = [
   { q: 'Tədbirə necə qeydiyyatdan keçim?', a: '“Tədbirlər” səhifəsində tədbiri açın. Tədbir üçün qeydiyyat açıqdırsa, daxil olduqdan sonra “Tədbirə qeydiyyatdan keç” düyməsi görünür; qeydiyyatı eyni yerdən ləğv edə bilərsiniz.' },
   { q: 'Profil məlumatlarımı və şifrəmi necə dəyişim?', a: 'Kabinetdə “Profil” səhifəsində adınızı, soyadınızı, ixtisas və qrupunuzu yeniləyə bilərsiniz. E-poçt ünvanı və rol profildən dəyişdirilmir. Şifrəni dəyişmək üçün həmin səhifədəki düyməyə basın: e-poçtunuza yeniləmə keçidi göndəriləcək.' },
   { q: 'Şifrəmi unutmuşam, nə etməliyəm?', a: '“Daxil ol” səhifəsində “Şifrəni unutmusunuz?” keçidinə basıb e-poçtunuzu yazın; şifrəni yeniləmək üçün keçid göndəriləcək. Mesaj gəlməsə, spam qovluğunu yoxlayın.' },
-  { q: 'Saytda texniki problem və ya səhv görsəm necə bildirim?', a: '“Əlaqə” səhifəsindəki formada problemi, hansı səhifədə baş verdiyini və varsa xəta mesajını yazın; mesajınız administratorlara çatır. Yanlış elan, material və ya cədvəl məlumatını da eyni yolla bildirə bilərsiniz.' },
-];
-
-export const advantages = [
-  { title: 'Hər şey bir yerdə', text: 'Elan, cədvəl, material və tədbir üçün ayrı-ayrı yerləri axtarmağa ehtiyac qalmır.' },
-  { title: 'Şəxsi kabinet', text: 'Yadda saxladığınız materiallar, qeydləriniz və bildirişləriniz yalnız sizə görünür.' },
-  { title: 'Telefonda rahat', text: 'Cədvəl və elanlar kiçik ekranlar üçün ayrıca tərtib olunub.' },
-  { title: 'Aydın və təhlükəsiz', text: 'Məlumatlara giriş icazələri serverdə yoxlanılır; yalnız lazım olan məlumat toplanır.' },
+  { q: 'Saytda texniki problem və ya səhv görsəm necə bildirim?', a: '“Əlaqə” səhifəsindəki rəsmi e-poçt və ya telefon vasitəsilə problemi, hansı səhifədə baş verdiyini və varsa xəta mesajını bildirin. Yanlış elan, material və ya cədvəl məlumatını da eyni yolla bildirə bilərsiniz.' },
 ];

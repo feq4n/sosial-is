@@ -5,6 +5,8 @@ import { useAsync } from '@/hooks/useAsync';
 import { useSeo } from '@/hooks/useSeo';
 import { useNotifications } from '@/hooks/useNotifications';
 import { announcementsApi, eventsApi, materialsApi } from '@/services/content';
+import { formsApi } from '@/services/forms';
+import { formatDateTime } from '@/utils/format';
 import { dayFromJsDate, dayHeading, findGroup, lessonsOfGroup, lessonView, shiftLabel, specialtyLabel } from '@/data/timetable';
 import { AnnouncementCard, EventCard, MaterialCard } from '@/components/cards';
 import { Badge, Card, EmptyState, ErrorState, ListSkeleton, PageHeader } from '@/components/ui';
@@ -14,8 +16,8 @@ export default function Overview() {
   const { profile, user } = useAuth();
   const n = useNotifications();
   const data = useAsync(async () => {
-    const [a, e, m] = await Promise.all([announcementsApi.list(), eventsApi.list(), materialsApi.list()]);
-    return { a: a.slice(0, 3), e: e.filter((x) => x.startsAt >= new Date().toISOString()).slice(0, 2), m: m.slice(0, 3) };
+    const [a, e, m, f] = await Promise.all([announcementsApi.list(), eventsApi.list(), materialsApi.list(), formsApi.myResponses().catch(() => [])]);
+    return { a: a.slice(0, 3), e: e.filter((x) => x.startsAt >= new Date().toISOString()).slice(0, 2), m: m.slice(0, 3), f: f.slice(0, 3) };
   }, []);
   const group = findGroup(profile?.group);
   const day = dayFromJsDate(new Date().getDay());
@@ -45,6 +47,19 @@ export default function Overview() {
             <Link to="/dashboard/notifications" className="mt-4 flex items-center justify-between rounded-xl bg-brand-soft px-3 py-2.5 text-sm font-semibold text-brand"><span className="flex items-center gap-2"><Bell className="size-4" aria-hidden />Bildirişlər</span>{n.unread > 0 ? <Badge tone="accent">{n.unread} yeni</Badge> : <span className="text-muted">Yeni yoxdur</span>}</Link>
           </Card>
 
+          <section className="lg:col-span-3" aria-labelledby="my-forms-h">
+            <div className="mb-3 flex items-center justify-between"><h2 id="my-forms-h" className="text-lg font-bold">Form cavablarım</h2><Link className="text-sm font-semibold text-brand hover:underline" to="/dashboard/forms">Hamısı</Link></div>
+            {data.data?.f.length ? (
+              <Card className="divide-y divide-line">
+                {data.data.f.map((r) => (
+                  <div key={r.id} className="flex flex-wrap items-center justify-between gap-2 p-4">
+                    <div className="min-w-0"><p className="truncate font-semibold">{r.title || 'Adsız form'}</p><p className="text-xs text-muted">{formatDateTime(r.submittedAt)}</p></div>
+                    <div className="flex items-center gap-3"><Badge tone="success">Göndərilib</Badge><Link className="text-sm font-semibold text-brand hover:underline" to={`/dashboard/forms/${r.formId}`}>Bax</Link></div>
+                  </div>
+                ))}
+              </Card>
+            ) : <p className="rounded-2xl border border-dashed border-line px-5 py-6 text-center text-sm text-muted">Hələ heç bir formu doldurmamısınız.</p>}
+          </section>
           <section className="lg:col-span-2"><div className="mb-3 flex items-center justify-between"><h2 className="text-lg font-bold">Son elanlar</h2><Link className="text-sm font-semibold text-brand hover:underline" to="/announcements">Hamısı</Link></div>
             {data.data?.a.length ? <div className="grid gap-3">{data.data.a.map((a) => <AnnouncementCard key={a.id} a={a} />)}</div> : <EmptyState title="Hələ elan yoxdur" />}</section>
           <section><div className="mb-3 flex items-center justify-between"><h2 className="text-lg font-bold">Yaxın tədbirlər</h2><Link className="text-sm font-semibold text-brand hover:underline" to="/events">Hamısı</Link></div>

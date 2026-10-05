@@ -120,6 +120,8 @@ migration/      birdəfəlik Firebase → Supabase data miqrasiyası (ayrı pake
 
 ## Formlar (sorğu və qeydiyyat formları)
 
+Tələbə göndərdiyi cavabları yalnız oxuya bilir (`/dashboard/forms`, `/dashboard/forms/:formId`); redaktə, silmə və yenidən göndərmə yoxdur. Bunun üçün `supabase/migrations/20261006000001_my_form_responses.sql` (yalnız `my_form_responses()` funksiyası; cədvəllər və məlumatlar dəyişmir) `20261005000006`-dan sonra işə salınmalıdır.
+
 Ayrıca xidmət yoxdur: formlar portalın içində, Supabase cədvəllərində işləyir (`supabase/migrations/20261004000003_native_forms.sql`).
 
 - **Admin → Formlar:** yeni form (başlıq, təsvir, suallar, status, son tarix), auditoriya (bütün tələbələr və ya seçilmiş ixtisas/qruplar), önizləmə, paylaşım linki, cavab cədvəli, xülasə və CSV ixracı.

@@ -9,7 +9,7 @@ export default function DashboardLayout() {
   const items: NavItem[] = [
     { to: '/dashboard', label: 'İcmal', icon: <LayoutDashboard className="size-5" />, end: true },
     { to: '/dashboard/schedule', label: 'Şəxsi cədvəl', icon: <CalendarDays className="size-5" /> },
-    { to: '/dashboard/forms', label: 'Formlar', icon: <ClipboardList className="size-5" /> },
+    { to: '/dashboard/forms', label: 'Formlar və cavablarım', icon: <ClipboardList className="size-5" /> },
     { to: '/dashboard/saved', label: 'Saxlanılanlar', icon: <Bookmark className="size-5" /> },
     { to: '/dashboard/notifications', label: 'Bildirişlər', icon: <Bell className="size-5" />, badge: unread },
     { to: '/dashboard/profile', label: 'Profil', icon: <UserRound className="size-5" /> },

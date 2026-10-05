@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import type { Role } from '@/types';
@@ -8,7 +8,7 @@ const h = vi.hoisted(() => ({
   auth: { user: null as unknown, profile: null as unknown, role: 'student' as Role, loading: false },
   api: {
     listAdmin: vi.fn(), listForStudent: vi.fn(), getById: vi.fn(), getBySlug: vi.fn(), hasSubmitted: vi.fn(),
-    create: vi.fn(), update: vi.fn(), remove: vi.fn(), submit: vi.fn(), responses: vi.fn(),
+    create: vi.fn(), update: vi.fn(), remove: vi.fn(), submit: vi.fn(), responses: vi.fn(), myResponses: vi.fn(),
   },
 }));
 
@@ -38,6 +38,7 @@ beforeEach(() => {
   Object.values(h.api).forEach((m) => m.mockReset());
   h.api.submit.mockResolvedValue(undefined);
   h.api.hasSubmitted.mockResolvedValue(false);
+  h.api.myResponses.mockResolvedValue([]);
 });
 
 describe('admin Formlar', () => {
@@ -110,10 +111,11 @@ describe('tələbə Formlar və doldurma', () => {
       forms: [form(), form({ id: '33333333-3333-3333-3333-333333333333', slug: 'ikinci123456', title: 'İkinci sorğu' })],
       submitted: new Set(['11111111-1111-1111-1111-111111111111']),
     });
+    h.api.myResponses.mockResolvedValue([{ id: 'r1', formId: '11111111-1111-1111-1111-111111111111', slug: 'abc123def456', title: 'Praktika sorğusu', description: '', fields: form().fields, answers: { q1: 'Aysel', q2: 'Ofis' }, submittedAt: '2026-10-04T08:30:00.000Z' }]);
     renderAt('/dashboard/forms');
-    expect(await screen.findByText('Praktika sorğusu')).toBeInTheDocument();
-    expect(screen.getByText('Doldurulub')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 3, name: 'Praktika sorğusu' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Doldur' })).toHaveAttribute('href', '/f/ikinci123456');
+    expect(screen.getAllByText('Praktika sorğusu')).toHaveLength(1); // doldurulmuş form «Açıq formlar»da təkrarlanmır
   });
   it('vaxtı bitmiş doldurulmamış form siyahıda görünmür', async () => {
     signIn('student');
@@ -121,7 +123,7 @@ describe('tələbə Formlar və doldurma', () => {
     renderAt('/dashboard/forms');
     expect(await screen.findByText(/Hazırda sizin üçün açıq form yoxdur/)).toBeInTheDocument();
   });
-  it('/f/:slug giriş etməyən istifadəçini loginə atmır və ad/soyad/e-poçt soruşmur; cavab anonim göndərilir', async () => {
+  it('/f/:slug giriş etməyən istifadəçini loginə atmır, ad/soyad/e-poçt soruşmur və anonimlik mətni göstərmir', async () => {
     Object.assign(h.auth, { user: null, profile: null, role: 'student', loading: false });
     h.api.getBySlug.mockResolvedValue(form());
     renderAt('/f/abc123def456');
@@ -129,11 +131,14 @@ describe('tələbə Formlar və doldurma', () => {
     expect(screen.queryByRole('heading', { name: 'Daxil ol' })).not.toBeInTheDocument();
     expect(screen.queryByLabelText(/^Soyad/)).not.toBeInTheDocument();
     expect(screen.queryByLabelText(/^E-poçt/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Giriş tələb olunmur/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/anonim qeydə alınacaq/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Hesabınız varsa/)).not.toBeInTheDocument();
     expect(h.api.hasSubmitted).not.toHaveBeenCalled();
     await userEvent.type(screen.getByLabelText(/Adınız/), 'Fidan');
     await userEvent.click(screen.getByRole('button', { name: 'Göndər' }));
     await waitFor(() => expect(h.api.submit).toHaveBeenCalledWith('11111111-1111-1111-1111-111111111111', { q1: 'Fidan' }));
-    expect(await screen.findByText('Cavabınız qəbul edildi')).toBeInTheDocument();
+    expect(await screen.findByText('Cavabınız göndərildi')).toBeInTheDocument();
   });
   it('qonaq üçün görünməyən (məhdud auditoriyalı) form: «Daxil ol» təklifi', async () => {
     Object.assign(h.auth, { user: null, profile: null, role: 'student', loading: false });
@@ -154,7 +159,7 @@ describe('tələbə Formlar və doldurma', () => {
     await userEvent.click(screen.getByLabelText('Sahə'));
     await userEvent.click(screen.getByRole('button', { name: 'Göndər' }));
     await waitFor(() => expect(h.api.submit).toHaveBeenCalledWith('11111111-1111-1111-1111-111111111111', { q1: 'Aysel', q2: 'Sahə' }));
-    expect(await screen.findByText('Cavabınız qəbul edildi')).toBeInTheDocument();
+    expect(await screen.findByText('Cavabınız göndərildi')).toBeInTheDocument();
   });
   it('server xətası (məs. artıq doldurulub) aydın mesajla göstərilir', async () => {
     signIn('student');
@@ -190,5 +195,46 @@ describe('tələbə Formlar və doldurma', () => {
     expect(await screen.findByText(/Önizləmə: admin kimi/)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Göndər' })).not.toBeInTheDocument();
     expect(h.api.hasSubmitted).not.toHaveBeenCalled();
+  });
+});
+
+describe('form cavablarım (read-only)', () => {
+  const mine = { id: 'r1', formId: '11111111-1111-1111-1111-111111111111', slug: 'abc123def456', title: 'Praktika sorğusu', description: '', fields: form().fields, answers: { q1: 'Aysel', q2: 'Ofis' }, submittedAt: '2026-10-04T08:30:00.000Z' };
+  it('siyahıda forma adı, tarix, status və «Bax» görünür; redaktə/silmə/yenidən göndərmə yoxdur', async () => {
+    signIn('student');
+    h.api.listForStudent.mockResolvedValue({ forms: [], submitted: new Set([mine.formId]) });
+    h.api.myResponses.mockResolvedValue([mine]);
+    renderAt('/dashboard/forms');
+    expect(await screen.findByRole('heading', { level: 2, name: 'Form cavablarım' })).toBeInTheDocument();
+    expect(screen.getByText('Göndərilib')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Bax' })).toHaveAttribute('href', `/dashboard/forms/${mine.formId}`);
+    expect(screen.queryByRole('button', { name: /Redaktə|Düzəliş|Sil|Yenidən göndər/ })).not.toBeInTheDocument();
+  });
+  it('cavab səhifəsi yalnız oxumaq üçündür: suallar və cavablar var, input və action düymələri yoxdur', async () => {
+    signIn('student');
+    h.api.myResponses.mockResolvedValue([mine]);
+    renderAt(`/dashboard/forms/${mine.formId}`);
+    expect(await screen.findByRole('heading', { level: 1, name: 'Praktika sorğusu' })).toBeInTheDocument();
+    expect(screen.getByText('Adınız')).toBeInTheDocument();
+    expect(screen.getByText('Aysel')).toBeInTheDocument();
+    expect(screen.getByText('Ofis')).toBeInTheDocument();
+    const main = within(screen.getByRole('main'));
+    expect(main.queryByRole('textbox')).not.toBeInTheDocument();
+    expect(main.queryByRole('radio')).not.toBeInTheDocument();
+    expect(main.queryByRole('button', { name: /Redaktə|Düzəliş|Sil|Yenidən göndər|Göndər/ })).not.toBeInTheDocument();
+  });
+  it('başqasının və ya mövcud olmayan cavab üçün «Cavab tapılmadı»', async () => {
+    signIn('student');
+    h.api.myResponses.mockResolvedValue([mine]);
+    renderAt('/dashboard/forms/99999999-9999-9999-9999-999999999999');
+    expect(await screen.findByText('Cavab tapılmadı')).toBeInTheDocument();
+  });
+  it('göndərdikdən sonra «Cavablarıma bax» keçidi verilir', async () => {
+    signIn('student');
+    h.api.getBySlug.mockResolvedValue(form({ fields: [{ id: 'q1', type: 'text', label: 'Ad', required: false }] }));
+    renderAt('/f/abc123def456');
+    await userEvent.click(await screen.findByRole('button', { name: 'Göndər' }));
+    expect(await screen.findByText('Cavabınız göndərildi')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Cavablarıma bax' })).toHaveAttribute('href', `/dashboard/forms/${mine.formId}`);
   });
 });

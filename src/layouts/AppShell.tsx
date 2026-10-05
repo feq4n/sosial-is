@@ -72,7 +72,7 @@ export default function AppShell({ items, title, extra }: { items: NavItem[]; ti
       <AnimatePresence>
         {open && (
           <div className="fixed inset-0 z-50 lg:hidden">
-            <motion.div className="absolute inset-0 bg-black/50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setOpen(false)} />
+            <motion.div className="absolute inset-0 bg-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setOpen(false)} />
             <motion.aside className="absolute inset-y-0 left-0 w-72 max-w-[85vw] bg-surface shadow-pop" initial={reduce ? false : { x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ duration: 0.22 }}>
               <button className="absolute right-3 top-4 rounded-lg p-1.5 text-muted hover:bg-surface-2" aria-label="Menyunu bağla" onClick={() => setOpen(false)}><X className="size-5" /></button>
               {sidebar}

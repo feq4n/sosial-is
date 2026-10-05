@@ -30,6 +30,18 @@ export interface FormInput {
   fields: FormField[];
 }
 
+/** Tələbənin öz göndərdiyi cavab (READ-ONLY). Mənbə: RPC `my_form_responses` — yalnız çağıranın cavabları. */
+export interface MyResponse {
+  id: string;
+  formId: string;
+  slug: string;
+  title: string;
+  description: string;
+  fields: FormField[];
+  answers: Record<string, unknown>;
+  submittedAt: string;
+}
+
 const BASE = 'id,slug,title,description,status,closes_at,audience_mode,audience_specialties,audience_groups,fields,created_at';
 const WITH_COUNT = `${BASE},form_responses(count)`;
 
@@ -119,6 +131,22 @@ export const formsApi = {
     if (!/^[a-z0-9]{6,40}$/.test(slug)) return null;
     const row = unwrap<Record<string, unknown> | null>(await supabase.from('forms').select(BASE).eq('slug', slug).maybeSingle());
     return row ? rowToForm(row) : null;
+  },
+
+  /** Tələbə: yalnız öz göndərdiyi cavablar (ən yenisi birinci). Redaktə/silmə yoxdur. */
+  async myResponses(): Promise<MyResponse[]> {
+    need();
+    const rows = unwrap<Array<Record<string, unknown>>>(await supabase.rpc('my_form_responses'));
+    return rows.map((r) => ({
+      id: String(r.response_id),
+      formId: String(r.form_id),
+      slug: String(r.slug ?? ''),
+      title: String(r.title ?? ''),
+      description: String(r.description ?? ''),
+      fields: parseFields(r.fields),
+      answers: (r.answers && typeof r.answers === 'object' ? r.answers : {}) as Record<string, unknown>,
+      submittedAt: iso(r.submitted_at),
+    }));
   },
 
   async hasSubmitted(formId: string): Promise<boolean> {

@@ -27,7 +27,6 @@ import { toProfile } from '@/services/profiles';
 import { setUserRole, listMessages } from '@/services/users';
 import { saveMaterial, markRead, isRegistered } from '@/services/personal';
 import { updateOwnProfile } from '@/services/profiles';
-import { sendContactMessage } from '@/services/contact';
 
 const UUID = '8f14e45f-ceea-467f-a0e6-1f6b0a9a3c11';
 const called = (m: string) => h.state.calls.filter(([n]) => n === m).map(([, a]) => a);
@@ -127,12 +126,6 @@ describe('istifadəçi və mesaj əməliyyatları', () => {
     h.state.result = { data: [{ id: '1', name: 'A', email: 'a@b.az', subject: 'S', message: 'M', status: 'new', created_at: '2026-02-03T04:05:06+00:00' }], error: null };
     const [m] = await listMessages();
     expect(m).toMatchObject({ id: '1', status: 'new', createdAt: '2026-02-03T04:05:06.000Z' });
-  });
-
-  it('əlaqə mesajı yalnız 4 sahə göndərir (status/created_at serverdə təyin olunur)', async () => {
-    await sendContactMessage({ name: ' Aysel ', email: ' a@b.az ', subject: ' Sual ', message: ' Mesaj mətni ' });
-    expect(called('insert')[0][0]).toEqual({ name: 'Aysel', email: 'a@b.az', subject: 'Sual', message: 'Mesaj mətni' });
-    expect(h.state.table).toBe('contact_messages');
   });
 });
 

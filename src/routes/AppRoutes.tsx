@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import PublicLayout from '@/layouts/PublicLayout';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import AdminLayout from '@/layouts/AdminLayout';
@@ -18,7 +18,8 @@ const Events = lazy(() => named(import('@/pages/public/Events'), 'Events'));
 const EventDetail = lazy(() => named(import('@/pages/public/Events'), 'EventDetail'));
 const About = lazy(() => import('@/pages/public/About'));
 const Contact = lazy(() => import('@/pages/public/Contact'));
-const Team = lazy(() => import('@/pages/public/Team'));
+const Staff = lazy(() => import('@/pages/public/Staff'));
+const SpecialtyDetail = lazy(() => import('@/pages/public/SpecialtyDetail'));
 const NotFound = lazy(() => import('@/pages/public/NotFound'));
 
 const Login = lazy(() => import('@/pages/auth/Login'));
@@ -47,6 +48,7 @@ const AdminForms = lazy(() => named(import('@/pages/admin/Forms'), 'AdminForms')
 const AdminFormEditor = lazy(() => named(import('@/pages/admin/FormEditor'), 'AdminFormEditor'));
 const AdminFormResponses = lazy(() => named(import('@/pages/admin/FormResponses'), 'AdminFormResponses'));
 const StudentForms = lazy(() => import('@/pages/dashboard/Forms'));
+const FormSubmission = lazy(() => import('@/pages/dashboard/FormSubmission'));
 const FormEntry = lazy(() => import('@/pages/public/FormEntry'));
 
 export default function AppRoutes() {
@@ -63,7 +65,9 @@ export default function AppRoutes() {
           <Route path="events" element={<Events />} />
           <Route path="events/:id" element={<EventDetail />} />
           <Route path="about" element={<About />} />
-          <Route path="team" element={<Team />} />
+          <Route path="specialties/:code" element={<SpecialtyDetail />} />
+          <Route path="staff" element={<Staff />} />
+          <Route path="team" element={<Navigate to="/staff" replace />} />
           <Route path="contact" element={<Contact />} />
         </Route>
 
@@ -87,6 +91,7 @@ export default function AppRoutes() {
             <Route path="notifications" element={<Notifications />} />
             <Route path="schedule" element={<PersonalSchedule />} />
             <Route path="forms" element={<StudentForms />} />
+            <Route path="forms/:formId" element={<FormSubmission />} />
           </Route>
 
           <Route element={<RequireRole roles={['admin', 'editor']} />}>

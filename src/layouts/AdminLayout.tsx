@@ -12,7 +12,7 @@ export default function AdminLayout() {
     ...(role === 'admin' ? [
       { to: '/admin/specialties', label: 'İxtisaslar', icon: <GraduationCap className="size-5" /> },
       { to: '/admin/forms', label: 'Formlar', icon: <ClipboardList className="size-5" /> },
-      { to: '/admin/team', label: 'Komandamız', icon: <UserRound className="size-5" /> },
+      { to: '/admin/team', label: 'Şöbə əməkdaşları', icon: <UserRound className="size-5" /> },
       { to: '/admin/faq', label: 'SSS', icon: <CircleHelp className="size-5" /> },
       { to: '/admin/footer', label: 'Footer', icon: <PanelBottom className="size-5" /> },
       { to: '/admin/site', label: 'Sayt parametrləri', icon: <Settings className="size-5" /> },
