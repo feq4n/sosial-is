@@ -129,10 +129,10 @@ export interface TeamMember {
 
 export type StaffMessageStatus = 'sent' | 'read';
 
-/** Tələbə → konkret şöbə əməkdaşı müraciəti (chat deyil). Ad sahələri göndərilmə anının snapshot-ıdır. */
+/** İstifadəçi → konkret şöbə əməkdaşı müraciəti (chat deyil). Ad və qrup sahələri göndərilmə anının snapshot-ıdır; qonaqda senderId olmur. */
 export interface StaffMessage {
   id: string;
-  senderId: string;
+  senderId?: string;
   recipientId: string;
   subject: string;
   message: string;
@@ -140,5 +140,6 @@ export interface StaffMessage {
   createdAt: string;
   readAt?: string;
   senderName: string;
+  senderGroup?: string;
   recipientName: string;
 }

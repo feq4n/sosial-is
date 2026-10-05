@@ -17,7 +17,9 @@ const FORM_ERRORS: Record<string, string> = {
   'message-rate-limit': 'Qısa müddətdə çox mesaj göndərdiniz. Bir az gözləyib yenidən cəhd edin.',
   'message-immutable': 'Göndərilmiş mesajı dəyişmək mümkün deyil.',
   'invalid-staff-account': 'Seçilən hesab admin və ya redaktor olmalıdır.',
-  'invalid-message': 'Mövzu və mesaj düzgün doldurulmalıdır.',
+  'invalid-message': 'Ad, qrup, mövzu və mesaj düzgün doldurulmalıdır.',
+  'invalid-sender-name': 'Ad və soyadı düzgün daxil edin.',
+  'invalid-sender-group': 'Qrupu düzgün daxil edin.',
 };
 
 /** İstifadəçiyə texniki detalları göstərmədən, Azərbaycan dilində aydın mesaj qaytarır. */

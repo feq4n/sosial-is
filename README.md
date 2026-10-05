@@ -162,19 +162,22 @@ Dəstəklənən tiplər: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, TXT, ZIP (≤ 25 
 
 ## Şöbə əməkdaşlarına mesaj göndərmə
 
-Tələbə `/staff` səhifəsində əməkdaşın kartındakı **«Mesaj göndər»** düyməsi ilə mövzu və mesaj yazıb **konkret əməkdaşa** müraciət göndərir. Bu, chat deyil: realtime, əlavə fayl, e-poçt bildirişi yoxdur. Axın: əməkdaşı seç → mövzu yaz → mesaj yaz → göndər → əməkdaş görsün → «Oxundu».
+Hər kəs (**qeydiyyat və ya giriş olmadan da**) `/contact` səhifəsində əməkdaşı seçib, yaxud `/staff` səhifəsində əməkdaşın kartındakı **«Mesaj göndər»** düyməsi ilə **konkret əməkdaşa** müraciət göndərə bilər. Hər iki yol eyni `StaffMessageForm` komponentindən və eyni `send_staff_message` RPC-sindən istifadə edir. Bu, chat deyil: realtime, əlavə fayl, e-poçt bildirişi yoxdur. Axın: əməkdaşı seç → ad və soyad → qrup → mövzu → mesaj → göndər → əməkdaş görsün → «Oxundu».
 
 ### Quraşdırma (bir dəfə)
-1. SQL Editor-də `supabase/migrations/20261007000001_staff_messages.sql` faylını işə salın (əvvəlki miqrasiyalardan sonra).
+1. SQL Editor-də `supabase/migrations/20261007000001_staff_messages.sql`, sonra `supabase/migrations/20261008000001_staff_messages_guest.sql` fayllarını işə salın (əvvəlki miqrasiyalardan sonra).
 2. **Admin paneli → Şöbə əməkdaşları**: əməkdaşı redaktə edib **«Mesaj üçün hesab»** sahəsində onun hesabını (admin və ya redaktor rolu olan istifadəçi) seçin. Hesaba bağlı olmayan kartda «Mesaj göndər» düyməsi görünmür; mesaj ümumi şöbəyə yox, yalnız bu hesaba çatır. Bir hesab yalnız bir karta bağlana bilər.
 
 ### İstifadəçi tərəfi
-- Tələbə: **Kabinet → Göndərdiyim mesajlar** (`/dashboard/messages`). Kimə, mövzu, tarix, status (Göndərildi / Oxundu) və tam mətn görünür; redaktə, silmə və yönləndirmə yoxdur.
-- Əməkdaş (admin/redaktor): **İdarəetmə paneli → Mesajlarım** (`/admin/inbox`). Oxunmamışlar fərqlənir və yan menyuda sayı görünür; mesaj açılanda avtomatik «Oxundu» olur. Mövcud **Mesajlar** bölməsi (admin) sayt «Əlaqə» formundan gələn mesajlardır və dəyişməyib.
+- Giriş etmiş istifadəçi: ad və soyad (və profildə varsa qrup) profildən avtomatik doldurulur və dəyişdirilə bilmir; profildə qrup yoxdursa qrupu özü yazır. Mesajlarını **Kabinet → Göndərdiyim mesajlar** (`/dashboard/messages`) bölməsində görür: kimə, mövzu, tarix, status (Göndərildi / Oxundu) və tam mətn; redaktə, silmə və yönləndirmə yoxdur.
+- Qonaq: ad və soyad, qrup, mövzu, mesaj və alıcı məcburidir; giriş və qeydiyyat tələb olunmur, tarixçə yoxdur, göndərildikdən sonra «Mesajınız göndərildi.» bildirişi göstərilir.
+- Əməkdaş (admin/redaktor): **İdarəetmə paneli → Mesajlarım** (`/admin/inbox`). Oxunmamışlar fərqlənir və yan menyuda sayı görünür; mesaj açılanda avtomatik «Oxundu» olur. Mesajda göndərən, qrup, mövzu və tarix, sonra mesajın özü göstərilir; qonaq mesajı da anonim görünmür (ad və qrup məcburidir). Mövcud **Mesajlar** bölməsi (admin) sayt «Əlaqə» formundan gələn mesajlardır və dəyişməyib.
 
 ### Təhlükəsizlik (Postgres RLS + tətiklər; frontend-ə güvənilmir)
-- `sender_id` müştəridən qəbul edilmir (`DEFAULT auth.uid()`, INSERT sütun icazəsi yalnız `recipient_id, subject, message`); başqasının adından göndərmək olmaz.
-- `status`, `read_at`, `created_at` və ad snapshot-ları serverdə təyin olunur. Alıcı yoxlanır: hesaba bağlı **aktiv** kartın sahibi, rolu admin/editor, göndərən özü deyil. Sürət limiti: saatda ən çox 20 mesaj.
+- Cədvələ birbaşa INSERT icazəsi yoxdur (nə `anon`, nə `authenticated`); yazmaq yalnız `public.send_staff_message(...)` RPC-si ilə olur. RPC-də `sender_id` parametri yoxdur: giriş etmiş istifadəçidə `auth.uid()`, qonaqda `NULL` olur, başqasının adından göndərmək olmaz.
+- `status`, `read_at`, `created_at`, `sender_name`, `sender_group`, `recipient_name` serverdə (tətikdə) təyin olunur. Giriş etmiş istifadəçidə ad profildən götürülür, müştəri dəyəri nəzərə alınmır; qrup profildə varsa oradan, yoxdursa göndərilən dəyərdən. Qonaqda ad və qrup yoxlanılır (boş və ya yalnız boşluq olmaz, ad ≤ 100, qrup ≤ 50 simvol, ardıcıl boşluqlar birləşdirilir). Alıcı yoxlanır: hesaba bağlı **aktiv** kartın sahibi, rolu admin/editor, göndərən özü deyil.
+- Snapshot: ad və qrup mesajın özündə saxlanır; profil sonradan dəyişsə köhnə mesaj dəyişmir.
+- Sürət limiti: bir göndərən saatda ən çox 20 mesaj (giriş etmişdə `sender_id`, qonaqda ad və qrupdan hesablanan `sender_key` üzrə); qonaqlardan bir əməkdaşa ümumilikdə saatda ən çox 30 mesaj. IP/cihaz səviyyəsində qorunma üçün `staff_messages.client_key` sütunu və `public.staff_message_client_key()` funksiyası hazırdır (hazırda `NULL` qaytarır, limit onu avtomatik nəzərə alacaq). CAPTCHA yoxdur.
 - Tələbə yalnız öz mesajlarını görür; UPDATE/DELETE icazəsi yoxdur. Əməkdaş yalnız ona göndəriləni görür və yeganə dəyişiklik `sent → read`-dir. Admin bütün mesajları görə və silə bilər (moderasiya).
 - Limitlər: mövzu 3–150, mesaj 5–3000 simvol (həm interfeysdə, həm bazada).
 
@@ -182,4 +185,4 @@ Tələbə `/staff` səhifəsində əməkdaşın kartındakı **«Mesaj göndər�
 Əlavə sxem dəyişikliyi tələb olunmur: `staff_messages` üzərində `AFTER INSERT` tətiki və ya Supabase Database Webhook ilə `recipient_id → profiles.email` istifadə edilə bilər.
 
 ### Testlər
-`supabase/tests/rls_smoke.sql` (yeni blok: kart bağlantısı, göndərmə, icazələr, oxundu keçidi, sürət limiti), `tests/staff-messages.test.tsx`, `tests/staff-messages-service.test.ts`, `tests/routes.test.tsx` (yeni marşrutların qorunması).
+`supabase/tests/rls_smoke.sql` (kart bağlantısı, giriş etmiş və qonaq göndərməsi, saxta `sender_id`, validation, snapshot, icazələr, oxundu keçidi, sürət limitləri), `tests/staff-messages.test.tsx`, `tests/staff-messages-service.test.ts`, `tests/routes.test.tsx` (yeni marşrutların qorunması).

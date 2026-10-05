@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useAsync } from '@/hooks/useAsync';
 import { useSeo } from '@/hooks/useSeo';
@@ -14,13 +13,10 @@ export default function Staff() {
   useSeo('Şöbə əməkdaşları', 'Şöbə rəhbərliyi, müəllimlər və əməkdaşlar haqqında akademik məlumat.');
   const { data, loading, error, reload } = useAsync(() => teamApi.list(), []);
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [target, setTarget] = useState<MessageTarget | null>(null);
 
-  // Mesaj yalnız hesaba bağlı əməkdaşa göndərilir; qonaq əvvəlcə daxil olur və bu səhifəyə qayıdır.
   const startMessage = (m: TeamMember) => {
     if (!m.profileId) return;
-    if (!user) { navigate('/login', { state: { from: '/staff' } }); return; }
     setTarget({ profileId: m.profileId, name: m.fullName, jobTitle: m.jobTitle });
   };
 

@@ -1,11 +1,20 @@
+import { useMemo } from 'react';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { useSeo } from '@/hooks/useSeo';
+import { useAsync } from '@/hooks/useAsync';
 import { useContactInfo } from '@/services/site';
-import { Card, PageHeader } from '@/components/ui';
+import { teamApi } from '@/services/content';
+import { Card, ErrorState, PageHeader, Skeleton } from '@/components/ui';
+import { StaffMessageForm, type MessageTarget } from '@/components/StaffMessageForm';
 
 export default function Contact() {
-  useSeo('Əlaqə', 'Sosial İş şöbəsinin rəsmi əlaqə məlumatları.');
+  useSeo('Əlaqə', 'Sosial İş şöbəsinin rəsmi əlaqə məlumatları və əməkdaşa mesaj göndərmə.');
   const contact = useContactInfo();
+  const { data, loading, error, reload } = useAsync(() => teamApi.list(), []);
+  const recipients = useMemo<MessageTarget[]>(
+    () => (data ?? []).filter((m) => m.active && m.profileId).map((m) => ({ profileId: String(m.profileId), name: m.fullName, jobTitle: m.jobTitle })),
+    [data],
+  );
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <PageHeader title="Əlaqə" text="Şöbənin rəsmi əlaqə məlumatları." />
@@ -18,6 +27,17 @@ export default function Contact() {
           </ul>
         ) : <p className="text-muted">Rəsmi əlaqə məlumatları hələ əlavə edilməyib.</p>}
       </Card>
+
+      <section className="mt-8" aria-labelledby="contact-message-title">
+        <Card className="p-6 sm:p-8">
+          <h2 id="contact-message-title" className="text-xl font-extrabold">Əməkdaşa mesaj göndərin</h2>
+          <p className="mb-5 mt-1 text-sm text-muted">Qeydiyyat və ya giriş tələb olunmur. Əməkdaşı seçin, ad və qrupunuzu yazın.</p>
+          {loading ? <Skeleton className="h-64" />
+            : error ? <ErrorState message={error} onRetry={reload} />
+            : recipients.length ? <StaffMessageForm recipients={recipients} />
+            : <p className="text-muted">Mesaj göndərmək üçün hazırda əməkdaş əlavə olunmayıb.</p>}
+        </Card>
+      </section>
     </div>
   );
 }

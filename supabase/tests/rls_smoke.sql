@@ -632,30 +632,30 @@ insert into public.team_members (id, full_name, job_title, active, profile_id)
 
 -- Göndərmə
 select t.as_user('00000000-0000-0000-0000-00000000000a');
-insert into public.staff_messages (recipient_id, subject, message)
-  values ('00000000-0000-0000-0000-00000000000e', '  Mövzu  ', '  Mesaj mətni burada  ');
+select public.send_staff_message('00000000-0000-0000-0000-00000000000e', '  Mövzu  ', '  Mesaj mətni burada  ');
 select t.ok('tələbə əməkdaşa mesaj göndərə bilir; sender_id, status, ad snapshot-ları və kəsilmiş mətn serverdə yazılır',
   exists (select 1 from public.staff_messages
           where sender_id = '00000000-0000-0000-0000-00000000000a' and recipient_id = '00000000-0000-0000-0000-00000000000e'
             and status = 'sent' and read_at is null and subject = 'Mövzu' and message = 'Mesaj mətni burada'
             and sender_name = (select btrim(first_name || ' ' || last_name) from public.profiles where id = '00000000-0000-0000-0000-00000000000a')
+            and sender_group = 'Sİ26/01SB'
             and recipient_name = 'Elnur Rzayev'));
 select t.throws('sender_id müştəridən qəbul edilmir (başqasının adından göndərmək olmaz)',
   $q$insert into public.staff_messages (sender_id, recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000b', '00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni')$q$, '42501');
 select t.throws('status müştəri tərəfindən təyin oluna bilmir',
   $q$insert into public.staff_messages (recipient_id, subject, message, status) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni', 'read')$q$, '42501');
 select t.throws('alıcı əməkdaş (karta bağlı admin/editor) deyilsə rədd edilir',
-  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000b', 'Mövzu', 'Mesaj mətni')$q$, '23514');
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000b', 'Mövzu', 'Mesaj mətni')$q$, '23514');
 select t.throws('gizli (aktiv olmayan) kartın sahibinə göndərmək olmaz',
-  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000c', 'Mövzu', 'Mesaj mətni')$q$, '23514');
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000c', 'Mövzu', 'Mesaj mətni')$q$, '23514');
 select t.throws('boş mövzu rədd edilir',
-  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', '   ', 'Mesaj mətni')$q$, '23514');
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', '   ', 'Mesaj mətni')$q$, '23514');
 select t.throws('boş mesaj rədd edilir',
-  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', '   ')$q$, '23514');
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Mövzu', '   ')$q$, '23514');
 select t.throws('çox uzun mesaj rədd edilir',
-  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', repeat('a', 3001))$q$, '23514');
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Mövzu', repeat('a', 3001))$q$, '23514');
 select t.throws('çox uzun mövzu rədd edilir',
-  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', repeat('a', 151), 'Mesaj mətni')$q$, '23514');
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', repeat('a', 151), 'Mesaj mətni')$q$, '23514');
 
 -- Tələbə: yalnız öz mesajı, dəyişdirmək/silmək/yönləndirmək yoxdur
 select t.ok('tələbə öz göndərdiyi mesajı görür', t.cnt('select 1 from public.staff_messages') = 1);
@@ -678,15 +678,15 @@ select t.back();
 -- Qonaq (giriş etməyib)
 select t.as_user(null);
 select t.throws('qonaq mesajları oxuya bilmir', 'select 1 from public.staff_messages', '42501');
-select t.throws('qonaq mesaj göndərə bilmir',
-  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni')$q$, '42501');
+select t.throws('qonaq cədvələ birbaşa yaza bilmir',
+  $q$insert into public.staff_messages (recipient_id, subject, message, sender_name, sender_group) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni', 'Qonaq', 'Qrup')$q$, '42501');
 select t.back();
 
 -- Əməkdaş (alıcı)
 select t.as_user('00000000-0000-0000-0000-00000000000e');
 select t.ok('əməkdaş ona göndərilən mesajı görür', t.cnt('select 1 from public.staff_messages') = 1);
-select t.throws('əməkdaş özünə mesaj göndərə bilmir',
-  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni')$q$, '23514');
+select t.throws_msg('əməkdaş özünə mesaj göndərə bilmir',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni', null, 'Kafedra')$q$, 'message-self');
 select t.throws('əməkdaş mesaj mətnini dəyişə bilmir', $q$update public.staff_messages set message = 'Dəyişdi dəyişdi'$q$, '42501');
 select t.throws('əməkdaş read_at-i əl ilə yaza bilmir', $q$update public.staff_messages set read_at = now() - interval '5 days'$q$, '42501');
 select t.ok('əməkdaş mesajı silə bilmir', t.affected('delete from public.staff_messages') = 0);
@@ -715,12 +715,11 @@ select t.as_user('00000000-0000-0000-0000-00000000000a');
 do $$
 begin
   for i in 1..19 loop
-    insert into public.staff_messages (recipient_id, subject, message)
-      values ('00000000-0000-0000-0000-00000000000e', 'Sürət ' || i, 'Sürət limiti testi');
+    perform public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Sürət ' || i, 'Sürət limiti testi');
   end loop;
 end $$;
 select t.throws('saatda 20-dən çox mesaj göndərmək olmaz',
-  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', 'Artıq', 'Sürət limiti testi')$q$, '54000');
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Artıq', 'Sürət limiti testi')$q$, '54000');
 select t.back();
 
 -- Admin moderasiya: silə bilir
@@ -728,11 +727,144 @@ select t.as_user('00000000-0000-0000-0000-00000000000c');
 select t.ok('admin mesajları silə bilir', t.affected('delete from public.staff_messages') = 20);
 select t.back();
 
+-- Qonaq mesajları (giriş etməyən istifadəçi, send_staff_message RPC)
+select t.as_user(null);
+select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Dərs cədvəli', 'Salam, dərs cədvəli ilə bağlı sualım var.', '  Fəqan   Gəraylı ', ' KŞATS 25/01 ');
+select t.throws('qonaq cədvələ sender_id ilə birbaşa yaza bilmir',
+  $q$insert into public.staff_messages (sender_id, recipient_id, subject, message, sender_name, sender_group) values ('00000000-0000-0000-0000-00000000000b', '00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni', 'Qonaq', 'Qrup')$q$, '42501');
+select t.throws('RPC sender_id parametri qəbul etmir (saxta göndərən ID-si göndərilə bilməz)',
+  $q$select public.send_staff_message(p_recipient_id => '00000000-0000-0000-0000-00000000000e', p_subject => 'Mövzu', p_message => 'Mesaj mətni', p_sender_name => 'Qonaq', p_sender_group => 'Qrup', p_sender_id => '00000000-0000-0000-0000-00000000000b')$q$, '42883');
+select t.throws('qonaq mesajları oxuya bilmir', 'select 1 from public.staff_messages', '42501');
+select t.throws_msg('qonaq üçün ad boş ola bilməz',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni', '', 'Qrup')$q$, 'invalid-sender-name');
+select t.throws_msg('qonaq üçün ad yalnız boşluqdan ibarət ola bilməz',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni', '    ', 'Qrup')$q$, 'invalid-sender-name');
+select t.throws_msg('qonaq üçün ad null ola bilməz',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni', null, 'Qrup')$q$, 'invalid-sender-name');
+select t.throws_msg('qonaq üçün ad çox uzun ola bilməz',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni', repeat('a', 101), 'Qrup')$q$, 'invalid-sender-name');
+select t.throws_msg('qonaq üçün qrup boş ola bilməz',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni', 'Qonaq', '  ')$q$, 'invalid-sender-group');
+select t.throws_msg('qonaq üçün qrup çox uzun ola bilməz',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni', 'Qonaq', repeat('a', 51))$q$, 'invalid-sender-group');
+select t.throws('qonaq üçün mövzu boş ola bilməz',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', '  ', 'Mesaj mətni', 'Qonaq', 'Qrup')$q$, '23514');
+select t.throws('qonaq üçün mövzu çox qısa ola bilməz',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'ab', 'Mesaj mətni', 'Qonaq', 'Qrup')$q$, '23514');
+select t.throws('qonaq üçün mesaj boş ola bilməz',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Mövzu', '   ', 'Qonaq', 'Qrup')$q$, '23514');
+select t.throws('qonaq üçün mesaj çox qısa ola bilməz',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'abc', 'Qonaq', 'Qrup')$q$, '23514');
+select t.throws('qonaq üçün mesaj çox uzun ola bilməz',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Mövzu', repeat('a', 3001), 'Qonaq', 'Qrup')$q$, '23514');
+select t.throws_msg('qonaq əməkdaş olmayan hesaba mesaj göndərə bilmir',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000b', 'Mövzu', 'Mesaj mətni', 'Qonaq', 'Qrup')$q$, 'invalid-recipient');
+select t.throws_msg('qonaq gizli (aktiv olmayan) kartın sahibinə mesaj göndərə bilmir',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000c', 'Mövzu', 'Mesaj mətni', 'Qonaq', 'Qrup')$q$, 'invalid-recipient');
+select t.throws_msg('qonaq mövcud olmayan alıcıya mesaj göndərə bilmir',
+  $q$select public.send_staff_message('99999999-9999-9999-9999-999999999999', 'Mövzu', 'Mesaj mətni', 'Qonaq', 'Qrup')$q$, 'invalid-recipient');
+select t.throws_msg('qonaq alıcısız mesaj göndərə bilmir',
+  $q$select public.send_staff_message(null, 'Mövzu', 'Mesaj mətni', 'Qonaq', 'Qrup')$q$, 'invalid-recipient');
+select t.back();
+
+select t.ok('qonaq mesajında sender_id NULL, ad və qrup snapshot kimi saxlanır, status sent, read_at NULL',
+  exists (select 1 from public.staff_messages
+          where sender_id is null and recipient_id = '00000000-0000-0000-0000-00000000000e' and status = 'sent' and read_at is null
+            and sender_name = 'Fəqan Gəraylı' and sender_group = 'KŞATS 25/01'
+            and subject = 'Dərs cədvəli' and message = 'Salam, dərs cədvəli ilə bağlı sualım var.'
+            and recipient_name = 'Elnur Rzayev' and created_at <= now()));
+select t.ok('uğursuz qonaq cəhdləri heç bir sətir yaratmır', (select count(*) from public.staff_messages) = 1);
+
+select t.as_user('00000000-0000-0000-0000-00000000000a');
+select t.ok('tələbə qonaq mesajlarını görmür', t.cnt('select 1 from public.staff_messages') = 0);
+select t.back();
+
+select t.as_user('00000000-0000-0000-0000-00000000000b');
+select t.ok('başqa tələbə qonaq mesajlarını görmür', t.cnt('select 1 from public.staff_messages') = 0);
+select t.back();
+
+select t.as_user('00000000-0000-0000-0000-00000000000e');
+select t.ok('əməkdaş qonaq mesajının göndərən adını və qrupunu görür',
+  t.cnt($q$select 1 from public.staff_messages where sender_id is null and sender_name = 'Fəqan Gəraylı' and sender_group = 'KŞATS 25/01'$q$) = 1);
+select t.ok('əməkdaş qonaq mesajını oxundu işarələyir (sent -> read)', t.affected($q$update public.staff_messages set status = 'read'$q$) = 1);
+select t.ok('oxundu: read_at server vaxtıdır',
+  exists (select 1 from public.staff_messages where status = 'read' and read_at is not null and read_at <= now()));
+select t.throws('qonaq mesajının göndərən adını dəyişmək olmaz', $q$update public.staff_messages set sender_name = 'Başqası'$q$, '42501');
+select t.back();
+
+select t.as_user('00000000-0000-0000-0000-00000000000c');
+select t.ok('admin qonaq mesajını görür', t.cnt('select 1 from public.staff_messages where sender_id is null') = 1);
+select t.back();
+
+-- Giriş etmiş istifadəçi: ad və qrup profildən götürülür, müştəri dəyərləri nəzərə alınmır
+select t.as_user('00000000-0000-0000-0000-00000000000a');
+select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Profil snapshot', 'Mesaj mətni burada', 'Saxta Ad', 'SAXTA');
+select t.back();
+select t.ok('girişli istifadəçidə sender_id auth.uid()-dir, ad və qrup profildən gəlir (müştəri dəyəri yox sayılır)',
+  exists (select 1 from public.staff_messages
+          where subject = 'Profil snapshot' and sender_id = '00000000-0000-0000-0000-00000000000a'
+            and sender_name = (select btrim(first_name || ' ' || last_name) from public.profiles where id = '00000000-0000-0000-0000-00000000000a')
+            and sender_group = 'Sİ26/01SB'));
+
+select t.as_user('00000000-0000-0000-0000-00000000000b');
+select t.throws_msg('profildə qrup yoxdursa və göndərilməyibsə girişli istifadəçi mesaj göndərə bilmir',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Qrupsuz', 'Mesaj mətni burada')$q$, 'invalid-sender-group');
+select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Qrupla', 'Mesaj mətni burada', 'Saxta Ad', 'KŞATS 25/01');
+select t.back();
+select t.ok('profildə qrup yoxdursa daxil edilən qrup saxlanır, ad yenə profildən gəlir',
+  exists (select 1 from public.staff_messages
+          where subject = 'Qrupla' and sender_id = '00000000-0000-0000-0000-00000000000b' and sender_group = 'KŞATS 25/01' and sender_name = 'Bəhruz Quliyev'));
+
+-- Snapshot: profil sonradan dəyişsə köhnə mesaj dəyişmir
+update public.profiles set first_name = 'Yeni', last_name = 'Adlı' where id = '00000000-0000-0000-0000-00000000000a';
+select t.ok('profil dəyişsə köhnə mesajdakı ad və qrup dəyişmir',
+  exists (select 1 from public.staff_messages
+          where subject = 'Profil snapshot' and sender_name <> 'Yeni Adlı' and sender_group = 'Sİ26/01SB'));
+
+select t.as_user('00000000-0000-0000-0000-00000000000a');
+select t.ok('tələbə yalnız öz girişli mesajlarını görür', t.cnt('select 1 from public.staff_messages') = 1);
+select t.back();
+select t.as_user('00000000-0000-0000-0000-00000000000b');
+select t.ok('başqa tələbə yalnız özünün mesajını görür', t.cnt('select 1 from public.staff_messages') = 1);
+select t.throws('tələbə cədvələ birbaşa yaza bilmir',
+  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni')$q$, '42501');
+select t.back();
+
+-- Qonaq sürət limiti: eyni göndərən saatda ən çox 20 mesaj
+delete from public.staff_messages;
+select t.as_user(null);
+do $$
+begin
+  for i in 1..20 loop
+    perform public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Qonaq ' || i, 'Qonaq sürət limiti testi', 'Sürət Qonağı', 'Q 1');
+  end loop;
+end $$;
+select t.throws_msg('qonaq saatda 20-dən çox mesaj göndərə bilmir',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Artıq', 'Qonaq sürət limiti testi', 'Sürət Qonağı', 'Q 1')$q$, 'message-rate-limit');
+select t.throws_msg('ad və qrupun hərf registri dəyişməklə limiti keçmək olmur',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Artıq', 'Qonaq sürət limiti testi', '  sürət   qonağı ', 'q 1')$q$, 'message-rate-limit');
+select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Başqa qonaq', 'Başqa qonaq mesajı', 'Digər Qonaq', 'Q 2');
+select t.back();
+select t.ok('başqa qonağın limiti ayrıca hesablanır', (select count(*) from public.staff_messages where sender_name = 'Digər Qonaq') = 1);
+
+delete from public.staff_messages;
+select t.as_user(null);
+do $$
+begin
+  for i in 1..30 loop
+    perform public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Yük ' || i, 'Alıcı limiti testi', 'Qonaq ' || i, 'Q ' || i);
+  end loop;
+end $$;
+select t.throws_msg('qonaqlardan bir əməkdaşa saatda 30-dan çox mesaj gedə bilmir',
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Artıq', 'Alıcı limiti testi', 'Yeni Qonaq', 'Q 99')$q$, 'message-rate-limit');
+select t.back();
+delete from public.staff_messages;
+
 -- Əməkdaşın hesabı downgrade olunarsa yeni mesaj qəbul etmir
 update public.profiles set role = 'student' where id = '00000000-0000-0000-0000-00000000000e';
 select t.as_user('00000000-0000-0000-0000-00000000000a');
 select t.throws('rolu artıq admin/editor olmayan hesaba mesaj göndərmək olmaz',
-  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni')$q$, '23514');
+  $q$select public.send_staff_message('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni')$q$, '23514');
 select t.back();
 update public.profiles set role = 'editor' where id = '00000000-0000-0000-0000-00000000000e';
 

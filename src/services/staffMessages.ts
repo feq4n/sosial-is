@@ -1,24 +1,30 @@
 import { supabase } from '@/lib/supabase';
-import { STAFF_MESSAGES_CHANGED, validateStaffMessage } from '@/lib/staffMessages';
+import { STAFF_MESSAGES_CHANGED, normalizeSpaces, validateStaffMessageFields } from '@/lib/staffMessages';
 import type { StaffMessage } from '@/types';
 import { fromRow, need, unwrap } from './db';
 
-/**
- * Tələbə → əməkdaş mesajları (cədvəl: staff_messages). İcazələr yalnız Postgres RLS ilə təmin olunur;
- * aşağıdakı `eq(...)` süzgəcləri admin-in "hamısını görür" siyasətindən gələn artıq sətirləri çıxarmaq üçündür.
- * sender_id, status, read_at, ad snapshot-ları serverdə yazılır; müştəri onları göndərə bilmir.
- */
-const COLS = 'id, sender_id, recipient_id, subject, message, status, created_at, read_at, sender_name, recipient_name';
+const COLS = 'id, sender_id, recipient_id, subject, message, status, created_at, read_at, sender_name, sender_group, recipient_name';
 const map = (row: Record<string, unknown>) => fromRow<StaffMessage>(row, ['createdAt', 'readAt']);
 
-export interface StaffMessageDraft { recipientId: string; subject: string; message: string }
+export interface StaffMessageDraft { recipientId: string; senderName: string; senderGroup: string; subject: string; message: string }
 
 export async function sendStaffMessage(d: StaffMessageDraft): Promise<void> {
   need();
-  const subject = d.subject.trim();
-  const message = d.message.trim();
-  if (Object.keys(validateStaffMessage(subject, message)).length) throw Object.assign(new Error('invalid-message'), { code: 'validation_failed' });
-  unwrap(await supabase.from('staff_messages').insert({ recipient_id: d.recipientId, subject, message }));
+  const draft: StaffMessageDraft = {
+    recipientId: d.recipientId,
+    senderName: normalizeSpaces(d.senderName),
+    senderGroup: normalizeSpaces(d.senderGroup),
+    subject: d.subject.trim(),
+    message: d.message.trim(),
+  };
+  if (Object.keys(validateStaffMessageFields(draft)).length) throw Object.assign(new Error('invalid-message'), { code: 'validation_failed' });
+  unwrap(await supabase.rpc('send_staff_message', {
+    p_recipient_id: draft.recipientId,
+    p_subject: draft.subject,
+    p_message: draft.message,
+    p_sender_name: draft.senderName,
+    p_sender_group: draft.senderGroup,
+  }));
   notifyChanged();
 }
 

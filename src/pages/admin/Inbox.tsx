@@ -51,7 +51,7 @@ export function AdminInbox() {
                         <time dateTime={m.createdAt}>{formatDateTime(m.createdAt)}</time>
                       </div>
                       <p className={cx('mt-1 break-words', isNew ? 'font-extrabold' : 'font-semibold')}>{m.subject}</p>
-                      <p className="break-words text-sm text-muted">Kimdən: {m.senderName}</p>
+                      <p className="break-words text-sm text-muted">Kimdən: {m.senderName}{m.senderGroup ? ` · ${m.senderGroup}` : ''}</p>
                     </div>
                     <Button size="sm" variant={isNew ? 'primary' : 'secondary'} onClick={() => openMessage(m)} aria-label={`Mesajı aç: ${m.subject}`}>Mesajı aç</Button>
                   </Card>
