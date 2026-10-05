@@ -114,6 +114,8 @@ export interface TeamMember {
   fullName: string;
   jobTitle: string;
   bio: string;
+  /** Kartın bağlı olduğu hesab (profiles.id). Yalnız belə əməkdaşlara mesaj göndərmək olar. */
+  profileId?: string;
   photoPath?: string;
   websiteUrl?: string;
   linkedinUrl?: string;
@@ -123,4 +125,20 @@ export interface TeamMember {
   sortOrder: number;
   active: boolean;
   createdAt: string;
+}
+
+export type StaffMessageStatus = 'sent' | 'read';
+
+/** Tələbə → konkret şöbə əməkdaşı müraciəti (chat deyil). Ad sahələri göndərilmə anının snapshot-ıdır. */
+export interface StaffMessage {
+  id: string;
+  senderId: string;
+  recipientId: string;
+  subject: string;
+  message: string;
+  status: StaffMessageStatus;
+  createdAt: string;
+  readAt?: string;
+  senderName: string;
+  recipientName: string;
 }

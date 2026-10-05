@@ -245,7 +245,7 @@ describe('şifrə yeniləmə (/reset-password)', () => {
 });
 
 describe('qorunan səhifələr', () => {
-  it.each(['/dashboard', '/dashboard/profile', '/dashboard/saved', '/dashboard/notifications', '/dashboard/schedule', '/admin', '/admin/users'])(
+  it.each(['/dashboard', '/dashboard/profile', '/dashboard/saved', '/dashboard/notifications', '/dashboard/schedule', '/dashboard/messages', '/admin', '/admin/users', '/admin/inbox'])(
     'giriş etməmiş istifadəçi %s ünvanından girişə yönləndirilir', async (path) => {
       renderAt(path);
       expect(await screen.findByRole('heading', { level: 1, name: 'Daxil ol' })).toBeInTheDocument();
@@ -255,6 +255,22 @@ describe('qorunan səhifələr', () => {
     signIn('student');
     renderAt('/admin');
     expect(await screen.findByText('Bu bölməyə giriş icazəniz yoxdur')).toBeInTheDocument();
+  });
+
+  it('tələbə /admin/inbox ünvanına girə bilmir, lakin «Göndərdiyim mesajlar» səhifəsini görür', async () => {
+    signIn('student');
+    const a = renderAt('/admin/inbox');
+    expect(await screen.findByText('Bu bölməyə giriş icazəniz yoxdur')).toBeInTheDocument();
+    a.unmount();
+    renderAt('/dashboard/messages');
+    expect(await screen.findByRole('heading', { level: 1, name: 'Göndərdiyim mesajlar' })).toBeInTheDocument();
+  });
+
+  it('redaktor «Mesajlarım» bölməsini görür (admin-only deyil)', async () => {
+    signIn('editor');
+    renderAt('/admin/inbox');
+    expect(await screen.findByRole('heading', { level: 1, name: 'Mesajlarım' })).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: /Mesajlarım/ }).length).toBeGreaterThan(0);
   });
 
   it('redaktor admin panelini görür, lakin istifadəçilər səhifəsini görmür', async () => {

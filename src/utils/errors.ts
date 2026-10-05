@@ -11,6 +11,13 @@ const FORM_ERRORS: Record<string, string> = {
   'invalid-form': 'Formun sualları düzgün deyil. Sual mətnlərini və variantları yoxlayın.',
   'invalid-audience': 'Seçilmiş ixtisas və ya qrup tapılmadı.',
   'login-required': 'Bu form yalnız daxil olmuş tələbələr üçündür. Zəhmət olmasa daxil olun.',
+  // Əməkdaşlara mesajlar (supabase/migrations/20261007000001_staff_messages.sql)
+  'invalid-recipient': 'Bu əməkdaşa hazırda mesaj göndərmək mümkün deyil.',
+  'message-self': 'Özünüzə mesaj göndərə bilməzsiniz.',
+  'message-rate-limit': 'Qısa müddətdə çox mesaj göndərdiniz. Bir az gözləyib yenidən cəhd edin.',
+  'message-immutable': 'Göndərilmiş mesajı dəyişmək mümkün deyil.',
+  'invalid-staff-account': 'Seçilən hesab admin və ya redaktor olmalıdır.',
+  'invalid-message': 'Mövzu və mesaj düzgün doldurulmalıdır.',
 };
 
 /** İstifadəçiyə texniki detalları göstərmədən, Azərbaycan dilində aydın mesaj qaytarır. */

@@ -1,5 +1,5 @@
-import { Globe, Link2, Send, UserRound, type LucideIcon } from 'lucide-react';
-import { Card } from '@/components/ui';
+import { Globe, Link2, Mail, Send, UserRound, type LucideIcon } from 'lucide-react';
+import { Button, Card } from '@/components/ui';
 import { publicFileUrl } from '@/services/files';
 import { isSafeHttpsUrl } from '@/utils/format';
 import type { TeamMember } from '@/types';
@@ -14,7 +14,8 @@ const socials: { key: keyof TeamMember; label: string; icon: LucideIcon }[] = [
 
 export const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]?.toLocaleUpperCase('az') ?? '').join('');
 
-export function TeamCard({ m }: { m: TeamMember }) {
+/** `onMessage` verilərsə kartda «Mesaj göndər» düyməsi göstərilir (yalnız hesaba bağlı əməkdaşlar üçün). */
+export function TeamCard({ m, onMessage }: { m: TeamMember; onMessage?: (m: TeamMember) => void }) {
   const photo = publicFileUrl('team-photos', m.photoPath);
   const links = socials.filter((s) => { const v = m[s.key]; return typeof v === 'string' && isSafeHttpsUrl(v); });
   return (
@@ -25,17 +26,26 @@ export function TeamCard({ m }: { m: TeamMember }) {
       <h3 className="mt-4 break-words text-lg font-bold">{m.fullName}</h3>
       <p className="mt-0.5 text-sm font-semibold text-brand">{m.jobTitle}</p>
       {m.bio && <p className="mt-3 whitespace-pre-line break-words text-sm text-muted">{m.bio}</p>}
-      {links.length > 0 && (
-        <ul className="mt-auto flex flex-wrap justify-center gap-2 pt-4" aria-label={`${m.fullName}: keçidlər`}>
-          {links.map((s) => (
-            <li key={s.key}>
-              <a href={String(m[s.key])} target="_blank" rel="noopener noreferrer" aria-label={`${m.fullName}: ${s.label}`} title={s.label}
-                className="grid size-9 place-items-center rounded-full border border-line bg-surface text-muted transition hover:border-brand hover:text-brand">
-                <s.icon className="size-4" aria-hidden />
-              </a>
-            </li>
-          ))}
-        </ul>
+      {(links.length > 0 || onMessage) && (
+        <div className="mt-auto flex w-full flex-col items-center gap-3 pt-4">
+          {links.length > 0 && (
+            <ul className="flex flex-wrap justify-center gap-2" aria-label={`${m.fullName}: keçidlər`}>
+              {links.map((s) => (
+                <li key={s.key}>
+                  <a href={String(m[s.key])} target="_blank" rel="noopener noreferrer" aria-label={`${m.fullName}: ${s.label}`} title={s.label}
+                    className="grid size-9 place-items-center rounded-full border border-line bg-surface text-muted transition hover:border-brand hover:text-brand">
+                    <s.icon className="size-4" aria-hidden />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+          {onMessage && (
+            <Button size="sm" variant="secondary" className="w-full" onClick={() => onMessage(m)} aria-label={`Mesaj göndər: ${m.fullName}`}>
+              <Mail className="size-4" aria-hidden />Mesaj göndər
+            </Button>
+          )}
+        </div>
       )}
     </Card>
   );

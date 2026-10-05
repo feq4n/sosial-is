@@ -159,3 +159,27 @@ Dəstəklənən tiplər: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, TXT, ZIP (≤ 25 
 ### Testlər
 
 `bash supabase/tests/run-local-pg.sh` (lokal PostgreSQL; Super Admin, məzmun, Storage və material siyasətlərini əhatə edir), `npm test`, `npm run lint`, `cd migration && npm test`.
+
+## Şöbə əməkdaşlarına mesaj göndərmə
+
+Tələbə `/staff` səhifəsində əməkdaşın kartındakı **«Mesaj göndər»** düyməsi ilə mövzu və mesaj yazıb **konkret əməkdaşa** müraciət göndərir. Bu, chat deyil: realtime, əlavə fayl, e-poçt bildirişi yoxdur. Axın: əməkdaşı seç → mövzu yaz → mesaj yaz → göndər → əməkdaş görsün → «Oxundu».
+
+### Quraşdırma (bir dəfə)
+1. SQL Editor-də `supabase/migrations/20261007000001_staff_messages.sql` faylını işə salın (əvvəlki miqrasiyalardan sonra).
+2. **Admin paneli → Şöbə əməkdaşları**: əməkdaşı redaktə edib **«Mesaj üçün hesab»** sahəsində onun hesabını (admin və ya redaktor rolu olan istifadəçi) seçin. Hesaba bağlı olmayan kartda «Mesaj göndər» düyməsi görünmür; mesaj ümumi şöbəyə yox, yalnız bu hesaba çatır. Bir hesab yalnız bir karta bağlana bilər.
+
+### İstifadəçi tərəfi
+- Tələbə: **Kabinet → Göndərdiyim mesajlar** (`/dashboard/messages`). Kimə, mövzu, tarix, status (Göndərildi / Oxundu) və tam mətn görünür; redaktə, silmə və yönləndirmə yoxdur.
+- Əməkdaş (admin/redaktor): **İdarəetmə paneli → Mesajlarım** (`/admin/inbox`). Oxunmamışlar fərqlənir və yan menyuda sayı görünür; mesaj açılanda avtomatik «Oxundu» olur. Mövcud **Mesajlar** bölməsi (admin) sayt «Əlaqə» formundan gələn mesajlardır və dəyişməyib.
+
+### Təhlükəsizlik (Postgres RLS + tətiklər; frontend-ə güvənilmir)
+- `sender_id` müştəridən qəbul edilmir (`DEFAULT auth.uid()`, INSERT sütun icazəsi yalnız `recipient_id, subject, message`); başqasının adından göndərmək olmaz.
+- `status`, `read_at`, `created_at` və ad snapshot-ları serverdə təyin olunur. Alıcı yoxlanır: hesaba bağlı **aktiv** kartın sahibi, rolu admin/editor, göndərən özü deyil. Sürət limiti: saatda ən çox 20 mesaj.
+- Tələbə yalnız öz mesajlarını görür; UPDATE/DELETE icazəsi yoxdur. Əməkdaş yalnız ona göndəriləni görür və yeganə dəyişiklik `sent → read`-dir. Admin bütün mesajları görə və silə bilər (moderasiya).
+- Limitlər: mövzu 3–150, mesaj 5–3000 simvol (həm interfeysdə, həm bazada).
+
+### Gələcək e-poçt bildirişi
+Əlavə sxem dəyişikliyi tələb olunmur: `staff_messages` üzərində `AFTER INSERT` tətiki və ya Supabase Database Webhook ilə `recipient_id → profiles.email` istifadə edilə bilər.
+
+### Testlər
+`supabase/tests/rls_smoke.sql` (yeni blok: kart bağlantısı, göndərmə, icazələr, oxundu keçidi, sürət limiti), `tests/staff-messages.test.tsx`, `tests/staff-messages-service.test.ts`, `tests/routes.test.tsx` (yeni marşrutların qorunması).

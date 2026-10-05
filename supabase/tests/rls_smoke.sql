@@ -611,6 +611,131 @@ select t.ok('form silinəndə cavablar və doldurma qeydləri cascade ilə silin
   (select count(*) from public.form_responses where form_id = 'f0000000-0000-0000-0000-000000000001') = 0
   and (select count(*) from public.form_submissions where form_id = 'f0000000-0000-0000-0000-000000000001') = 0);
 
+-- ---------- Şöbə əməkdaşlarına mesajlar (staff_messages)
+-- Əməkdaş kartını hesaba bağlamaq: yalnız admin; hesab admin/editor olmalıdır; bir hesab bir karta.
+update public.profiles set role = 'student' where id in ('00000000-0000-0000-0000-00000000000a', '00000000-0000-0000-0000-00000000000b');
+update public.profiles set role = 'editor' where id = '00000000-0000-0000-0000-00000000000e';
+update public.profiles set role = 'admin' where id = '00000000-0000-0000-0000-00000000000c';
+select t.as_user('00000000-0000-0000-0000-00000000000b');
+select t.throws('tələbə əməkdaş kartı yarada bilmir',
+  $q$insert into public.team_members (full_name, job_title, profile_id) values ('Test Əməkdaş', 'Müəllim', '00000000-0000-0000-0000-00000000000e')$q$, '42501');
+select t.back();
+
+select t.throws('tələbə hesabı əməkdaş kartına bağlanmır',
+  $q$insert into public.team_members (full_name, job_title, profile_id) values ('Bəhruz Quliyev', 'Müəllim', '00000000-0000-0000-0000-00000000000b')$q$, '23514');
+insert into public.team_members (id, full_name, job_title, profile_id)
+  values ('50000000-0000-0000-0000-000000000001', 'Elnur Rzayev', 'Müəllim', '00000000-0000-0000-0000-00000000000e');
+select t.throws('eyni hesab ikinci karta bağlanmır',
+  $q$insert into public.team_members (full_name, job_title, profile_id) values ('Təkrar Kart', 'Müəllim', '00000000-0000-0000-0000-00000000000e')$q$, '23505');
+insert into public.team_members (id, full_name, job_title, active, profile_id)
+  values ('50000000-0000-0000-0000-000000000002', 'Cavid Həsənov', 'Müdir', false, '00000000-0000-0000-0000-00000000000c');
+
+-- Göndərmə
+select t.as_user('00000000-0000-0000-0000-00000000000a');
+insert into public.staff_messages (recipient_id, subject, message)
+  values ('00000000-0000-0000-0000-00000000000e', '  Mövzu  ', '  Mesaj mətni burada  ');
+select t.ok('tələbə əməkdaşa mesaj göndərə bilir; sender_id, status, ad snapshot-ları və kəsilmiş mətn serverdə yazılır',
+  exists (select 1 from public.staff_messages
+          where sender_id = '00000000-0000-0000-0000-00000000000a' and recipient_id = '00000000-0000-0000-0000-00000000000e'
+            and status = 'sent' and read_at is null and subject = 'Mövzu' and message = 'Mesaj mətni burada'
+            and sender_name = (select btrim(first_name || ' ' || last_name) from public.profiles where id = '00000000-0000-0000-0000-00000000000a')
+            and recipient_name = 'Elnur Rzayev'));
+select t.throws('sender_id müştəridən qəbul edilmir (başqasının adından göndərmək olmaz)',
+  $q$insert into public.staff_messages (sender_id, recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000b', '00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni')$q$, '42501');
+select t.throws('status müştəri tərəfindən təyin oluna bilmir',
+  $q$insert into public.staff_messages (recipient_id, subject, message, status) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni', 'read')$q$, '42501');
+select t.throws('alıcı əməkdaş (karta bağlı admin/editor) deyilsə rədd edilir',
+  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000b', 'Mövzu', 'Mesaj mətni')$q$, '23514');
+select t.throws('gizli (aktiv olmayan) kartın sahibinə göndərmək olmaz',
+  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000c', 'Mövzu', 'Mesaj mətni')$q$, '23514');
+select t.throws('boş mövzu rədd edilir',
+  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', '   ', 'Mesaj mətni')$q$, '23514');
+select t.throws('boş mesaj rədd edilir',
+  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', '   ')$q$, '23514');
+select t.throws('çox uzun mesaj rədd edilir',
+  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', repeat('a', 3001))$q$, '23514');
+select t.throws('çox uzun mövzu rədd edilir',
+  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', repeat('a', 151), 'Mesaj mətni')$q$, '23514');
+
+-- Tələbə: yalnız öz mesajı, dəyişdirmək/silmək/yönləndirmək yoxdur
+select t.ok('tələbə öz göndərdiyi mesajı görür', t.cnt('select 1 from public.staff_messages') = 1);
+select t.throws('tələbə mövzunu redaktə edə bilmir', $q$update public.staff_messages set subject = 'Dəyişdi'$q$, '42501');
+select t.throws('tələbə mesajı redaktə edə bilmir', $q$update public.staff_messages set message = 'Dəyişdi dəyişdi'$q$, '42501');
+select t.throws('tələbə mesajı başqa əməkdaşa yönləndirə bilmir (recipient_id dəyişmir)',
+  $q$update public.staff_messages set recipient_id = '00000000-0000-0000-0000-00000000000c'$q$, '42501');
+select t.throws('tələbə read_at-i dəyişə bilmir', $q$update public.staff_messages set read_at = now()$q$, '42501');
+select t.ok('tələbə status-u dəyişə bilmir (alıcı deyil)', t.affected($q$update public.staff_messages set status = 'read'$q$) = 0);
+select t.ok('tələbə mesajı silə bilmir', t.affected('delete from public.staff_messages') = 0);
+select t.back();
+
+-- Başqa tələbə heç nə görmür, dəyişə/silə bilmir
+select t.as_user('00000000-0000-0000-0000-00000000000b');
+select t.ok('başqa tələbə mesajları görmür', t.cnt('select 1 from public.staff_messages') = 0);
+select t.ok('başqa tələbə mesajı oxundu işarələyə bilmir', t.affected($q$update public.staff_messages set status = 'read'$q$) = 0);
+select t.ok('başqa tələbə mesajı silə bilmir', t.affected('delete from public.staff_messages') = 0);
+select t.back();
+
+-- Qonaq (giriş etməyib)
+select t.as_user(null);
+select t.throws('qonaq mesajları oxuya bilmir', 'select 1 from public.staff_messages', '42501');
+select t.throws('qonaq mesaj göndərə bilmir',
+  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni')$q$, '42501');
+select t.back();
+
+-- Əməkdaş (alıcı)
+select t.as_user('00000000-0000-0000-0000-00000000000e');
+select t.ok('əməkdaş ona göndərilən mesajı görür', t.cnt('select 1 from public.staff_messages') = 1);
+select t.throws('əməkdaş özünə mesaj göndərə bilmir',
+  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni')$q$, '23514');
+select t.throws('əməkdaş mesaj mətnini dəyişə bilmir', $q$update public.staff_messages set message = 'Dəyişdi dəyişdi'$q$, '42501');
+select t.throws('əməkdaş read_at-i əl ilə yaza bilmir', $q$update public.staff_messages set read_at = now() - interval '5 days'$q$, '42501');
+select t.ok('əməkdaş mesajı silə bilmir', t.affected('delete from public.staff_messages') = 0);
+select t.ok('əməkdaş mesajı oxundu işarələyir', t.affected($q$update public.staff_messages set status = 'read'$q$) = 1);
+select t.ok('oxundu: status = read və read_at server vaxtıdır',
+  exists (select 1 from public.staff_messages where status = 'read' and read_at is not null and read_at <= now()));
+select t.ok('təkrar oxundu işarələmək xəta vermir və read_at dəyişmir',
+  t.affected($q$update public.staff_messages set status = 'read'$q$) = 1
+  and (select read_at from public.staff_messages) is not null);
+select t.throws('oxunmuşu yenidən göndərildi vəziyyətinə qaytarmaq olmaz', $q$update public.staff_messages set status = 'sent'$q$, '42501');
+select t.back();
+
+-- Tələbə cavabdan sonra statusu görür
+select t.as_user('00000000-0000-0000-0000-00000000000a');
+select t.ok('tələbə mesajın oxunduğunu görür', exists (select 1 from public.staff_messages where status = 'read' and read_at is not null));
+select t.back();
+
+-- Başqa əməkdaş (admin, kartı gizli) ona göndərilməyən mesajı alıcı kimi görmür, amma admin olduğu üçün moderasiya imkanı var
+select t.as_user('00000000-0000-0000-0000-00000000000c');
+select t.ok('admin bütün mesajları görür', t.cnt('select 1 from public.staff_messages') = 1);
+select t.ok('admin başqasının adından oxundu işarələyə bilmir', t.affected($q$update public.staff_messages set status = 'sent'$q$) = 0);
+select t.back();
+
+-- Sürət limiti: saatda ən çox 20 mesaj
+select t.as_user('00000000-0000-0000-0000-00000000000a');
+do $$
+begin
+  for i in 1..19 loop
+    insert into public.staff_messages (recipient_id, subject, message)
+      values ('00000000-0000-0000-0000-00000000000e', 'Sürət ' || i, 'Sürət limiti testi');
+  end loop;
+end $$;
+select t.throws('saatda 20-dən çox mesaj göndərmək olmaz',
+  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', 'Artıq', 'Sürət limiti testi')$q$, '54000');
+select t.back();
+
+-- Admin moderasiya: silə bilir
+select t.as_user('00000000-0000-0000-0000-00000000000c');
+select t.ok('admin mesajları silə bilir', t.affected('delete from public.staff_messages') = 20);
+select t.back();
+
+-- Əməkdaşın hesabı downgrade olunarsa yeni mesaj qəbul etmir
+update public.profiles set role = 'student' where id = '00000000-0000-0000-0000-00000000000e';
+select t.as_user('00000000-0000-0000-0000-00000000000a');
+select t.throws('rolu artıq admin/editor olmayan hesaba mesaj göndərmək olmaz',
+  $q$insert into public.staff_messages (recipient_id, subject, message) values ('00000000-0000-0000-0000-00000000000e', 'Mövzu', 'Mesaj mətni')$q$, '23514');
+select t.back();
+update public.profiles set role = 'editor' where id = '00000000-0000-0000-0000-00000000000e';
+
 -- ---------- Cascade
 delete from auth.users where id = '00000000-0000-0000-0000-00000000000a';
 select t.ok('istifadəçi silinəndə profil və şəxsi məlumatlar cascade ilə silinir',

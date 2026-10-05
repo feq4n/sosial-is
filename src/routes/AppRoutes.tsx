@@ -32,6 +32,7 @@ const Profile = lazy(() => import('@/pages/dashboard/Profile'));
 const Saved = lazy(() => import('@/pages/dashboard/Saved'));
 const Notifications = lazy(() => import('@/pages/dashboard/Notifications'));
 const PersonalSchedule = lazy(() => import('@/pages/dashboard/PersonalSchedule'));
+const SentMessages = lazy(() => import('@/pages/dashboard/SentMessages'));
 
 const AdminOverview = lazy(() => import('@/pages/admin/Overview'));
 const AdminAnnouncements = lazy(() => named(import('@/pages/admin/Content'), 'AdminAnnouncements'));
@@ -43,6 +44,7 @@ const AdminMessages = lazy(() => named(import('@/pages/admin/People'), 'AdminMes
 const AdminSite = lazy(() => named(import('@/pages/admin/Site'), 'AdminSite'));
 const AdminFaq = lazy(() => named(import('@/pages/admin/Site'), 'AdminFaq'));
 const AdminFooter = lazy(() => named(import('@/pages/admin/Site'), 'AdminFooter'));
+const AdminInbox = lazy(() => named(import('@/pages/admin/Inbox'), 'AdminInbox'));
 const AdminTeam = lazy(() => named(import('@/pages/admin/Team'), 'AdminTeam'));
 const AdminForms = lazy(() => named(import('@/pages/admin/Forms'), 'AdminForms'));
 const AdminFormEditor = lazy(() => named(import('@/pages/admin/FormEditor'), 'AdminFormEditor'));
@@ -92,6 +94,7 @@ export default function AppRoutes() {
             <Route path="schedule" element={<PersonalSchedule />} />
             <Route path="forms" element={<StudentForms />} />
             <Route path="forms/:formId" element={<FormSubmission />} />
+            <Route path="messages" element={<SentMessages />} />
           </Route>
 
           <Route element={<RequireRole roles={['admin', 'editor']} />}>
@@ -100,6 +103,7 @@ export default function AppRoutes() {
               <Route path="announcements" element={<AdminAnnouncements />} />
               <Route path="materials" element={<AdminMaterials />} />
               <Route path="events" element={<AdminEvents />} />
+              <Route path="inbox" element={<AdminInbox />} />
               <Route element={<RequireRole roles={['admin']} />}>
                 <Route path="specialties" element={<AdminSpecialties />} />
                 <Route path="team" element={<AdminTeam />} />
