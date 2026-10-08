@@ -77,7 +77,10 @@ export default function Home() {
             <p className="mt-3 max-w-xl text-base text-muted sm:text-lg">{site.homeText}</p>
             <div className="mt-6 flex flex-wrap gap-3">
               {user ? (
-                <ButtonLink to="/dashboard" size="lg">Kabinet</ButtonLink>
+                <>
+                  <ButtonLink to="/dashboard" size="lg">Kabinet</ButtonLink>
+                  <ButtonLink to="/dashboard/forms" variant="secondary" size="lg">Form cavablarım</ButtonLink>
+                </>
               ) : (
                 <>
                   <ButtonLink to="/register" size="lg">Qeydiyyatdan keç</ButtonLink>

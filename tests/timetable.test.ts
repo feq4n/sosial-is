@@ -49,7 +49,7 @@ describe('rəsmi cədvəl məlumatı', () => {
       subject: 'Riyaziyyat', teacher: 'Qasımlı Əsmər', room: '129',
     });
     expect(lessonsOfGroup('KŞŞİ26/01SB').find((l) => l.day === 1 && l.lesson === 1)).toMatchObject({
-      subject: 'Azərbaycan dili', teacher: 'Əsgərova İlahə', room: '122',
+      subject: 'Azərbaycan dili', teacher: 'Əsgərova İlahə', room: '213',
     });
   });
 
@@ -64,8 +64,11 @@ describe('rəsmi cədvəl məlumatı', () => {
   });
 
   it('boş xanalar uydurma məlumatla doldurulmur', () => {
-    const l = lessonsOfGroup('KŞATS25/03SB').find((x) => x.day === 3 && x.lesson === 1);
-    expect(l).toBeUndefined();
+    // KŞATS25/03SB cədvəldə yalnız I–III dərs sətirlərinə malikdir: IV dərs uydurulmur.
+    expect(lessonsOfGroup('KŞATS25/03SB').find((x) => x.lesson === 4)).toBeUndefined();
+    // Cədvəldə «XXX» yazılan xana real fənn kimi göstərilmir.
+    const placeholder = lessonsOfGroup('KŞATS25/03SB').find((x) => x.day === 3 && x.lesson === 1);
+    expect(placeholder).toMatchObject({ pending: true });
   });
 
   it('ixtisas və qrup əlaqəsi yoxlanılır, tam ad yalnız məlum olanda göstərilir', () => {
