@@ -82,6 +82,8 @@ export default function Schedule() {
         {anyFilter && <div className="mt-3"><Button size="sm" variant="secondary" onClick={() => setParams(new URLSearchParams({ f: '1' }), { replace: true })}>Filtrləri sıfırla</Button></div>}
       </Card>
 
+      <p className="mb-4 text-sm text-muted">Üst/alt həftə və yarımqrup qeydləri dərs kartında göstərilir; qeydi olmayan dərslər hər həftə keçirilir.</p>
+
       {matched.length === 0 ? (
         <Card className="p-2"><EmptyState title="Uyğun qrup tapılmadı" text="Seçilmiş filtrlərə uyğun qrup yoxdur. Filtrləri dəyişin." /></Card>
       ) : matched.length === 1 ? (

@@ -1,8 +1,11 @@
 User-agent: *
 Allow: /
-Disallow: /dashboard
 Disallow: /admin
+Disallow: /dashboard
 Disallow: /f/
 Disallow: /login
 Disallow: /register
 Disallow: /forgot-password
+Disallow: /reset-password
+
+Sitemap: https://sosial-is.info/sitemap.xml

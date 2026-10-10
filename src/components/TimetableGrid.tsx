@@ -1,15 +1,16 @@
 import { Clock, DoorOpen, UserRound } from 'lucide-react';
 import { Badge } from '@/components/ui';
-import { dayHeading, lessonView, type Lesson } from '@/data/timetable';
+import { dayHeading, groupBySlot, lessonView, type Lesson } from '@/data/timetable';
 import { weekdays } from '@/utils/labels';
 
-export function LessonCard({ l }: { l: Lesson }) {
+function LessonVariant({ l }: { l: Lesson }) {
   const v = lessonView(l);
   return (
-    <li className="rounded-xl bg-surface-2 p-3">
-      <p className="flex items-center gap-1.5 text-sm font-bold text-brand">
-        <Clock className="size-3.5" aria-hidden />{l.start} – {l.end}
-        <span className="ml-auto text-xs font-medium text-muted">Dərs {l.lesson}</span>
+    <div>
+      <p className="flex flex-wrap items-center gap-1.5">
+        <Badge tone={l.kind === 'Mühazirə' ? 'brand' : 'neutral'}>{v.kind}</Badge>
+        {v.week && <Badge tone="accent">{v.week}</Badge>}
+        {v.subgroup && <Badge>{v.subgroup}</Badge>}
       </p>
       <p className={`mt-1 font-semibold ${l.pending ? 'text-muted' : ''}`}>{v.subject}</p>
       {(v.teacher || v.room) && (
@@ -18,6 +19,22 @@ export function LessonCard({ l }: { l: Lesson }) {
           {v.room && <span className="inline-flex items-center gap-1"><DoorOpen className="size-3.5" aria-hidden />Otaq {v.room}</span>}
         </p>
       )}
+    </div>
+  );
+}
+
+/** Bir dərs yeri: vaxt başlığı və həmin yerdəki bir və ya bir neçə variant (üst/alt həftə, yarımqruplar). */
+export function LessonCard({ items }: { items: Lesson[] }) {
+  const first = items[0];
+  return (
+    <li className="rounded-xl bg-surface-2 p-3">
+      <p className="flex items-center gap-1.5 text-sm font-bold text-brand">
+        <Clock className="size-3.5" aria-hidden />{first.start} – {first.end}
+        <span className="ml-auto text-xs font-medium text-muted">Dərs {first.lesson}</span>
+      </p>
+      <div className="mt-1.5 grid gap-2.5 [&>div+div]:border-t [&>div+div]:border-line [&>div+div]:pt-2.5">
+        {items.map((l, i) => <LessonVariant key={`${l.week}-${l.subgroup ?? 0}-${i}`} l={l} />)}
+      </div>
     </li>
   );
 }
@@ -39,7 +56,7 @@ export function TimetableGrid({ lessons, days = [1, 2, 3, 4, 5], today, notes, i
             <h3 id={`${idPrefix}-${day}`} className="flex items-center justify-between gap-2 text-lg font-bold">{heading}{today === day && <Badge tone="brand">Bu gün</Badge>}</h3>
             <ul className="mt-3 grid gap-2.5">
               {list.length === 0 && <li className="rounded-xl bg-surface-2 p-3 text-sm text-muted">Bu gün üçün cədvəldə dərs yoxdur.</li>}
-              {list.map((l) => <LessonCard key={`${l.group}-${l.day}-${l.lesson}`} l={l} />)}
+              {groupBySlot(list).map((items) => <LessonCard key={`${items[0].group}-${items[0].day}-${items[0].lesson}`} items={items} />)}
             </ul>
             {notes?.(day)}
           </section>

@@ -4,7 +4,7 @@ import { useAsync } from '@/hooks/useAsync';
 import { useSeo } from '@/hooks/useSeo';
 import { announcementsApi, eventsApi, isSampleMode, materialsApi } from '@/services/content';
 import { useAuth } from '@/context/AuthContext';
-import { dayFromJsDate, dayHeading, findGroup, lessonsOfGroup, lessonView } from '@/data/timetable';
+import { dayFromJsDate, dayHeading, findGroup, lessonsOfGroup, lessonView, variantLabel } from '@/data/timetable';
 import { ADPK_NAME } from '@/components/Logo';
 import { AnnouncementCard, EventCard, MaterialCard } from '@/components/cards';
 import { ButtonLink, Card, EmptyState, ErrorState, ListSkeleton, SampleNotice } from '@/components/ui';
@@ -31,12 +31,13 @@ function TodayPanel() {
         {!group && note('Bugünkü dərslərinizi görmək üçün daxil olun və profilinizdə qrupu seçin.')}
         {group && !day && note('Bu gün həftə sonudur, cədvəldə dərs yoxdur.')}
         {group && day && today.length === 0 && note('Bu gün üçün cədvəldə dərs görünmür.')}
-        {today.map((l) => {
+        {today.map((l, i) => {
           const v = lessonView(l);
+          const variant = variantLabel(l);
           return (
-            <div key={`${l.day}-${l.lesson}`} className="flex items-center gap-3 rounded-xl bg-surface-2 p-3">
+            <div key={`${l.day}-${l.lesson}-${l.week}-${l.subgroup ?? 0}-${i}`} className="flex items-center gap-3 rounded-xl bg-surface-2 p-3">
               <div className="w-14 shrink-0 text-center text-sm font-bold text-brand">{l.start}<div className="text-xs font-medium text-muted">{l.end}</div></div>
-              <div className="min-w-0"><p className="truncate font-semibold">{v.subject}</p><p className="truncate text-xs text-muted">{v.room ? `Otaq ${v.room}` : 'Otaq göstərilməyib'}</p></div>
+              <div className="min-w-0"><p className="truncate font-semibold">{v.subject}</p><p className="truncate text-xs text-muted">{[v.kind, variant, v.room ? `Otaq ${v.room}` : 'Otaq göstərilməyib'].filter(Boolean).join(' · ')}</p></div>
             </div>
           );
         })}

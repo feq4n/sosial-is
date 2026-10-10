@@ -1,5 +1,13 @@
 export const SITE_NAME = 'Sosial İş';
 
+/** Saytın rəsmi ünvanı. Bütün mütləq URL-lər (canonical, og:url, og:image, sitemap) bu domendən qurulur. */
+export const SITE_URL = 'https://sosial-is.info';
+export const OG_IMAGE_URL = `${SITE_URL}/og-image.png`;
+export const OG_IMAGE_ALT = 'Azərbaycan Dövlət Pedaqoji Kolleci loqosu';
+
+/** Axtarış sistemlərinə açıq olmamalı yollar (şəxsi və ya idarəetmə səhifələri). */
+export const PRIVATE_PATH_RE = /^\/(admin|dashboard|login|register|forgot-password|reset-password|f)(\/|$)/;
+
 export const contact = {
   email: import.meta.env.VITE_CONTACT_EMAIL as string | undefined,
   phone: import.meta.env.VITE_CONTACT_PHONE as string | undefined,

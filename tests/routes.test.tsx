@@ -82,7 +82,7 @@ describe('dərs cədvəli', () => {
     expect(await screen.findByText(/29 qrup tapıldı/)).toBeInTheDocument();
     await user.selectOptions(screen.getByLabelText('İxtisas'), 'Sİ');
     await user.selectOptions(screen.getByLabelText('Qrup'), 'Sİ26/01SB');
-    expect((await screen.findAllByText('Qasımlı Əsmər')).length).toBeGreaterThan(0);
+    expect((await screen.findAllByText('Əsmər Qasımlı')).length).toBeGreaterThan(0);
     expect(screen.getByRole('heading', { level: 3, name: /^I gün · Bazar ertəsi/ })).toBeInTheDocument();
     expect(screen.queryByText(/Kurs/)).not.toBeInTheDocument();
     expect(screen.getAllByText('I növbə').length).toBeGreaterThan(1);

@@ -19,7 +19,7 @@ npm run dev              # http://localhost:3000
 1. [supabase.com](https://supabase.com)-da layihə yaradın. **Project Settings → API** bölməsindən *Project URL* və *Publishable key*-i `.env`-ə yazın. `service_role`/secret açarını `.env`-ə **yazmayın**.
 2. **SQL Editor**-də `supabase/migrations/` qovluğundakı faylları **tarix ardıcıllığı ilə** işə salın: `20261003000001_initial_schema.sql`, sonra `20261004000001_adpk_placement.sql` (və ya `supabase link` + `supabase db push`). Birinci fayl artıq işə salınıbsa, yalnız ikincisini işə salın; mövcud profillər qorunur.
 3. **Authentication → Sign In / Providers → Email** aktiv olsun. **E-poçt təsdiqi** (Confirm email) açıqdırsa, qeydiyyatdan sonra istifadəçiyə təsdiq mesajı göstərilir.
-4. **Authentication → URL Configuration**: *Site URL* = saytın ünvanı; *Redirect URLs* siyahısına `https://SAYT/login` və `https://SAYT/reset-password` (və lokal üçün `http://localhost:3000/**`) əlavə edin.
+4. **Authentication → URL Configuration**: *Site URL* = `https://sosial-is.info`; *Redirect URLs* siyahısına `https://sosial-is.info/login` və `https://sosial-is.info/reset-password` (və lokal üçün `http://localhost:3000/**`) əlavə edin.
 5. **İlk admini təyin edin.** Rol interfeysdən və ya qeydiyyatdan verilə bilməz. Sayta qeydiyyatdan keçin, sonra **SQL Editor**-də:
    ```sql
    update public.profiles set role = 'admin' where email = 'sizin@eposta.az';
@@ -44,14 +44,16 @@ Cədvəl rəsmi Excel faylından (hər iki növbə vərəqi) oxunur və `src/dat
 
 ```bash
 pip install openpyxl
-python3 scripts/import-timetable.py "cədvəl.xlsx" 2026/2027 payız
+python3 scripts/import-timetable.py "ADPK_ders_cedveli_Si_KSATS_KSSI.xlsx" 2026/2027 payız
 npm test
 # Supabase SQL Editor-də işə salın (təkrar işlətmək təhlükəsizdir):
 #   supabase/seed/groups.sql
 ```
 
-- Skript ixtisas, qrup, növbə, gün, dərs, saat, fənn, müəllim və otaqları oxuyur; qrupun ixtisas və növbəsi yalnız cədvəldən götürülür.
-- “XXX” kimi qeydlər olduğu kimi saxlanılır, saytda “Fənn hələ təyin olunmayıb” kimi göstərilir. Boş xanalar doldurulmur.
+- Skript Excel faylının **«Hamısı»** vərəqini oxuyur (hər sətir bir dərs: Qrup, Gün, Dərs №, Başlama, Bitmə, Həftə, Yarımqrup, Fənn, Növ, Müəllim, Otaq). Qrup üzrə vərəqlər və «Müəllimlər» vərəqi yalnız görünüşdür, oxunmur. Üst/alt həftə, yarımqrup və dərs növü (Mühazirə/Seminar/Praktika) saytda dərs kartında göstərilir.
+- Qrupun ixtisası kodun prefiksindən (Sİ, KŞATS, KŞŞİ), növbəsi isə dərsin saatından təyin edilir.
+- Eyni qrupun eyni yerində iki dərs yazılması, eyni vaxtda müəllim və ya otaq toqquşması xəta sayılmır: mənbə olduğu kimi köçürülür, skript isə “DİQQƏT” sətri ilə xəbər verir. Düzəliş Excel faylında edilib skript yenidən işlədilməlidir.
+- “XXX” kimi qeydlər (olarsa) olduğu kimi saxlanılır, saytda “Fənn hələ təyin olunmayıb” kimi göstərilir. Boş xanalar doldurulmur.
 - İxtisasların tam adları `scripts/specialty-names.json` faylında yalnız təsdiqlənmiş olduqda yazılır; qalanları kodla göstərilir.
 - Skript `supabase/seed/groups.sql` faylını da yeniləyir. Qeydiyyatda və profildə ixtisas-qrup əlaqəsi serverdə `public.groups` cədvəli (composite FK + tətik) ilə yoxlanılır, buna görə həmin SQL yenidən işlədilməlidir. Siyahıdan çıxan qruplar silinmir, `active=false` olur: köhnə profillər qalır, amma yeni seçim/qeydiyyat üçün qəbul edilmir. `npm test` seed-in `timetable.json` ilə üst-üstə düşdüyünü yoxlayır.
 - İstifadəçinin `profiles` sətrində yalnız `specialty` və `group_name` saxlanılır; növbə cədvəldən hesablanır. Tələbə bileti nömrəsi və kurs saxlanılmır (aşağıdakı “Yeniləmə” bölməsinə baxın).
@@ -75,7 +77,7 @@ cd migration && npm install && npm test
 ## Vercel-ə yerləşdirmə
 
 1. Repozitoriyanı Vercel-ə qoşun (Framework: Vite; `vercel.json` hazırdır, SPA yönləndirməsi və təhlükəsizlik başlıqları daxildir).
-2. **Environment Variables** bölməsinə `.env.example`-dakı bütün `VITE_*` dəyərlərini əlavə edin. İstəyə görə `SITE_URL=https://sizin-domen` — təyin edilərsə build zamanı `sitemap.xml` yaradılır.
+2. **Environment Variables** bölməsinə `.env.example`-dakı bütün `VITE_*` dəyərlərini əlavə edin. Saytın ünvanı (`https://sosial-is.info`) kodda sabitdir; `SITE_URL` dəyişəni lazım deyil. Build zamanı (`prebuild`) `scripts/generate-seo.mjs` `public/robots.txt` və `public/sitemap.xml` faylını `src/routes/AppRoutes.tsx`-dəki ictimai marşrutlardan avtomatik yaradır.
 3. Deploy edin. Vercel yalnız frontend-i yayımlayır (serverless funksiya və ya ikinci layihə yoxdur); verilənlər bazası, giriş, fayllar və formlar Supabase-dədir.
 
 ## Struktur
