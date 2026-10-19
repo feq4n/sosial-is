@@ -17,7 +17,7 @@
  */
 
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const DEFAULT_MODEL = 'openai/gpt-oss-120b';
+const DEFAULT_MODEL = 'llama-3.3-70b-versatile';
 
 // Limitlər (src/lib/chat.ts-dəki müştəri limitləri ilə uyğun saxlayın)
 const MAX_MESSAGE_CHARS = 2000;
@@ -25,8 +25,6 @@ const MAX_ASSISTANT_CHARS = 4000;
 const MAX_HISTORY = 10;
 const MAX_BODY_BYTES = 40_000;
 const MAX_OUTPUT_TOKENS = 700;
-// gpt-oss kimi reasoning modellərində düşünmə tokenləri də limitə daxildir: görünən cavab ~700 token qalsın deyə limit artırılır
-const MAX_OUTPUT_TOKENS_REASONING = 1500;
 const GROQ_TIMEOUT_MS = 25_000;
 const RETRIEVAL_TIMEOUT_MS = 4_000;
 const MATCH_COUNT = 6;
@@ -203,7 +201,6 @@ const NO_SOURCE_NOTE = `Bu sual üçün saytın tədris materiallarında uyğun 
 // ---------------------------------------------------------------------------
 async function askGroq(apiKey: string, system: string, history: ChatMessage[]): Promise<{ ok: true; reply: string } | { ok: false; code: ErrCode; retryAfter?: string }> {
   const model = (process.env.GROQ_MODEL ?? '').trim() || DEFAULT_MODEL;
-  const reasoning = model.startsWith('openai/gpt-oss');
   try {
     const res = await fetch(GROQ_URL, {
       method: 'POST',
@@ -212,10 +209,8 @@ async function askGroq(apiKey: string, system: string, history: ChatMessage[]): 
         model,
         messages: [{ role: 'system', content: system }, ...history],
         temperature: 0.3,
-        max_tokens: reasoning ? MAX_OUTPUT_TOKENS_REASONING : MAX_OUTPUT_TOKENS,
+        max_tokens: MAX_OUTPUT_TOKENS,
         stream: false,
-        // Az düşünmə = daha sürətli və ucuz cavab; düşünmə mətni cavaba qarışmır
-        ...(reasoning ? { reasoning_effort: 'low', include_reasoning: false } : {}),
       }),
       signal: AbortSignal.timeout(GROQ_TIMEOUT_MS),
     });

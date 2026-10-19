@@ -70,20 +70,15 @@ describe('POST /api/chat: uğurlu cavab', () => {
     expect((call.init.headers as Record<string, string>).Authorization).toBe(`Bearer ${SECRET_KEY}`);
     const body = groqBody();
     expect(body.model).toBe('test-model-x');
-    expect(body.max_tokens).toBeLessThanOrEqual(700); // gpt-oss olmayan model: reasoning parametrləri yoxdur
-    expect(body.reasoning_effort).toBeUndefined();
+    expect(body.max_tokens).toBeLessThanOrEqual(700);
     expect(body.stream).toBe(false);
     expect(body.messages[0].role).toBe('system');
     expect(body.messages[0].content).toContain('Sosial İş AI');
   });
 
-  it('GROQ_MODEL təyin edilməyibsə defolt openai/gpt-oss-120b işlədilir: az düşünmə, düşünmə mətni gizli, token limiti', async () => {
+  it('GROQ_MODEL təyin edilməyibsə defolt model işlədilir', async () => {
     await POST(req({ messages: [user('Salam')] }));
-    const body = groqBody();
-    expect(body.model).toBe('openai/gpt-oss-120b');
-    expect(body.reasoning_effort).toBe('low');
-    expect(body.include_reasoning).toBe(false);
-    expect(body.max_tokens).toBeLessThanOrEqual(1500);
+    expect(groqBody().model).toBe('llama-3.3-70b-versatile');
   });
 
   it('RAG konteksti sistem mesajına nömrələnmiş şəkildə düşür; Supabase-ə yalnız publishable açar gedir', async () => {
