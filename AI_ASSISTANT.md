@@ -14,7 +14,7 @@ Brauzer (ChatWidget)  ──POST /api/chat──▶  Vercel Function (api/chat.t
                                    { reply, sources[], grounded }
 ```
 
-- **Provayder: Groq.** OpenAI uyğun API-dir, sürətlidir, Vercel Function ilə problemsiz işləyir. Model `GROQ_MODEL` ilə dəyişdirilir (defolt `llama-3.3-70b-versatile`). Groq-un model siyahısı tez-tez dəyişir, model köhnəlsə yalnız bu dəyişəni yeniləyin.
+- **Provayder: Groq.** OpenAI uyğun API-dir, sürətlidir, Vercel Function ilə problemsiz işləyir. Model `GROQ_MODEL` ilə dəyişdirilir (defolt `openai/gpt-oss-120b`; reasoning modeli olduğu üçün `reasoning_effort: low` və `include_reasoning: false` ilə çağırılır, token limiti 1500). Groq-un model siyahısı tez-tez dəyişir, model köhnəlsə yalnız bu dəyişəni yeniləyin.
 - **Axın (streaming) yoxdur.** Cavab tam gəlir, gözləyərkən "yazır…" göstəricisi çıxır. Bu, Vercel Function-da sadə və etibarlıdır, ləğvetmə və xəta idarəsi aydın qalır. Lazım olsa sonradan SSE əlavə etmək olar.
 - **RAG: Postgres tam mətn axtarışı (MVP).** Groq embedding modeli vermir, `pgvector` üçün ayrıca embedding provayderi və açarı lazım olardı. Azərbaycan dili suffiksli olduğu üçün axtarış sualdakı sözlərin 4 hərflik kökləri ilə və diakritiksiz (`işçi` = `isci`) aparılır. `search_material_chunks` funksiyasının imzası dəyişmədən sonradan vektor axtarışı ilə əvəz edilə bilər.
 - **Mənbələr:** yalnız cavabda həqiqətən `[1]`, `[2]` kimi istinad edilən sənədlər göstərilir (ad, fənn, səhifə, `/materials/:id` keçidi). Mənbə tapılmasa interfeys və model bunu açıq bildirir.
@@ -49,7 +49,7 @@ Vercel → Project → Settings → Environment Variables (Production və Previe
 | Dəyişən | Dəyər | Qeyd |
 |---|---|---|
 | `GROQ_API_KEY` | `gsk_...` | https://console.groq.com/keys. **VITE_ prefiksi olmasın.** |
-| `GROQ_MODEL` | məs. `llama-3.3-70b-versatile` | İstəyə bağlı; boş olarsa defolt işləyir |
+| `GROQ_MODEL` | məs. `openai/gpt-oss-120b` | İstəyə bağlı; boş olarsa defolt işləyir |
 | `CHAT_ALLOWED_ORIGINS` | boş | İstəyə bağlı: sayt ünvanından başqa Origin-lər (vergüllə) |
 
 Mövcud `VITE_SUPABASE_URL` və `VITE_SUPABASE_PUBLISHABLE_KEY` funksiya tərəfindən də oxunur, yeni Supabase dəyişəni lazım deyil. Dəyişənlər əlavə olunandan sonra **yenidən deploy** edin.

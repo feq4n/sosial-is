@@ -83,10 +83,10 @@ describe('qeydiyyat və profildə bilet nömrəsi / kurs yoxdur', () => {
 });
 
 describe('footer', () => {
-  it('developer qeydi və feqan.dev keçidi kliklənəndir, standart keçidlər təkrarsızdır', async () => {
+  it('developer qeydi və feqandev.com keçidi kliklənəndir, standart keçidlər təkrarsızdır', async () => {
     renderAt('/');
     const link = await screen.findByRole('link', { name: DEVELOPER.name });
-    expect(link).toHaveAttribute('href', 'https://feqan.dev');
+    expect(link).toHaveAttribute('href', 'https://feqandev.com');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link.getAttribute('rel')).toContain('noopener');
     expect(link.parentElement?.textContent).toBe('Developed by Feqan Gəraylı');

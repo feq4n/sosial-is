@@ -152,7 +152,7 @@ Ayrıca xidmət yoxdur: formlar portalın içində, Supabase cədvəllərində i
 
 ### Admin paneli
 
-`/admin/site` (sayt adı, ana səhifə mətnləri, əlaqə, footer mətni), `/admin/faq`, `/admin/footer`, `/admin/team`, `/admin/materials` (fayl yükləmə). Bu bölmələrin yazma icazəsi yalnız `admin` rolundadır (materiallar: redaktor və admin). Developer qeydi (“Developed by Feqan Gəraylı”, https://feqan.dev) kodda sabitdir (`src/config/site.ts`), admin paneli onu dəyişə bilmir.
+`/admin/site` (sayt adı, ana səhifə mətnləri, əlaqə, footer mətni), `/admin/faq`, `/admin/footer`, `/admin/team`, `/admin/materials` (fayl yükləmə). Bu bölmələrin yazma icazəsi yalnız `admin` rolundadır (materiallar: redaktor və admin). Developer qeydi (“Developed by Feqan Gəraylı”, https://feqandev.com) kodda sabitdir (`src/config/site.ts`), admin paneli onu dəyişə bilmir.
 
 ### Fayl yükləmə
 
