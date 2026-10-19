@@ -868,6 +868,53 @@ select t.throws('rolu artıq admin/editor olmayan hesaba mesaj göndərmək olma
 select t.back();
 update public.profiles set role = 'editor' where id = '00000000-0000-0000-0000-00000000000e';
 
+-- ---------- Material mətn parçaları və AI axtarışı (20261009000001_material_chunks.sql)
+select t.back();
+insert into public.materials (id, title, subject, url) values
+  ('00000000-0000-0000-0000-0000000000c1', 'Sosial işçinin etik kodeksi', 'Sosial iş', 'https://e.com/c1'),
+  ('00000000-0000-0000-0000-0000000000c2', 'Linkli material', 'Psixologiya', 'https://e.com/c2');
+insert into public.material_chunks (material_id, chunk_index, page, content) values
+  ('00000000-0000-0000-0000-0000000000c1', 0, 3, 'Sosial işçinin etik prinsipləri: məxfilik, hörmət və ədalət.'),
+  ('00000000-0000-0000-0000-0000000000c1', 1, 4, 'Tamamilə başqa mövzu: kompüter şəbəkələri və protokollar.');
+
+select t.ok('az_fold Azərbaycan hərflərini ASCII-yə endirir',
+  public.az_fold('İŞÇİ Əhəmiyyət ığüöçş') = 'isci ehemiyyet iguocs' and public.az_fold(null) = '');
+
+select t.as_user(null);
+select t.ok('anon parçaları oxuya bilir (materials kimi ictimai)',
+  (select count(*) from public.material_chunks) = 2);
+select t.ok('axtarış: sual sözlərinin köklərinə görə doğru parça və səhifə birinci gəlir',
+  (select page from public.search_material_chunks('Sosial işçinin etik prinsipləri hansılardır?') limit 1) = 3);
+select t.ok('axtarış diakritiksiz yazılışa da işləyir',
+  (select count(*) from public.search_material_chunks('isci etik prinsipler') where material_id = '00000000-0000-0000-0000-0000000000c1') = 1);
+select t.ok('mətni olmayan (keçid) material ad/fənn üzrə tapılır',
+  (select count(*) from public.search_material_chunks('psixologiya') where material_id = '00000000-0000-0000-0000-0000000000c2' and chunk_index = 0) = 1);
+select t.ok('uyğunsuz, boş və null sorğu heç nə qaytarmır',
+  (select count(*) from public.search_material_chunks('zzzzqqq')) = 0
+  and (select count(*) from public.search_material_chunks('') ) = 0
+  and (select count(*) from public.search_material_chunks(null)) = 0);
+select t.ok('nəticə sayı match_count ilə (max 10) məhdudlaşır',
+  (select count(*) from public.search_material_chunks('sosial etik prinsiplər mövzu şəbəkələri psixologiya', 1)) = 1
+  and (select count(*) from public.search_material_chunks('sosial', 1000)) <= 10);
+select t.throws('anon parça əlavə edə bilmir',
+  $q$insert into public.material_chunks (material_id, chunk_index, content) values ('00000000-0000-0000-0000-0000000000c1', 9, 'x')$q$, '42501');
+select t.throws('anon parça silə bilmir', 'delete from public.material_chunks', '42501');
+select t.back();
+
+select t.as_user('00000000-0000-0000-0000-00000000000e');
+select t.throws('hətta redaktor da parça əlavə edə bilmir (yalnız service_role skripti)',
+  $q$insert into public.material_chunks (material_id, chunk_index, content) values ('00000000-0000-0000-0000-0000000000c1', 9, 'x')$q$, '42501');
+select t.throws('redaktor parçanı dəyişə bilmir', $q$update public.material_chunks set content = 'hack'$q$, '42501');
+select t.back();
+
+select t.throws('boş mətnli parça rədd edilir',
+  $q$insert into public.material_chunks (material_id, chunk_index, content) values ('00000000-0000-0000-0000-0000000000c1', 9, '')$q$, '23514');
+select t.throws('eyni materialda təkrar chunk_index rədd edilir',
+  $q$insert into public.material_chunks (material_id, chunk_index, content) values ('00000000-0000-0000-0000-0000000000c1', 0, 'təkrar')$q$, '23505');
+delete from public.materials where id = '00000000-0000-0000-0000-0000000000c1';
+select t.ok('material silinəndə parçaları da silinir (cascade)', (select count(*) from public.material_chunks) = 0);
+delete from public.materials where id = '00000000-0000-0000-0000-0000000000c2';
+
 -- ---------- Cascade
 delete from auth.users where id = '00000000-0000-0000-0000-00000000000a';
 select t.ok('istifadəçi silinəndə profil və şəxsi məlumatlar cascade ilə silinir',

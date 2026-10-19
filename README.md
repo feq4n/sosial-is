@@ -188,3 +188,7 @@ Hər kəs (**qeydiyyat və ya giriş olmadan da**) `/contact` səhifəsində əm
 
 ### Testlər
 `supabase/tests/rls_smoke.sql` (kart bağlantısı, giriş etmiş və qonaq göndərməsi, saxta `sender_id`, validation, snapshot, icazələr, oxundu keçidi, sürət limitləri), `tests/staff-messages.test.tsx`, `tests/staff-messages-service.test.ts`, `tests/routes.test.tsx` (yeni marşrutların qorunması).
+
+## Sosial İş AI (süni intellekt köməkçisi)
+
+Saytın sağ aşağı küncündə tədris köməkçisi çatı: server tərəfi Groq çağırışı (`api/chat.ts`), saytdakı materiallardan mənbəli cavab (RAG), rate limit və təhlükəsizlik qoruyucuları. Qurulum, mühit dəyişənləri (`GROQ_API_KEY`, `GROQ_MODEL`), materialların mətnini çıxarma skripti və deploy yoxlaması: **[AI_ASSISTANT.md](./AI_ASSISTANT.md)**.

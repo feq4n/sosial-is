@@ -7,7 +7,10 @@ configure({ asyncUtilTimeout: 5000 });
 
 afterEach(() => cleanup());
 
-if (!window.matchMedia) {
+// Node mühitində işləyən testlər (məs. api/chat.ts) üçün brauzer təqlidləri yalnız window varsa qurulur
+const hasWindow = typeof window !== 'undefined';
+
+if (hasWindow && !window.matchMedia) {
   window.matchMedia = ((query: string) => ({
     matches: false,
     media: query,
@@ -20,5 +23,7 @@ if (!window.matchMedia) {
   })) as typeof window.matchMedia;
 }
 class IO { observe() {} unobserve() {} disconnect() {} takeRecords() { return []; } }
-(window as unknown as { IntersectionObserver: unknown }).IntersectionObserver = IO;
-window.scrollTo = (() => {}) as typeof window.scrollTo;
+if (hasWindow) {
+  (window as unknown as { IntersectionObserver: unknown }).IntersectionObserver = IO;
+  window.scrollTo = (() => {}) as typeof window.scrollTo;
+}
