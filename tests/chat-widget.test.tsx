@@ -4,6 +4,9 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ChatWidget from '@/components/chat/ChatWidget';
 
+const auth = vi.hoisted(() => ({ value: { role: 'admin', profile: null } as { role: string; profile: { isSuperAdmin?: boolean } | null } }));
+vi.mock('@/context/AuthContext', () => ({ useAuth: () => auth.value }));
+
 const SRC = { n: 1, id: '11111111-1111-4111-8111-111111111111', title: 'Sosial iş nəzəriyyəsi', subject: 'Sosial iş', pages: [12] };
 const ok = (reply: string, sources: unknown[] = [], grounded = sources.length > 0) => new Response(JSON.stringify({ reply, sources, grounded }), { status: 200 });
 const err = (code: string, message: string, status = 503) => new Response(JSON.stringify({ error: { code, message } }), { status });
@@ -28,6 +31,7 @@ const openChat = async (u: ReturnType<typeof userEvent.setup>) => { await u.clic
 const box = () => screen.getByRole('textbox', { name: 'Mesajınız' }) as HTMLTextAreaElement;
 
 beforeEach(() => {
+  auth.value = { role: 'admin', profile: null };
   sessionStorage.clear();
   impl = async () => ok('Salam! Necə kömək edə bilərəm?');
   vi.stubGlobal('fetch', vi.fn(async (_u: string, init: RequestInit) => impl(init)));
@@ -206,5 +210,35 @@ describe('Sosial İş AI çat pəncərəsi', () => {
       expect(screen.getByRole('button', { name: 'Sosial İş AI söhbətini aç' })).toBeInTheDocument();
       unmount();
     }
+  });
+});
+
+describe('Sosial İş AI: hələlik yalnız admin və super admin', () => {
+  const launcher = () => screen.getByRole('button', { name: 'Sosial İş AI söhbətini aç' });
+
+  it.each([
+    ['tələbə', { role: 'student', profile: null }],
+    ['redaktor', { role: 'editor', profile: null }],
+    ['qonaq', { role: 'student', profile: null }],
+  ])('%s: düymə görünür, basanda xəbərdarlıq çıxır; çat açılmır və sorğu getmir', async (_n, who) => {
+    auth.value = who;
+    const u = userEvent.setup();
+    renderChat();
+    await u.click(launcher());
+    expect(await screen.findByRole('alertdialog', { name: 'Sosial İş AI hazırlıq mərhələsindədir' })).toHaveTextContent('Xidmət hazırlıq mərhələsindədir');
+    expect(screen.queryByRole('dialog', { name: 'Sosial İş AI söhbəti' })).toBeNull();
+    expect(screen.queryByRole('textbox', { name: 'Mesajınız' })).toBeNull();
+    expect(fetchMock()).not.toHaveBeenCalled();
+
+    await u.keyboard('{Escape}');
+    await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull());
+  });
+
+  it('super admin çatı aça bilir', async () => {
+    auth.value = { role: 'editor', profile: { isSuperAdmin: true } };
+    const u = userEvent.setup();
+    renderChat();
+    await openChat(u);
+    expect(screen.queryByRole('alertdialog')).toBeNull();
   });
 });

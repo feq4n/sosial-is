@@ -21,3 +21,9 @@ export const hasContactInfo = Boolean(contact.email || contact.phone || contact.
  * ona görə admin paneli ilə dəyişdirilə və ya silinə bilməz.
  */
 export const DEVELOPER = { label: 'Developed by', name: 'Feqan Gəraylı', url: 'https://feqandev.com' } as const;
+
+/**
+ * Sosial İş AI hələ hazır deyil: yalnız admin və super admin istifadə edə bilir, qalanları "tezliklə" xəbərdarlığı görür.
+ * Hamıya açmaq üçün: VITE_CHAT_PUBLIC=true (brauzer) və CHAT_PUBLIC=true (server, Vercel) təyin edib yenidən deploy edin.
+ */
+export const CHAT_PUBLIC = import.meta.env.VITE_CHAT_PUBLIC === 'true';

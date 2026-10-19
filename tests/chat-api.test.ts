@@ -4,6 +4,8 @@ import { GET, POST } from '../api/chat';
 
 const SECRET_KEY = 'gsk_TEST_SECRET_KEY_NOT_REAL';
 const ORIGIN = 'https://sosial-is.test';
+const TOKEN = 'header.payload.signature-test-token';
+const UID = '22222222-2222-4222-8222-222222222222';
 
 let ipCounter = 0;
 const nextIp = () => `203.0.113.${++ipCounter}`;
@@ -11,7 +13,7 @@ const nextIp = () => `203.0.113.${++ipCounter}`;
 function req(body: unknown, init: { ip?: string; headers?: Record<string, string>; raw?: string } = {}) {
   return new Request(`${ORIGIN}/api/chat`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-forwarded-for': init.ip ?? nextIp(), ...init.headers },
+    headers: { 'content-type': 'application/json', 'x-forwarded-for': init.ip ?? nextIp(), authorization: `Bearer ${TOKEN}`, ...init.headers },
     body: init.raw ?? JSON.stringify(body),
   });
 }
@@ -21,6 +23,8 @@ interface FetchCall { url: string; init: RequestInit }
 let calls: FetchCall[];
 let rpcResponse: () => Response;
 let groqResponse: () => Response | Promise<Response>;
+let authResponse: () => Response;
+let profileResponse: () => Response;
 
 const hit = (over: Record<string, unknown> = {}) => ({
   material_id: '11111111-1111-4111-8111-111111111111', title: 'Sosial iş nəzəriyyəsi', subject: 'Sosial iş',
@@ -33,12 +37,17 @@ beforeEach(() => {
   process.env.GROQ_API_KEY = SECRET_KEY;
   delete process.env.GROQ_MODEL;
   delete process.env.CHAT_ALLOWED_ORIGINS;
+  delete process.env.CHAT_PUBLIC;
+  authResponse = () => new Response(JSON.stringify({ id: UID }), { status: 200 });
+  profileResponse = () => new Response(JSON.stringify([{ role: 'admin', is_super_admin: false }]), { status: 200 });
   process.env.SUPABASE_URL = 'https://proj.supabase.co';
   process.env.SUPABASE_ANON_KEY = 'sb_publishable_test';
   rpcResponse = () => new Response(JSON.stringify([hit()]), { status: 200 });
   groqResponse = () => groqOk('Etik prinsiplər: məxfilik və hörmət [1].');
   vi.stubGlobal('fetch', vi.fn(async (url: string, init: RequestInit) => {
     calls.push({ url: String(url), init });
+    if (String(url).includes('/auth/v1/user')) return authResponse();
+    if (String(url).includes('/rest/v1/profiles')) return profileResponse();
     if (String(url).includes('/rest/v1/rpc/search_material_chunks')) return rpcResponse();
     if (String(url).includes('api.groq.com')) return groqResponse();
     throw new Error(`gözlənilməz sorğu: ${url}`);
@@ -70,15 +79,20 @@ describe('POST /api/chat: uğurlu cavab', () => {
     expect((call.init.headers as Record<string, string>).Authorization).toBe(`Bearer ${SECRET_KEY}`);
     const body = groqBody();
     expect(body.model).toBe('test-model-x');
-    expect(body.max_tokens).toBeLessThanOrEqual(700);
+    expect(body.max_tokens).toBeLessThanOrEqual(700); // gpt-oss olmayan model: reasoning parametrləri yoxdur
+    expect(body.reasoning_effort).toBeUndefined();
     expect(body.stream).toBe(false);
     expect(body.messages[0].role).toBe('system');
     expect(body.messages[0].content).toContain('Sosial İş AI');
   });
 
-  it('GROQ_MODEL təyin edilməyibsə defolt model işlədilir', async () => {
+  it('GROQ_MODEL təyin edilməyibsə defolt openai/gpt-oss-120b işlədilir: az düşünmə, düşünmə mətni gizli, token limiti', async () => {
     await POST(req({ messages: [user('Salam')] }));
-    expect(groqBody().model).toBe('llama-3.3-70b-versatile');
+    const body = groqBody();
+    expect(body.model).toBe('openai/gpt-oss-120b');
+    expect(body.reasoning_effort).toBe('low');
+    expect(body.include_reasoning).toBe(false);
+    expect(body.max_tokens).toBeLessThanOrEqual(1500);
   });
 
   it('RAG konteksti sistem mesajına nömrələnmiş şəkildə düşür; Supabase-ə yalnız publishable açar gedir', async () => {
@@ -237,5 +251,63 @@ describe('POST /api/chat: xətalar və limitlər', () => {
     expect(Number(limited.headers.get('retry-after'))).toBeGreaterThan(0);
     expect((await limited.json()).error.code).toBe('rate_limited');
     expect((await POST(req({ messages: [user('salam')] }, { ip: '198.51.100.8' }))).status).toBe(200);
+  });
+});
+
+describe('POST /api/chat: hələlik yalnız admin və super admin', () => {
+  const ask = (init: Parameters<typeof req>[1] = {}) => POST(req({ messages: [user('Salam')] }, init));
+  const denied = async (res: Response) => {
+    expect(res.status).toBe(403);
+    expect((await res.json()).error.code).toBe('coming_soon');
+    expect(groqCall()).toBeUndefined(); // Groq-a və materiallara sorğu getmir
+    expect(calls.some((c) => c.url.includes('search_material_chunks'))).toBe(false);
+  };
+
+  it('admin keçir; token və rol yalnız serverdə Supabase ilə yoxlanılır', async () => {
+    expect((await ask()).status).toBe(200);
+    const authCall = calls.find((c) => c.url.includes('/auth/v1/user'));
+    expect((authCall?.init.headers as Record<string, string>).Authorization).toBe(`Bearer ${TOKEN}`);
+    expect(calls.find((c) => c.url.includes('/rest/v1/profiles'))?.url).toContain(`id=eq.${UID}`);
+  });
+
+  it('super admin (is_super_admin) keçir', async () => {
+    profileResponse = () => new Response(JSON.stringify([{ role: 'editor', is_super_admin: true }]), { status: 200 });
+    expect((await ask()).status).toBe(200);
+  });
+
+  it('token olmadıqda rədd edilir', async () => {
+    await denied(await ask({ headers: { authorization: '' } }));
+  });
+
+  it('tələbə və redaktor rədd edilir', async () => {
+    profileResponse = () => new Response(JSON.stringify([{ role: 'student', is_super_admin: false }]), { status: 200 });
+    await denied(await ask());
+    calls = [];
+    profileResponse = () => new Response(JSON.stringify([{ role: 'editor', is_super_admin: false }]), { status: 200 });
+    await denied(await ask());
+  });
+
+  it('etibarsız/vaxtı keçmiş token və profil tapılmaması rədd edilir', async () => {
+    authResponse = () => new Response('{}', { status: 401 });
+    await denied(await ask());
+    calls = [];
+    authResponse = () => new Response(JSON.stringify({ id: UID }), { status: 200 });
+    profileResponse = () => new Response('[]', { status: 200 });
+    await denied(await ask());
+  });
+
+  it('Supabase əlçatmazdırsa və ya konfiqurasiya yoxdursa bağlı qalır (fail closed)', async () => {
+    authResponse = () => { throw new Error('network'); };
+    await denied(await ask());
+    calls = [];
+    authResponse = () => new Response(JSON.stringify({ id: UID }), { status: 200 });
+    delete process.env.SUPABASE_URL;
+    delete process.env.SUPABASE_ANON_KEY;
+    await denied(await ask());
+  });
+
+  it('CHAT_PUBLIC=true olduqda token tələb olunmur', async () => {
+    process.env.CHAT_PUBLIC = 'true';
+    expect((await ask({ headers: { authorization: '' } })).status).toBe(200);
   });
 });

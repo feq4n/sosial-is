@@ -3,6 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { ArrowUp, Check, Copy, RotateCcw, Sparkles, SquarePen, Trash2, TriangleAlert, X } from 'lucide-react';
 import { cx } from '@/components/ui';
+import { useAuth } from '@/context/AuthContext';
+import { CHAT_PUBLIC } from '@/config/site';
 import { Markdown } from './Markdown';
 import {
   ChatError, MAX_MESSAGE_CHARS, SUGGESTIONS, clearHistory, formatTime, loadHistory, newId, saveHistory, sendChat,
@@ -109,6 +111,11 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<ChatMsg[]>(() => loadHistory());
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState(false);
+
+  // Hələlik yalnız admin və super admin; digərləri düyməni görür, amma çat açılmır (server də eyni qaydanı tətbiq edir)
+  const { role, profile } = useAuth();
+  const canChat = CHAT_PUBLIC || role === 'admin' || profile?.isSuperAdmin === true;
 
   const busyRef = useRef(false);
   const ctrlRef = useRef<AbortController | null>(null);
@@ -117,7 +124,14 @@ export default function ChatWidget() {
   const launcherRef = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
 
-  useEffect(() => saveHistory(messages), [messages]);
+  useEffect(() => { if (canChat) saveHistory(messages); }, [messages, canChat]);
+  useEffect(() => { if (!canChat) { setOpen(false); ctrlRef.current?.abort(); } }, [canChat]);
+  useEffect(() => {
+    if (!notice) return;
+    const onKey = (e: globalThis.KeyboardEvent) => { if (e.key === 'Escape') setNotice(false); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [notice]);
   useEffect(() => () => ctrlRef.current?.abort(), []);
 
   useEffect(() => {
@@ -223,9 +237,9 @@ export default function ChatWidget() {
         ref={launcherRef}
         type="button"
         aria-label={open ? 'Sosial İş AI söhbətini bağla' : 'Sosial İş AI söhbətini aç'}
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => setOpen((o) => !o)}
+        aria-expanded={canChat ? open : notice}
+        aria-controls={canChat ? panelId : `${panelId}-notice`}
+        onClick={() => (canChat ? setOpen((o) => !o) : setNotice((n) => !n))}
         className={cx(
           'fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-[45] grid size-14 place-items-center rounded-full bg-brand text-brand-ink shadow-pop transition hover:brightness-110 active:scale-95 sm:right-6',
           open && 'max-sm:hidden',
@@ -235,7 +249,28 @@ export default function ChatWidget() {
       </button>
 
       <AnimatePresence>
-        {open && (
+        {!canChat && notice && (
+          <motion.div
+            id={`${panelId}-notice`}
+            role="alertdialog"
+            aria-label="Sosial İş AI hazırlıq mərhələsindədir"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
+            className="fixed bottom-[calc(max(1rem,env(safe-area-inset-bottom))+4.5rem)] right-4 z-[55] w-[min(20rem,calc(100vw-2rem))] rounded-2xl border border-line bg-surface p-4 text-ink shadow-pop sm:right-6"
+          >
+            <div className="flex items-start gap-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded-full bg-brand text-brand-ink" aria-hidden><Sparkles className="size-5" /></span>
+              <div className="min-w-0 flex-1">
+                <h2 className="font-display text-base font-bold leading-tight">Xidmət hazırlıq mərhələsindədir</h2>
+                <p className="mt-1 text-sm leading-relaxed text-muted">Sosial İş AI köməkçisi hazırda sınaq mərhələsindədir və hələlik istifadəyə verilməyib. Yaxın vaxtda əlçatan olacaq.</p>
+              </div>
+              <IconBtn label="Bağla" onClick={() => setNotice(false)}><X className="size-5" aria-hidden /></IconBtn>
+            </div>
+          </motion.div>
+        )}
+        {canChat && open && (
           <motion.section
             id={panelId}
             role="dialog"

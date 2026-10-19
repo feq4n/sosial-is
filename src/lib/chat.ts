@@ -8,6 +8,8 @@ export const MAX_MESSAGE_CHARS = 2000;
 export const MAX_HISTORY = 10;
 export const REQUEST_TIMEOUT_MS = 35_000;
 
+import { supabase, isConfigured } from '@/lib/supabase';
+
 const STORAGE_KEY = 'sosial-is-ai:v1';
 const MAX_STORED = 30;
 
@@ -45,6 +47,7 @@ const FALLBACK_MESSAGES: Record<string, string> = {
   timeout: 'Cavab gecikdi. Yenidən cəhd edin.',
   unavailable: 'Süni intellekt xidməti hazırda əlçatan deyil.',
   invalid_response: 'Gözlənilməz cavab alındı. Yenidən cəhd edin.',
+  coming_soon: 'Sosial İş AI köməkçisi hazırda sınaq mərhələsindədir və hələlik istifadəyə verilməyib.',
   rate_limited: 'Çox tez-tez sorğu göndərirsiniz. Bir az gözləyib yenidən cəhd edin.',
 };
 
@@ -76,9 +79,10 @@ export async function sendChat(messages: Pick<ChatMsg, 'role' | 'content'>[], si
   try {
     let res: Response;
     try {
+      const token = isConfigured ? (await supabase.auth.getSession()).data.session?.access_token : undefined;
       res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         body: JSON.stringify({ messages: messages.slice(-MAX_HISTORY).map((m) => ({ role: m.role, content: m.content })) }),
         signal: ctrl.signal,
       });

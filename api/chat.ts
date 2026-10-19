@@ -4,6 +4,7 @@
  *
  * Təhlükəsizlik:
  *   * Groq açarı (GROQ_API_KEY) yalnız burada, serverdə oxunur; brauzerə heç vaxt göndərilmir.
+ *   * Giriş: hələlik yalnız admin/super admin (Bearer token Supabase ilə yoxlanılır). CHAT_PUBLIC=true hamıya açır.
  *   * Müştəridən yalnız `user`/`assistant` mesajları qəbul edilir; `system` rolu rədd edilir.
  *   * Mesaj sayı, uzunluq, cavab tokeni, sorğu həcmi və tezlik məhdudlaşdırılıb; üçüncü tərəf Origin-lər rədd edilir.
  *   * Xəta cavablarında açar, stack trace, provayder cavabı və daxili konfiqurasiya YOXDUR.
@@ -17,7 +18,7 @@
  */
 
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const DEFAULT_MODEL = 'llama-3.3-70b-versatile';
+const DEFAULT_MODEL = 'openai/gpt-oss-120b';
 
 // Limitlər (src/lib/chat.ts-dəki müştəri limitləri ilə uyğun saxlayın)
 const MAX_MESSAGE_CHARS = 2000;
@@ -25,6 +26,8 @@ const MAX_ASSISTANT_CHARS = 4000;
 const MAX_HISTORY = 10;
 const MAX_BODY_BYTES = 40_000;
 const MAX_OUTPUT_TOKENS = 700;
+// gpt-oss kimi reasoning modellərində düşünmə tokenləri də limitə daxildir: görünən cavab ~700 token qalsın deyə limit artırılır
+const MAX_OUTPUT_TOKENS_REASONING = 1500;
 const GROQ_TIMEOUT_MS = 25_000;
 const RETRIEVAL_TIMEOUT_MS = 4_000;
 const MATCH_COUNT = 6;
@@ -46,6 +49,7 @@ const ERRORS = {
   invalid_request: [400, 'Sorğu düzgün formatda deyil.'],
   empty_message: [400, 'Mesaj boş ola bilməz.'],
   too_long: [400, `Mesaj çox uzundur (ən çox ${MAX_MESSAGE_CHARS} simvol).`],
+  coming_soon: [403, 'Sosial İş AI köməkçisi hazırda sınaq mərhələsindədir və hələlik istifadəyə verilməyib.'],
   rate_limited: [429, 'Çox tez-tez sorğu göndərirsiniz. Bir az gözləyib yenidən cəhd edin.'],
   not_configured: [503, 'Süni intellekt xidməti hazırda aktiv deyil.'],
   busy: [503, 'Süni intellekt xidməti hazırda məşğuldur. Bir az sonra yenidən cəhd edin.'],
@@ -201,6 +205,7 @@ const NO_SOURCE_NOTE = `Bu sual üçün saytın tədris materiallarında uyğun 
 // ---------------------------------------------------------------------------
 async function askGroq(apiKey: string, system: string, history: ChatMessage[]): Promise<{ ok: true; reply: string } | { ok: false; code: ErrCode; retryAfter?: string }> {
   const model = (process.env.GROQ_MODEL ?? '').trim() || DEFAULT_MODEL;
+  const reasoning = model.startsWith('openai/gpt-oss');
   try {
     const res = await fetch(GROQ_URL, {
       method: 'POST',
@@ -209,8 +214,10 @@ async function askGroq(apiKey: string, system: string, history: ChatMessage[]): 
         model,
         messages: [{ role: 'system', content: system }, ...history],
         temperature: 0.3,
-        max_tokens: MAX_OUTPUT_TOKENS,
+        max_tokens: reasoning ? MAX_OUTPUT_TOKENS_REASONING : MAX_OUTPUT_TOKENS,
         stream: false,
+        // Az düşünmə = daha sürətli və ucuz cavab; düşünmə mətni cavaba qarışmır
+        ...(reasoning ? { reasoning_effort: 'low', include_reasoning: false } : {}),
       }),
       signal: AbortSignal.timeout(GROQ_TIMEOUT_MS),
     });
@@ -231,6 +238,41 @@ async function askGroq(apiKey: string, system: string, history: ChatMessage[]): 
 }
 
 // ---------------------------------------------------------------------------
+// Giriş nəzarəti: hələlik yalnız admin və super admin (CHAT_PUBLIC=true olduqda hamı)
+// ---------------------------------------------------------------------------
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function bearerToken(req: Request): string | null {
+  const m = /^Bearer\s+([A-Za-z0-9._~+/=-]{20,4096})$/.exec(req.headers.get('authorization') ?? '');
+  return m ? m[1] : null;
+}
+
+/**
+ * Token Supabase Auth ilə yoxlanılır (/auth/v1/user), rol isə istifadəçinin öz tokeni ilə profiles cədvəlindən oxunur
+ * (RLS yalnız öz sətrinə icazə verir). Müştərinin göndərdiyi rol/e-poçt heç vaxt nəzərə alınmır.
+ */
+async function isStaff(token: string): Promise<boolean> {
+  const url = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL;
+  const key = process.env.SUPABASE_ANON_KEY ?? process.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? process.env.VITE_SUPABASE_ANON_KEY;
+  if (!url || !key) return false; // konfiqurasiya yoxdursa bağlı qalır
+  const base = url.replace(/\/$/, '');
+  const headers = { apikey: key, Authorization: `Bearer ${token}`, Accept: 'application/json' };
+  try {
+    const u = await fetch(`${base}/auth/v1/user`, { headers, signal: AbortSignal.timeout(RETRIEVAL_TIMEOUT_MS) });
+    if (!u.ok) return false;
+    const id = ((await u.json()) as { id?: unknown } | null)?.id;
+    if (typeof id !== 'string' || !UUID_RE.test(id)) return false;
+    const p = await fetch(`${base}/rest/v1/profiles?select=role,is_super_admin&id=eq.${id}`, { headers, signal: AbortSignal.timeout(RETRIEVAL_TIMEOUT_MS) });
+    if (!p.ok) return false;
+    const rows: unknown = await p.json();
+    const row = Array.isArray(rows) ? (rows[0] as { role?: unknown; is_super_admin?: unknown } | undefined) : undefined;
+    return !!row && (row.role === 'admin' || row.is_super_admin === true);
+  } catch {
+    return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Handler-lər
 // ---------------------------------------------------------------------------
 export async function POST(request: Request): Promise<Response> {
@@ -242,6 +284,11 @@ export async function POST(request: Request): Promise<Response> {
 
   const wait = checkRate(clientIp(request));
   if (wait) return fail('rate_limited', { 'Retry-After': String(wait) });
+
+  if (process.env.CHAT_PUBLIC !== 'true') {
+    const token = bearerToken(request);
+    if (!token || !(await isStaff(token))) return fail('coming_soon');
+  }
 
   let text: string;
   try { text = await request.text(); } catch { return fail('invalid_request'); }
