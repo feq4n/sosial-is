@@ -5,7 +5,7 @@ import { findSpecialty } from '@/services/specialties';
 export interface Specialty { code: string }
 /** Növbə (1 = I növbə, 2 = II növbə) rəsmi cədvəldən götürülür; kurs anlayışı saytda istifadə olunmur. */
 export interface Group { code: string; specialty: string; shift: number }
-/** Dərs növü cədvəldəki yazılışla saxlanılır. */
+/** Dərs növü yalnız mənbə cədvəl onu göstərəndə doldurulur; şöbənin geniş cədvəlində (ÜMUMİ) yoxdur və null qalır. */
 export type LessonKind = 'Mühazirə' | 'Seminar' | 'Praktika';
 /** all = hər həftə, upper = üst həftə, lower = alt həftə. */
 export type LessonWeek = 'all' | 'upper' | 'lower';
@@ -19,7 +19,7 @@ export interface Lesson {
   /** null = bütün qrup, 1 / 2 = birinci / ikinci yarımqrup. */
   subgroup: 1 | 2 | null;
   subject: string;
-  kind: LessonKind;
+  kind: LessonKind | null;
   teacher: string | null;
   room: string | null;
   pending: boolean;

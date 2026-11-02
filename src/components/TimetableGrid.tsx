@@ -8,7 +8,7 @@ function LessonVariant({ l }: { l: Lesson }) {
   return (
     <div>
       <p className="flex flex-wrap items-center gap-1.5">
-        <Badge tone={l.kind === 'Mühazirə' ? 'brand' : 'neutral'}>{v.kind}</Badge>
+        {v.kind && <Badge tone={l.kind === 'Mühazirə' ? 'brand' : 'neutral'}>{v.kind}</Badge>}
         {v.week && <Badge tone="accent">{v.week}</Badge>}
         {v.subgroup && <Badge>{v.subgroup}</Badge>}
       </p>

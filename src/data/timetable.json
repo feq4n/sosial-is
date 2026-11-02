@@ -2,7 +2,7 @@
  "meta": {
   "academicYear": "2026/2027",
   "semester": "payız",
-  "source": "ADPK_ders_cedveli_Si_KSATS_KSSI.xlsx"
+  "source": "rena.xlsx"
  },
  "specialties": [
   {
@@ -172,9 +172,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Pərvanə Ələkbərova",
-   "room": "207",
+   "room": "213",
    "pending": false
   },
   {
@@ -186,9 +186,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Samirə Kərimova",
-   "room": "206",
+   "room": "209",
    "pending": false
   },
   {
@@ -199,10 +199,10 @@
    "end": "14:50",
    "week": "upper",
    "subgroup": 1,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Səadət Əliyeva",
-   "room": "113A",
+   "room": "216",
    "pending": false
   },
   {
@@ -213,10 +213,10 @@
    "end": "14:50",
    "week": "upper",
    "subgroup": 2,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Nigar Kərimova",
-   "room": "113B",
+   "room": "216",
    "pending": false
   },
   {
@@ -228,7 +228,7 @@
    "week": "all",
    "subgroup": null,
    "subject": "Şəbəkə avadanlıqları",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Gülsüm Almaszadə",
    "room": "207",
    "pending": false
@@ -241,10 +241,10 @@
    "end": "17:50",
    "week": "all",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Mühazirə",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Aybəniz Məmmədova",
-   "room": "210",
+   "room": "209",
    "pending": false
   },
   {
@@ -256,9 +256,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Hüququn əsasları",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Hümeyrə Nadiri",
-   "room": "210",
+   "room": "204",
    "pending": false
   },
   {
@@ -270,65 +270,65 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Pərvanə Ələkbərova",
-   "room": "206",
-   "pending": false
-  },
-  {
-   "group": "KŞATS25/01SB",
-   "day": 3,
-   "lesson": 3,
-   "start": "16:30",
-   "end": "17:50",
-   "week": "all",
-   "subgroup": 1,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Səadət Əliyeva",
-   "room": "222",
-   "pending": false
-  },
-  {
-   "group": "KŞATS25/01SB",
-   "day": 3,
-   "lesson": 3,
-   "start": "16:30",
-   "end": "17:50",
-   "week": "all",
-   "subgroup": 2,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Nigar Kərimova",
-   "room": "225",
-   "pending": false
-  },
-  {
-   "group": "KŞATS25/01SB",
-   "day": 4,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": 1,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Səadət Əliyeva",
    "room": "212",
    "pending": false
   },
   {
    "group": "KŞATS25/01SB",
+   "day": 3,
+   "lesson": 3,
+   "start": "16:30",
+   "end": "17:50",
+   "week": "all",
+   "subgroup": 1,
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Səadət Əliyeva",
+   "room": "216",
+   "pending": false
+  },
+  {
+   "group": "KŞATS25/01SB",
+   "day": 3,
+   "lesson": 3,
+   "start": "16:30",
+   "end": "17:50",
+   "week": "all",
+   "subgroup": 2,
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Nigar Kərimova",
+   "room": "216",
+   "pending": false
+  },
+  {
+   "group": "KŞATS25/01SB",
+   "day": 4,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": 1,
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Səadət Əliyeva",
+   "room": "216",
+   "pending": false
+  },
+  {
+   "group": "KŞATS25/01SB",
    "day": 4,
    "lesson": 1,
    "start": "13:30",
    "end": "14:50",
    "week": "all",
    "subgroup": 2,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Nigar Kərimova",
-   "room": "113C",
+   "room": "216",
    "pending": false
   },
   {
@@ -340,9 +340,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Samirə Kərimova",
-   "room": "206",
+   "room": "209",
    "pending": false
   },
   {
@@ -354,9 +354,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Şəbəkə avadanlıqları",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Gülsüm Almaszadə",
-   "room": "206",
+   "room": "209",
    "pending": false
   },
   {
@@ -367,10 +367,10 @@
    "end": "16:20",
    "week": "all",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Praktika",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Aybəniz Məmmədova",
-   "room": "207",
+   "room": "204",
    "pending": false
   },
   {
@@ -382,9 +382,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "İş mühiti və servis mədəniyyəti",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Sevinc Ağakişibəyli",
-   "room": "235",
+   "room": "202m",
    "pending": false
   },
   {
@@ -396,9 +396,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin qurulma və işləmə prinsipləri",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aybəniz Aslanova",
-   "room": "210",
+   "room": "202m",
    "pending": false
   },
   {
@@ -410,9 +410,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Multimediya vasitələri",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Rəna Abdullayeva",
-   "room": "232",
+   "room": "115m",
    "pending": false
   },
   {
@@ -424,9 +424,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter sistemlərinin təmiri və servisi",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Güllü Məmmədova",
-   "room": "209",
+   "room": "129m",
    "pending": false
   },
   {
@@ -438,9 +438,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Multimediya vasitələri",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Rəna Abdullayeva",
-   "room": "234",
+   "room": "210s",
    "pending": false
   },
   {
@@ -452,9 +452,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin qurulma və işləmə prinsipləri",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Aybəniz Məmmədova",
-   "room": "203",
+   "room": "207s",
    "pending": false
   },
   {
@@ -466,9 +466,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Şəbəkə təhlükəsizliyi",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Samirə Kərimova",
-   "room": "122",
+   "room": "209m",
    "pending": false
   },
   {
@@ -480,9 +480,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "İnternet konsepsiyaları və texnologiyaları",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aygün Əliyeva",
-   "room": "225",
+   "room": "213m",
    "pending": false
   },
   {
@@ -494,9 +494,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "İş mühiti və servis mədəniyyəti",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Sevinc Ağakişibəyli",
-   "room": "205",
+   "room": "204s",
    "pending": false
   },
   {
@@ -508,9 +508,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Şəbəkə təhlükəsizliyi",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Samirə Kərimova",
-   "room": "213",
+   "room": "209s",
    "pending": false
   },
   {
@@ -522,9 +522,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter sistemlərinin təmiri və servisi",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Güllü Məmmədova",
-   "room": "207",
+   "room": "129s",
    "pending": false
   },
   {
@@ -536,23 +536,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "İnternet konsepsiyaları və texnologiyaları",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Aygün Əliyeva",
-   "room": "110",
-   "pending": false
-  },
-  {
-   "group": "KŞATS25/03SB",
-   "day": 1,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Şəbəkə təhlükəsizliyi",
-   "kind": "Seminar",
-   "teacher": "Samirə Kərimova",
-   "room": "206",
+   "room": "203s",
    "pending": false
   },
   {
@@ -564,9 +550,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter sistemlərinin təmiri və servisi",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Sevinc Ağakişibəyli",
-   "room": "207",
+   "room": "129m",
    "pending": false
   },
   {
@@ -578,9 +564,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "İş mühiti və servis mədəniyyəti",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Sevinc Ağakişibəyli",
-   "room": "234",
+   "room": "129m",
    "pending": false
   },
   {
@@ -592,9 +578,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "İş mühiti və servis mədəniyyəti",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Sevinc Ağakişibəyli",
-   "room": "116",
+   "room": "202s",
    "pending": false
   },
   {
@@ -606,9 +592,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter sistemlərinin təmiri və servisi",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Sevinc Ağakişibəyli",
-   "room": "209",
+   "room": "129s",
    "pending": false
   },
   {
@@ -620,9 +606,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin qurulma və işləmə prinsipləri",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aybəniz Aslanova",
-   "room": "210",
+   "room": "129m",
    "pending": false
   },
   {
@@ -634,9 +620,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin qurulma və işləmə prinsipləri",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Aybəniz Aslanova",
-   "room": "207",
+   "room": "129s",
    "pending": false
   },
   {
@@ -648,9 +634,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "İnternet konsepsiyaları və texnologiyaları",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Sevinc Ağakişibəyli",
-   "room": "213",
+   "room": "213m",
    "pending": false
   },
   {
@@ -662,9 +648,23 @@
    "week": "all",
    "subgroup": null,
    "subject": "Multimediya vasitələri",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Rəna Abdullayeva",
-   "room": "205",
+   "room": "216m",
+   "pending": false
+  },
+  {
+   "group": "KŞATS25/03SB",
+   "day": 4,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Şəbəkə təhlükəsizliyi",
+   "kind": null,
+   "teacher": "Samirə Kərimova",
+   "room": "216m",
    "pending": false
   },
   {
@@ -676,9 +676,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "İnternet konsepsiyaları və texnologiyaları",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Sevinc Ağakişibəyli",
-   "room": "211",
+   "room": "216s",
    "pending": false
   },
   {
@@ -690,9 +690,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Şəbəkə təhlükəsizliyi",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Samirə Kərimova",
-   "room": "121",
+   "room": "203s",
    "pending": false
   },
   {
@@ -704,9 +704,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Multimediya vasitələri",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Rəna Abdullayeva",
-   "room": "115",
+   "room": "209s",
    "pending": false
   },
   {
@@ -718,9 +718,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Biologiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Afaq Məmmədova",
-   "room": "127",
+   "room": "213",
    "pending": false
   },
   {
@@ -732,9 +732,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Çağırışaqədərki hazırlıq",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Rövşən Quliyev",
-   "room": "126",
+   "room": null,
    "pending": false
   },
   {
@@ -746,9 +746,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Rus dili",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "İnarə Cəfərova",
-   "room": "226",
+   "room": "232",
    "pending": false
   },
   {
@@ -760,9 +760,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Xarici dil",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Ləman Abışova",
-   "room": "121",
+   "room": "217",
    "pending": false
   },
   {
@@ -774,7 +774,7 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Gülnarə Allahverdiyeva",
    "room": "121",
    "pending": false
@@ -788,9 +788,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kimya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Murad Məmmədov",
-   "room": "206",
+   "room": "212",
    "pending": false
   },
   {
@@ -802,7 +802,7 @@
    "week": "all",
    "subgroup": null,
    "subject": "Coğrafiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Türkan Qasımova",
    "room": "202",
    "pending": false
@@ -816,9 +816,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan tarixi",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Gülnarə Sadıqova",
-   "room": "121",
+   "room": "206",
    "pending": false
   },
   {
@@ -830,9 +830,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Gülnarə Allahverdiyeva",
-   "room": "127",
+   "room": "206",
    "pending": false
   },
   {
@@ -844,9 +844,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Ümumi tarix",
-   "kind": "Seminar",
-   "teacher": "Könül Hüseyinova",
-   "room": "221",
+   "kind": null,
+   "teacher": "Könül Hüseynova",
+   "room": "217",
    "pending": false
   },
   {
@@ -858,9 +858,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Biologiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Afaq Məmmədova",
-   "room": "121",
+   "room": "217",
    "pending": false
   },
   {
@@ -872,9 +872,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "İnformatika",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Nazənim Nəbiyeva",
-   "room": "210",
+   "room": "216m",
    "pending": false
   },
   {
@@ -886,9 +886,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Gülnarə Allahverdiyeva",
-   "room": "121",
+   "room": "232",
    "pending": false
   },
   {
@@ -900,9 +900,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Fizika",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Məleykə Abdullayeva",
-   "room": "124",
+   "room": "123",
    "pending": false
   },
   {
@@ -914,9 +914,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dili",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Xatirə Xəlilova",
-   "room": "123",
+   "room": "121",
    "pending": false
   },
   {
@@ -928,9 +928,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dili",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Xatirə Xəlilova",
-   "room": "127",
+   "room": "206",
    "pending": false
   },
   {
@@ -942,9 +942,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Ədəbiyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "İlahə Əsgərova",
-   "room": "127",
+   "room": "122",
    "pending": false
   },
   {
@@ -956,9 +956,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Xarici dil",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Ləman Abışova",
-   "room": "123",
+   "room": "216",
    "pending": false
   },
   {
@@ -970,9 +970,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Fiziki tərbiyə",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Nərgiz Çobanova",
-   "room": "OZ",
+   "room": null,
    "pending": false
   },
   {
@@ -983,154 +983,154 @@
    "end": "14:50",
    "week": "all",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Praktika",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Aidə Zamanova",
-   "room": "203",
-   "pending": false
-  },
-  {
-   "group": "KŞATS26/02SB",
-   "day": 1,
-   "lesson": 2,
-   "start": "15:00",
-   "end": "16:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Ləman Abışova",
-   "room": "203",
-   "pending": false
-  },
-  {
-   "group": "KŞATS26/02SB",
-   "day": 1,
-   "lesson": 3,
-   "start": "16:30",
-   "end": "17:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Riyaziyyat",
-   "kind": "Seminar",
-   "teacher": "Elçin Əsədov",
-   "room": "223",
-   "pending": false
-  },
-  {
-   "group": "KŞATS26/02SB",
-   "day": 2,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Mühazirə",
-   "teacher": "Aidə Zamanova",
-   "room": "128",
-   "pending": false
-  },
-  {
-   "group": "KŞATS26/02SB",
-   "day": 2,
-   "lesson": 2,
-   "start": "15:00",
-   "end": "16:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Riyaziyyat",
-   "kind": "Mühazirə",
-   "teacher": "Elçin Əsədov",
-   "room": "212",
-   "pending": false
-  },
-  {
-   "group": "KŞATS26/02SB",
-   "day": 2,
-   "lesson": 3,
-   "start": "16:30",
-   "end": "17:50",
-   "week": "upper",
-   "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Ləman Abışova",
-   "room": "122",
-   "pending": false
-  },
-  {
-   "group": "KŞATS26/02SB",
-   "day": 3,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
-   "teacher": "Gülnarə Əhmədova",
-   "room": "234",
-   "pending": false
-  },
-  {
-   "group": "KŞATS26/02SB",
-   "day": 4,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Şəbəkə avadanlıqları",
-   "kind": "Mühazirə",
-   "teacher": "Gülsüm Almaszadə",
    "room": "209",
    "pending": false
   },
   {
    "group": "KŞATS26/02SB",
-   "day": 4,
+   "day": 1,
    "lesson": 2,
    "start": "15:00",
    "end": "16:20",
    "week": "all",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Ləman Abışova",
-   "room": "110",
+   "room": "115",
    "pending": false
   },
   {
    "group": "KŞATS26/02SB",
-   "day": 5,
+   "day": 2,
    "lesson": 1,
    "start": "13:30",
    "end": "14:50",
    "week": "all",
    "subgroup": null,
-   "subject": "Şəbəkə avadanlıqları",
-   "kind": "Seminar",
-   "teacher": "Gülsüm Almaszadə",
-   "room": "110",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
+   "teacher": "Aidə Zamanova",
+   "room": "209",
    "pending": false
   },
   {
    "group": "KŞATS26/02SB",
-   "day": 5,
+   "day": 2,
    "lesson": 2,
    "start": "15:00",
    "end": "16:20",
    "week": "all",
    "subgroup": null,
-   "subject": "Hüququn əsasları",
-   "kind": "Mühazirə",
-   "teacher": "Hümeyrə Nadiri",
+   "subject": "Riyaziyyat",
+   "kind": null,
+   "teacher": "Elçin Əsədov",
    "room": "129",
    "pending": false
   },
   {
    "group": "KŞATS26/02SB",
+   "day": 2,
+   "lesson": 3,
+   "start": "16:30",
+   "end": "17:50",
+   "week": "upper",
+   "subgroup": null,
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Ləman Abışova",
+   "room": "115",
+   "pending": false
+  },
+  {
+   "group": "KŞATS26/02SB",
+   "day": 3,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Əməliyyat sistemləri",
+   "kind": null,
+   "teacher": "Gülnarə Əhmədova",
+   "room": "209",
+   "pending": false
+  },
+  {
+   "group": "KŞATS26/02SB",
+   "day": 3,
+   "lesson": 2,
+   "start": "15:00",
+   "end": "16:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Riyaziyyat",
+   "kind": null,
+   "teacher": "Elçin Əsədov",
+   "room": "129",
+   "pending": false
+  },
+  {
+   "group": "KŞATS26/02SB",
+   "day": 4,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Şəbəkə avadanlıqları",
+   "kind": null,
+   "teacher": "Gülsüm Almaszadə",
+   "room": "207",
+   "pending": false
+  },
+  {
+   "group": "KŞATS26/02SB",
+   "day": 4,
+   "lesson": 2,
+   "start": "15:00",
+   "end": "16:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Ləman Abışova",
+   "room": "216",
+   "pending": false
+  },
+  {
+   "group": "KŞATS26/02SB",
+   "day": 5,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Şəbəkə avadanlıqları",
+   "kind": null,
+   "teacher": "Gülsüm Almaszadə",
+   "room": "204",
+   "pending": false
+  },
+  {
+   "group": "KŞATS26/02SB",
+   "day": 5,
+   "lesson": 2,
+   "start": "15:00",
+   "end": "16:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Hüququn əsasları",
+   "kind": null,
+   "teacher": "Hümeyrə Nadiri",
+   "room": "213",
+   "pending": false
+  },
+  {
+   "group": "KŞATS26/02SB",
    "day": 5,
    "lesson": 3,
    "start": "16:30",
@@ -1138,9 +1138,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Gülnarə Əhmədova",
-   "room": "122",
+   "room": "209",
    "pending": false
   },
   {
@@ -1151,10 +1151,10 @@
    "end": "14:50",
    "week": "all",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Mühazirə",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Yeganə Həsənova",
-   "room": "202",
+   "room": "210",
    "pending": false
   },
   {
@@ -1165,10 +1165,10 @@
    "end": "16:20",
    "week": "all",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Praktika",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Yeganə Həsənova",
-   "room": "209",
+   "room": "207",
    "pending": false
   },
   {
@@ -1179,10 +1179,10 @@
    "end": "17:50",
    "week": "upper",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "İlahə Əmiraslanova",
-   "room": "204",
+   "room": "115",
    "pending": false
   },
   {
@@ -1194,9 +1194,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Gülnarə Əhmədova",
-   "room": "126",
+   "room": "210",
    "pending": false
   },
   {
@@ -1207,10 +1207,10 @@
    "end": "16:20",
    "week": "all",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "İlahə Əmiraslanova",
-   "room": "209",
+   "room": "216",
    "pending": false
   },
   {
@@ -1222,9 +1222,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Elçin Əsədov",
-   "room": "207",
+   "room": "129",
    "pending": false
   },
   {
@@ -1235,10 +1235,10 @@
    "end": "14:50",
    "week": "all",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "İlahə Əmiraslanova",
-   "room": "110",
+   "room": "217",
    "pending": false
   },
   {
@@ -1250,9 +1250,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Elçin Əsədov",
-   "room": "121",
+   "room": "129",
    "pending": false
   },
   {
@@ -1264,9 +1264,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Şəbəkə avadanlıqları",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Yeganə Həsənova",
-   "room": "209",
+   "room": "210",
    "pending": false
   },
   {
@@ -1278,9 +1278,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Hüququn əsasları",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Hümeyrə Nadiri",
-   "room": "222",
+   "room": "212",
    "pending": false
   },
   {
@@ -1292,9 +1292,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Gülnarə Əhmədova",
-   "room": "216",
+   "room": "207",
    "pending": false
   },
   {
@@ -1306,9 +1306,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Şəbəkə avadanlıqları",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Gülsüm Almaszadə",
-   "room": "120",
+   "room": "210",
    "pending": false
   },
   {
@@ -1320,9 +1320,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin idarəedilməsinin təşkili",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aygün Əliyeva",
-   "room": "210",
+   "room": "216m",
    "pending": false
   },
   {
@@ -1334,9 +1334,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Bulud texnologiyası və devops alətləri",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Rəna Abdullayeva",
-   "room": "121",
+   "room": "216m",
    "pending": false
   },
   {
@@ -1348,23 +1348,37 @@
    "week": "all",
    "subgroup": null,
    "subject": "Python proqramlaşdırma dili",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Əsmər Qasımlı",
-   "room": "128",
+   "room": "207m",
    "pending": false
   },
   {
    "group": "KŞŞİ24/01SB",
    "day": 2,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
    "week": "all",
    "subgroup": null,
    "subject": "Verilənlər bazasının idarəedilməsi sistemləri",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aidə Zamanova",
-   "room": "223",
+   "room": "207m",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ24/01SB",
+   "day": 3,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Verilənlər bazasının idarəedilməsi sistemləri",
+   "kind": null,
+   "teacher": "Aidə Zamanova",
+   "room": "210s",
    "pending": false
   },
   {
@@ -1376,9 +1390,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Veb proqramlaşdırma",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Məmmədova",
-   "room": "202",
+   "room": "216m",
    "pending": false
   },
   {
@@ -1390,9 +1404,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Kompüter qrafikası",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Gülnarə Əhmədova",
-   "room": "202",
+   "room": "207m",
    "pending": false
   },
   {
@@ -1404,9 +1418,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Kompüter qrafikası",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aygün Əliyeva",
-   "room": "210",
+   "room": "210s",
    "pending": false
   },
   {
@@ -1418,9 +1432,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin idarəedilməsinin təşkili",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aygün Əliyeva",
-   "room": "210",
+   "room": "210s",
    "pending": false
   },
   {
@@ -1432,9 +1446,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter qrafikası",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Gülnarə Əhmədova",
-   "room": "128",
+   "room": "207s",
    "pending": false
   },
   {
@@ -1446,23 +1460,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Veb proqramlaşdırma",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Məmmədova",
-   "room": "210",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ24/01SB",
-   "day": 5,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Verilənlər bazasının idarəedilməsi sistemləri",
-   "kind": "Seminar",
-   "teacher": "Aidə Zamanova",
-   "room": "223",
+   "room": "207s",
    "pending": false
   },
   {
@@ -1474,9 +1474,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Bulud texnologiyası və devops alətləri",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Rəna Abdullayeva",
-   "room": "223",
+   "room": "204s",
    "pending": false
   },
   {
@@ -1488,79 +1488,65 @@
    "week": "all",
    "subgroup": null,
    "subject": "Python proqramlaşdırma dili",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Əsmər Qasımlı",
-   "room": "210",
+   "room": "204s",
    "pending": false
   },
   {
    "group": "KŞŞİ24/02SB",
    "day": 1,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Python proqramlaşdırma dili",
+   "kind": null,
+   "teacher": "Əsmər Qasımlı",
+   "room": "210m",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ24/02SB",
+   "day": 1,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Bulud texnologiyası və devops alətləri",
+   "kind": null,
+   "teacher": "Güllü Məmmədova",
+   "room": "210m",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ24/02SB",
+   "day": 1,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Verilənlər bazasının idarəedilməsi sistemləri",
+   "kind": null,
+   "teacher": "Aidə Zamanova",
+   "room": "210m",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ24/02SB",
+   "day": 2,
    "lesson": 1,
    "start": "09:00",
    "end": "10:20",
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin idarəedilməsinin təşkili",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Samirə Kərimova",
-   "room": "210",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ24/02SB",
-   "day": 1,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Python proqramlaşdırma dili",
-   "kind": "Praktika",
-   "teacher": "Əsmər Qasımlı",
-   "room": "128",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ24/02SB",
-   "day": 1,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Bulud texnologiyası və devops alətləri",
-   "kind": "Seminar",
-   "teacher": "Güllü Məmmədova",
-   "room": "123",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ24/02SB",
-   "day": 1,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Verilənlər bazasının idarəedilməsi sistemləri",
-   "kind": "Seminar",
-   "teacher": "Aidə Zamanova",
-   "room": "123",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ24/02SB",
-   "day": 2,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "upper",
-   "subgroup": null,
-   "subject": "Kompüter qrafikası",
-   "kind": "Mühazirə",
-   "teacher": "Aygün Əliyeva",
-   "room": "210",
+   "room": "216m",
    "pending": false
   },
   {
@@ -1572,79 +1558,93 @@
    "week": "all",
    "subgroup": null,
    "subject": "Bulud texnologiyası və devops alətləri",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Güllü Məmmədova",
-   "room": "123",
+   "room": "217s",
    "pending": false
   },
   {
    "group": "KŞŞİ24/02SB",
-   "day": 3,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Kompüter qrafikası",
-   "kind": "Praktika",
-   "teacher": "Əsmər Qasımlı",
-   "room": "128",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ24/02SB",
-   "day": 3,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Python proqramlaşdırma dili",
-   "kind": "Praktika",
-   "teacher": "Əsmər Qasımlı",
-   "room": "128",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ24/02SB",
-   "day": 4,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Veb proqramlaşdırma",
-   "kind": "Praktika",
-   "teacher": "Aybəniz Məmmədova",
-   "room": "128",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ24/02SB",
-   "day": 4,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Verilənlər bazasının idarəedilməsi sistemləri",
-   "kind": "Mühazirə",
-   "teacher": "Aidə Zamanova",
-   "room": "223",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ24/02SB",
-   "day": 4,
+   "day": 2,
    "lesson": 3,
    "start": "12:00",
    "end": "13:20",
    "week": "lower",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin idarəedilməsinin təşkili",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Samirə Kərimova",
-   "room": "128",
+   "room": "210s",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ24/02SB",
+   "day": 3,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Kompüter qrafikası",
+   "kind": null,
+   "teacher": "Əsmər Qasımlı",
+   "room": "210m",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ24/02SB",
+   "day": 3,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Python proqramlaşdırma dili",
+   "kind": null,
+   "teacher": "Əsmər Qasımlı",
+   "room": "209s",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ24/02SB",
+   "day": 4,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Veb proqramlaşdırma",
+   "kind": null,
+   "teacher": "Aybəniz Məmmədova",
+   "room": "216m",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ24/02SB",
+   "day": 4,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Verilənlər bazasının idarəedilməsi sistemləri",
+   "kind": null,
+   "teacher": "Aidə Zamanova",
+   "room": "210s",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ24/02SB",
+   "day": 4,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "upper",
+   "subgroup": null,
+   "subject": "Kompüter qrafikası",
+   "kind": null,
+   "teacher": "Aygün Əliyeva",
+   "room": "204s",
    "pending": false
   },
   {
@@ -1656,9 +1656,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Veb proqramlaşdırma",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Məmmədova",
-   "room": "128",
+   "room": "210s",
    "pending": false
   },
   {
@@ -1670,9 +1670,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Kompüter qrafikası",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Əsmər Qasımlı",
-   "room": "128",
+   "room": "207s",
    "pending": false
   },
   {
@@ -1684,9 +1684,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Elçin Əsədov",
-   "room": "115",
+   "room": "129",
    "pending": false
   },
   {
@@ -1697,70 +1697,70 @@
    "end": "16:20",
    "week": "all",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Praktika",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
+   "teacher": "Aida Orucova",
+   "room": "210",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/01SB",
+   "day": 2,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Gülər Rüstəmova",
+   "room": "213",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/01SB",
+   "day": 2,
+   "lesson": 2,
+   "start": "15:00",
+   "end": "16:20",
+   "week": "upper",
+   "subgroup": null,
+   "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
+   "kind": null,
+   "teacher": "Xatirə Xəlilova",
+   "room": "217",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/01SB",
+   "day": 2,
+   "lesson": 2,
+   "start": "15:00",
+   "end": "16:20",
+   "week": "lower",
+   "subgroup": null,
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Aidə Zamanova",
+   "room": "217",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/01SB",
+   "day": 3,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "İnformasiya texnologiyaları",
+   "kind": null,
+   "teacher": "Nazənim Nəbiyeva",
    "room": "207",
    "pending": false
   },
   {
    "group": "KŞŞİ25/01SB",
-   "day": 2,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Gülər Rüstəmova",
-   "room": "115",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/01SB",
-   "day": 2,
-   "lesson": 2,
-   "start": "15:00",
-   "end": "16:20",
-   "week": "upper",
-   "subgroup": null,
-   "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
-   "teacher": "Xatirə Xəlilova",
-   "room": "206",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/01SB",
-   "day": 2,
-   "lesson": 2,
-   "start": "15:00",
-   "end": "16:20",
-   "week": "lower",
-   "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Praktika",
-   "teacher": "Aidə Zamanova",
-   "room": "128",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/01SB",
-   "day": 3,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "İnformasiya texnologiyaları",
-   "kind": "Mühazirə",
-   "teacher": "Nazənim Nəbiyeva",
-   "room": "222",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/01SB",
    "day": 3,
    "lesson": 2,
    "start": "15:00",
@@ -1768,9 +1768,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Gülnarə Əhmədova",
-   "room": "123",
+   "room": "210",
    "pending": false
   },
   {
@@ -1782,9 +1782,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Elçin Əsədov",
-   "room": "203",
+   "room": "232",
    "pending": false
   },
   {
@@ -1795,223 +1795,223 @@
    "end": "16:20",
    "week": "all",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Mühazirə",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Aidə Zamanova",
-   "room": "128",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/01SB",
-   "day": 4,
-   "lesson": 3,
-   "start": "16:30",
-   "end": "17:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
-   "teacher": "Xatirə Xəlilova",
-   "room": "110",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/01SB",
-   "day": 5,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
-   "teacher": "Gülnarə Əhmədova",
-   "room": "127",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/01SB",
-   "day": 5,
-   "lesson": 2,
-   "start": "15:00",
-   "end": "16:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Gülər Rüstəmova",
-   "room": "121",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/02SB",
-   "day": 1,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Praktika",
-   "teacher": "Sevinc Ağakişibəyli",
-   "room": "209",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/02SB",
-   "day": 1,
-   "lesson": 2,
-   "start": "15:00",
-   "end": "16:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Riyaziyyat",
-   "kind": "Seminar",
-   "teacher": "Pərvanə Ələkbərova",
-   "room": "112",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/02SB",
-   "day": 1,
-   "lesson": 3,
-   "start": "16:30",
-   "end": "17:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Sara Məmmədzadə",
-   "room": "112",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/02SB",
-   "day": 2,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Mühazirə",
-   "teacher": "Sevinc Ağakişibəyli",
-   "room": "209",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/02SB",
-   "day": 2,
-   "lesson": 2,
-   "start": "15:00",
-   "end": "16:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
-   "teacher": "Aytən İsmayılova",
-   "room": "112",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/02SB",
-   "day": 3,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Riyaziyyat",
-   "kind": "Mühazirə",
-   "teacher": "Pərvanə Ələkbərova",
-   "room": "110",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/02SB",
-   "day": 3,
-   "lesson": 2,
-   "start": "15:00",
-   "end": "16:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Sara Məmmədzadə",
-   "room": "112",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/02SB",
-   "day": 4,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
-   "teacher": "Samirə Kərimova",
-   "room": "112",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/02SB",
-   "day": 4,
-   "lesson": 2,
-   "start": "15:00",
-   "end": "16:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "İnformasiya texnologiyaları",
-   "kind": "Mühazirə",
-   "teacher": "Nazənim Nəbiyeva",
-   "room": "209",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/02SB",
-   "day": 5,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "upper",
-   "subgroup": null,
-   "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
-   "teacher": "Aytən İsmayılova",
-   "room": "209",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/02SB",
-   "day": 5,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "lower",
-   "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Praktika",
-   "teacher": "Sevinc Ağakişibəyli",
-   "room": "209",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ25/02SB",
-   "day": 5,
-   "lesson": 2,
-   "start": "15:00",
-   "end": "16:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
-   "teacher": "Samirə Kərimova",
    "room": "204",
    "pending": false
   },
   {
+   "group": "KŞŞİ25/01SB",
+   "day": 4,
+   "lesson": 3,
+   "start": "16:30",
+   "end": "17:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
+   "kind": null,
+   "teacher": "Xatirə Xəlilova",
+   "room": "213",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/01SB",
+   "day": 5,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Əməliyyat sistemləri",
+   "kind": null,
+   "teacher": "Gülnarə Əhmədova",
+   "room": "207",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/01SB",
+   "day": 5,
+   "lesson": 2,
+   "start": "15:00",
+   "end": "16:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Gülər Rüstəmova",
+   "room": "115",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/02SB",
+   "day": 1,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
+   "teacher": "Sevinc Ağakişibəyli",
+   "room": "207",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/02SB",
+   "day": 1,
+   "lesson": 2,
+   "start": "15:00",
+   "end": "16:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Riyaziyyat",
+   "kind": null,
+   "teacher": "Pərvanə Ələkbərova",
+   "room": "129",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/02SB",
+   "day": 1,
+   "lesson": 3,
+   "start": "16:30",
+   "end": "17:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Sara Məmmədzadə",
+   "room": "216",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/02SB",
+   "day": 2,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
+   "teacher": "Sevinc Ağakişibəyli",
+   "room": "207",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/02SB",
+   "day": 2,
+   "lesson": 2,
+   "start": "15:00",
+   "end": "16:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
+   "kind": null,
+   "teacher": "Aytən İsmayılova",
+   "room": "232",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/02SB",
+   "day": 3,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Riyaziyyat",
+   "kind": null,
+   "teacher": "Pərvanə Ələkbərova",
+   "room": "232",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/02SB",
+   "day": 3,
+   "lesson": 2,
+   "start": "15:00",
+   "end": "16:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Sara Məmmədzadə",
+   "room": "217",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/02SB",
+   "day": 4,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Əməliyyat sistemləri",
+   "kind": null,
+   "teacher": "Samirə Kərimova",
+   "room": "209",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/02SB",
+   "day": 4,
+   "lesson": 2,
+   "start": "15:00",
+   "end": "16:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "İnformasiya texnologiyaları",
+   "kind": null,
+   "teacher": "Nazənim Nəbiyeva",
+   "room": "207",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/02SB",
+   "day": 5,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "upper",
+   "subgroup": null,
+   "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
+   "kind": null,
+   "teacher": "Aytən İsmayılova",
+   "room": "217",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/02SB",
+   "day": 5,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "lower",
+   "subgroup": null,
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
+   "teacher": "Sevinc Ağakişibəyli",
+   "room": "217",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ25/02SB",
+   "day": 5,
+   "lesson": 2,
+   "start": "15:00",
+   "end": "16:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Əməliyyat sistemləri",
+   "kind": null,
+   "teacher": "Samirə Kərimova",
+   "room": "209",
+   "pending": false
+  },
+  {
    "group": "KŞŞİ25/03SB",
    "day": 1,
    "lesson": 1,
@@ -2020,9 +2020,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Python proqramlaşdırma dili",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Aslanova",
-   "room": "209",
+   "room": "207m",
    "pending": false
   },
   {
@@ -2034,9 +2034,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter qrafikası",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Gülnarə Əhmədova",
-   "room": "209",
+   "room": "207m",
    "pending": false
   },
   {
@@ -2048,9 +2048,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Bulud texnologiyası və devops alətləri",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Güllü Məmmədova",
-   "room": "113A",
+   "room": "216m",
    "pending": false
   },
   {
@@ -2062,9 +2062,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Verilənlər bazasının idarəedilməsi sistemləri",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aidə Zamanova",
-   "room": "113A",
+   "room": "207m",
    "pending": false
   },
   {
@@ -2076,9 +2076,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin idarəedilməsinin təşkili",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Əsmər Qasımlı",
-   "room": "207",
+   "room": "115m",
    "pending": false
   },
   {
@@ -2090,9 +2090,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin idarəedilməsinin təşkili",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Əsmər Qasımlı",
-   "room": "209",
+   "room": "207s",
    "pending": false
   },
   {
@@ -2104,9 +2104,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Veb proqramlaşdırma",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Güllü Məmmədova",
-   "room": "209",
+   "room": "207m",
    "pending": false
   },
   {
@@ -2118,9 +2118,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Bulud texnologiyası və devops alətləri",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Güllü Məmmədova",
-   "room": "206",
+   "room": "204s",
    "pending": false
   },
   {
@@ -2132,9 +2132,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter qrafikası",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Gülnarə Əhmədova",
-   "room": "209",
+   "room": "207s",
    "pending": false
   },
   {
@@ -2146,9 +2146,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Python proqramlaşdırma dili",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Aslanova",
-   "room": "203",
+   "room": "204s",
    "pending": false
   },
   {
@@ -2160,9 +2160,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Veb proqramlaşdırma",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Güllü Məmmədova",
-   "room": "207",
+   "room": "209s",
    "pending": false
   },
   {
@@ -2174,9 +2174,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Verilənlər bazasının idarəedilməsi sistemləri",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Aybəniz Aslanova",
-   "room": "112",
+   "room": "207s",
    "pending": false
   },
   {
@@ -2188,9 +2188,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Bulud texnologiyası və devops alətləri",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Güllü Məmmədova",
-   "room": "112",
+   "room": "217m",
    "pending": false
   },
   {
@@ -2202,9 +2202,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Verilənlər bazasının idarəedilməsi sistemləri",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Aidə Zamanova",
-   "room": "112",
+   "room": "217m",
    "pending": false
   },
   {
@@ -2216,9 +2216,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin idarəedilməsinin təşkili",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aygün Əliyeva",
-   "room": "203",
+   "room": "217m",
    "pending": false
   },
   {
@@ -2230,9 +2230,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Python proqramlaşdırma dili",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Aslanova",
-   "room": "203",
+   "room": "210m",
    "pending": false
   },
   {
@@ -2244,9 +2244,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter qrafikası",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aygün Əliyeva",
-   "room": "203",
+   "room": "216m",
    "pending": false
   },
   {
@@ -2258,9 +2258,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin idarəedilməsinin təşkili",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aygün Əliyeva",
-   "room": "203",
+   "room": "207s",
    "pending": false
   },
   {
@@ -2272,9 +2272,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Python proqramlaşdırma dili",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Aslanova",
-   "room": "203",
+   "room": "209s",
    "pending": false
   },
   {
@@ -2286,9 +2286,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Veb proqramlaşdırma",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Məmmədova",
-   "room": "207",
+   "room": "210m",
    "pending": false
   },
   {
@@ -2300,9 +2300,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Verilənlər bazasının idarəedilməsi sistemləri",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aidə Zamanova",
-   "room": "216",
+   "room": "210s",
    "pending": false
   },
   {
@@ -2314,9 +2314,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Bulud texnologiyası və devops alətləri",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Güllü Məmmədova",
-   "room": "120",
+   "room": "204s",
    "pending": false
   },
   {
@@ -2328,9 +2328,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter qrafikası",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aygün Əliyeva",
-   "room": "203",
+   "room": "210s",
    "pending": false
   },
   {
@@ -2342,9 +2342,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Veb proqramlaşdırma",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Məmmədova",
-   "room": "128",
+   "room": "210s",
    "pending": false
   },
   {
@@ -2356,9 +2356,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter qrafikası",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Gülnarə Əhmədova",
-   "room": "203",
+   "room": "209m",
    "pending": false
   },
   {
@@ -2370,9 +2370,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin idarəedilməsinin təşkili",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aygün Əliyeva",
-   "room": "203",
+   "room": "209m",
    "pending": false
   },
   {
@@ -2384,9 +2384,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Python proqramlaşdırma dili",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Aslanova",
-   "room": "210",
+   "room": "209m",
    "pending": false
   },
   {
@@ -2398,9 +2398,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kompüter qrafikası",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Gülnarə Əhmədova",
-   "room": "128",
+   "room": "209s",
    "pending": false
   },
   {
@@ -2412,9 +2412,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Verilənlər bazasının idarəedilməsi sistemləri",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aybəniz Aslanova",
-   "room": "110",
+   "room": "209m",
    "pending": false
   },
   {
@@ -2426,9 +2426,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Veb proqramlaşdırma",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Güllü Məmmədova",
-   "room": "128",
+   "room": "209m",
    "pending": false
   },
   {
@@ -2440,9 +2440,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Bulud texnologiyası və devops alətləri",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Güllü Məmmədova",
-   "room": "110",
+   "room": "209m",
    "pending": false
   },
   {
@@ -2454,9 +2454,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Bulud texnologiyası və devops alətləri",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Güllü Məmmədova",
-   "room": "110",
+   "room": "204s",
    "pending": false
   },
   {
@@ -2468,9 +2468,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Veb proqramlaşdırma",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Güllü Məmmədova",
-   "room": "210",
+   "room": "209s",
    "pending": false
   },
   {
@@ -2482,9 +2482,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Kompüter şəbəkələrinin idarəedilməsinin təşkili",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aygün Əliyeva",
-   "room": "203",
+   "room": "217s",
    "pending": false
   },
   {
@@ -2496,9 +2496,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Python proqramlaşdırma dili",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Aslanova",
-   "room": "210",
+   "room": "209s",
    "pending": false
   },
   {
@@ -2510,9 +2510,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Verilənlər bazasının idarəedilməsi sistemləri",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Aybəniz Aslanova",
-   "room": "217",
+   "room": "207s",
    "pending": false
   },
   {
@@ -2524,9 +2524,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dili",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "İlahə Əsgərova",
-   "room": "221",
+   "room": "121",
    "pending": false
   },
   {
@@ -2538,9 +2538,9 @@
    "week": "all",
    "subgroup": 1,
    "subject": "Rus dili",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Natiqə Abdüləzizova",
-   "room": "235",
+   "room": "232",
    "pending": false
   },
   {
@@ -2552,9 +2552,9 @@
    "week": "all",
    "subgroup": 2,
    "subject": "Rus dili",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "İnarə Cəfərova",
-   "room": "221",
+   "room": "232",
    "pending": false
   },
   {
@@ -2566,23 +2566,23 @@
    "week": "all",
    "subgroup": 1,
    "subject": "Xarici dil",
-   "kind": "Seminar",
-   "teacher": "Xuraman İbrahimova",
-   "room": "211",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ26/01SB",
-   "day": 1,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "all",
-   "subgroup": 2,
-   "subject": "Xarici dil",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Könül Abbasova",
-   "room": "126",
+   "room": "202",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ26/01SB",
+   "day": 1,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "all",
+   "subgroup": 2,
+   "subject": "Xarici dil",
+   "kind": null,
+   "teacher": "Xuraman İbrahimova",
+   "room": "202",
    "pending": false
   },
   {
@@ -2594,9 +2594,9 @@
    "week": "all",
    "subgroup": 1,
    "subject": "Fiziki tərbiyə",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Toğrul Quliyev",
-   "room": "113C",
+   "room": null,
    "pending": false
   },
   {
@@ -2608,9 +2608,9 @@
    "week": "all",
    "subgroup": 2,
    "subject": "Fiziki tərbiyə",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Nigar Qaragözova",
-   "room": "113A",
+   "room": null,
    "pending": false
   },
   {
@@ -2622,9 +2622,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Nazilə Qəhrəmanova",
-   "room": "221",
+   "room": "206",
    "pending": false
   },
   {
@@ -2636,9 +2636,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan tarixi",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Gülnarə Sadıqova",
-   "room": "217",
+   "room": "232",
    "pending": false
   },
   {
@@ -2650,9 +2650,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kimya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Murad Məmmədov",
-   "room": "221",
+   "room": "212",
    "pending": false
   },
   {
@@ -2664,7 +2664,7 @@
    "week": "all",
    "subgroup": null,
    "subject": "Coğrafiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Türkan Qasımova",
    "room": "202",
    "pending": false
@@ -2678,7 +2678,7 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Biologiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Afaq Məmmədova",
    "room": "217",
    "pending": false
@@ -2692,9 +2692,9 @@
    "week": "all",
    "subgroup": 1,
    "subject": "İnformatika",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Ülkər Kərimova",
-   "room": "210",
+   "room": "213m",
    "pending": false
   },
   {
@@ -2706,9 +2706,9 @@
    "week": "all",
    "subgroup": 2,
    "subject": "İnformatika",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Firəngiz Mancanova",
-   "room": "207",
+   "room": "213m",
    "pending": false
   },
   {
@@ -2720,9 +2720,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Nazilə Qəhrəmanova",
-   "room": "221",
+   "room": "213",
    "pending": false
   },
   {
@@ -2734,9 +2734,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Çağırışaqədərki hazırlıq",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Rövşən Quliyev",
-   "room": "213",
+   "room": "204",
    "pending": false
   },
   {
@@ -2748,9 +2748,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Biologiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Afaq Məmmədova",
-   "room": "221",
+   "room": "212",
    "pending": false
   },
   {
@@ -2762,9 +2762,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Nazilə Qəhrəmanova",
-   "room": "221",
+   "room": "122",
    "pending": false
   },
   {
@@ -2776,9 +2776,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Fizika",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Məleykə Abdullayeva",
-   "room": "124",
+   "room": "217",
    "pending": false
   },
   {
@@ -2790,9 +2790,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Ümumi tarix",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Nərmin Nəsirova",
-   "room": "202",
+   "room": "129",
    "pending": false
   },
   {
@@ -2804,9 +2804,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Ədəbiyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "İlahə Əsgərova",
-   "room": "226",
+   "room": "212",
    "pending": false
   },
   {
@@ -2818,9 +2818,9 @@
    "week": "all",
    "subgroup": 1,
    "subject": "Xarici dil",
-   "kind": "Seminar",
-   "teacher": "Xuraman İbrahimova",
-   "room": "212",
+   "kind": null,
+   "teacher": "Könül Abbasova",
+   "room": "213",
    "pending": false
   },
   {
@@ -2832,9 +2832,9 @@
    "week": "all",
    "subgroup": 2,
    "subject": "Xarici dil",
-   "kind": "Seminar",
-   "teacher": "Könül Abbasova",
-   "room": "209",
+   "kind": null,
+   "teacher": "Xuraman İbrahimova",
+   "room": "213",
    "pending": false
   },
   {
@@ -2846,9 +2846,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dili",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "İlahə Əsgərova",
-   "room": "221",
+   "room": "217",
    "pending": false
   },
   {
@@ -2860,7 +2860,7 @@
    "week": "all",
    "subgroup": null,
    "subject": "İnformasiya texnologiyaları",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Nazənim Nəbiyeva",
    "room": "216",
    "pending": false
@@ -2873,10 +2873,10 @@
    "end": "16:20",
    "week": "all",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Səadət Əliyeva",
-   "room": "119",
+   "room": "216",
    "pending": false
   },
   {
@@ -2888,9 +2888,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Samirə Kərimova",
-   "room": "122",
+   "room": "209",
    "pending": false
   },
   {
@@ -2902,9 +2902,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Elçin Əsədov",
-   "room": "122",
+   "room": "232",
    "pending": false
   },
   {
@@ -2915,10 +2915,10 @@
    "end": "16:20",
    "week": "all",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Mühazirə",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Sevinc Ağakişibəyli",
-   "room": "203",
+   "room": "209",
    "pending": false
   },
   {
@@ -2930,9 +2930,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aytən İsmayılova",
-   "room": "203",
+   "room": "217",
    "pending": false
   },
   {
@@ -2943,10 +2943,10 @@
    "end": "14:50",
    "week": "all",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Səadət Əliyeva",
-   "room": "122",
+   "room": "202",
    "pending": false
   },
   {
@@ -2957,28 +2957,28 @@
    "end": "16:20",
    "week": "all",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Praktika",
-   "teacher": "Yeganə Həsənova",
-   "room": "203",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ26/02SB",
-   "day": 4,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "lower",
-   "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Praktika",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Yeganə Həsənova",
    "room": "207",
    "pending": false
   },
   {
    "group": "KŞŞİ26/02SB",
+   "day": 4,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "lower",
+   "subgroup": null,
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
+   "teacher": "Yeganə Həsənova",
+   "room": "204",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ26/02SB",
    "day": 5,
    "lesson": 1,
    "start": "13:30",
@@ -2986,9 +2986,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Samirə Kərimova",
-   "room": "122",
+   "room": "209",
    "pending": false
   },
   {
@@ -3000,9 +3000,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Elçin Əsədov",
-   "room": "112",
+   "room": "212",
    "pending": false
   },
   {
@@ -3014,9 +3014,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aytən İsmayılova",
-   "room": "112",
+   "room": "213",
    "pending": false
   },
   {
@@ -3027,10 +3027,10 @@
    "end": "14:50",
    "week": "all",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Səadət Əliyeva",
-   "room": "122",
+   "room": "115",
    "pending": false
   },
   {
@@ -3042,9 +3042,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Elçin Əsədov",
-   "room": "122",
+   "room": "212",
    "pending": false
   },
   {
@@ -3055,10 +3055,10 @@
    "end": "17:50",
    "week": "all",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Praktika",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Yeganə Həsənova",
-   "room": "203",
+   "room": "210",
    "pending": false
   },
   {
@@ -3070,9 +3070,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Xatirə Xəlilova",
-   "room": "204",
+   "room": "205",
    "pending": false
   },
   {
@@ -3083,10 +3083,10 @@
    "end": "16:20",
    "week": "all",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Səadət Əliyeva",
-   "room": "122",
+   "room": "213",
    "pending": false
   },
   {
@@ -3098,9 +3098,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Xatirə Xəlilova",
-   "room": "120",
+   "room": "212",
    "pending": false
   },
   {
@@ -3112,9 +3112,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Məmmədova",
-   "room": "122",
+   "room": "209",
    "pending": false
   },
   {
@@ -3125,10 +3125,10 @@
    "end": "17:50",
    "week": "lower",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Praktika",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Yeganə Həsənova",
-   "room": "203",
+   "room": "210",
    "pending": false
   },
   {
@@ -3140,9 +3140,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Məmmədova",
-   "room": "120",
+   "room": "210",
    "pending": false
   },
   {
@@ -3154,9 +3154,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "İnformasiya texnologiyaları",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Gülsüm Almaszadə",
-   "room": "223",
+   "room": "210",
    "pending": false
   },
   {
@@ -3168,9 +3168,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Elçin Əsədov",
-   "room": "120",
+   "room": "129",
    "pending": false
   },
   {
@@ -3181,8 +3181,8 @@
    "end": "16:20",
    "week": "all",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Mühazirə",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Yeganə Həsənova",
    "room": "203",
    "pending": false
@@ -3196,9 +3196,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Naibə Məmmədli",
-   "room": "120",
+   "room": "232",
    "pending": false
   },
   {
@@ -3210,9 +3210,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Nazilə Qəhrəmanova",
-   "room": "120",
+   "room": "129",
    "pending": false
   },
   {
@@ -3224,9 +3224,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Məmmədova",
-   "room": "120",
+   "room": "210",
    "pending": false
   },
   {
@@ -3237,10 +3237,10 @@
    "end": "17:50",
    "week": "all",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Nigar Kərimova",
-   "room": "110",
+   "room": "216",
    "pending": false
   },
   {
@@ -3251,56 +3251,56 @@
    "end": "14:50",
    "week": "all",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Mühazirə",
-   "teacher": "Yeganə Həsənova",
-   "room": "203",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ26/04SB",
-   "day": 3,
-   "lesson": 2,
-   "start": "15:00",
-   "end": "16:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Nigar Kərimova",
-   "room": "120",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ26/04SB",
-   "day": 4,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Riyaziyyat",
-   "kind": "Seminar",
-   "teacher": "Nazilə Qəhrəmanova",
-   "room": "122",
-   "pending": false
-  },
-  {
-   "group": "KŞŞİ26/04SB",
-   "day": 4,
-   "lesson": 2,
-   "start": "15:00",
-   "end": "16:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Praktika",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Yeganə Həsənova",
    "room": "210",
    "pending": false
   },
   {
    "group": "KŞŞİ26/04SB",
+   "day": 3,
+   "lesson": 2,
+   "start": "15:00",
+   "end": "16:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Nigar Kərimova",
+   "room": "213",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ26/04SB",
+   "day": 4,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Riyaziyyat",
+   "kind": null,
+   "teacher": "Nazilə Qəhrəmanova",
+   "room": "202",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ26/04SB",
+   "day": 4,
+   "lesson": 2,
+   "start": "15:00",
+   "end": "16:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
+   "teacher": "Yeganə Həsənova",
+   "room": "203",
+   "pending": false
+  },
+  {
+   "group": "KŞŞİ26/04SB",
    "day": 4,
    "lesson": 3,
    "start": "16:30",
@@ -3308,9 +3308,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Naibə Məmmədli",
-   "room": "120",
+   "room": "212",
    "pending": false
   },
   {
@@ -3322,9 +3322,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əməliyyat sistemləri",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Aybəniz Məmmədova",
-   "room": "121",
+   "room": "210",
    "pending": false
   },
   {
@@ -3336,9 +3336,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "İnformasiya texnologiyaları",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Gülsüm Almaszadə",
-   "room": "122",
+   "room": "210",
    "pending": false
   },
   {
@@ -3349,10 +3349,10 @@
    "end": "17:50",
    "week": "lower",
    "subgroup": null,
-   "subject": "Kompüterlərin arxitekturası",
-   "kind": "Praktika",
+   "subject": "Kompüter arxitekturası",
+   "kind": null,
    "teacher": "Yeganə Həsənova",
-   "room": "203",
+   "room": "207",
    "pending": false
   },
   {
@@ -3364,9 +3364,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Layihələrin iqtisadi əsasları",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Afət Məsimova",
-   "room": "129",
+   "room": "122",
    "pending": false
   },
   {
@@ -3378,7 +3378,7 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Jalə Qubatova",
    "room": "217",
    "pending": false
@@ -3392,9 +3392,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial sahibkarlıq",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Könül Vəliyeva",
-   "room": "129",
+   "room": "213",
    "pending": false
   },
   {
@@ -3406,9 +3406,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Fəlsəfə",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Nərmin Tapdıqlı",
-   "room": "129",
+   "room": "213",
    "pending": false
   },
   {
@@ -3420,9 +3420,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Layihələrin iqtisadi əsasları",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Afət Məsimova",
-   "room": "206",
+   "room": "115",
    "pending": false
   },
   {
@@ -3434,9 +3434,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Jalə Qubatova",
-   "room": "129",
+   "room": "115",
    "pending": false
   },
   {
@@ -3448,9 +3448,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial sahibkarlıq",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Könül Vəliyeva",
-   "room": "206",
+   "room": "123",
    "pending": false
   },
   {
@@ -3462,9 +3462,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Jalə Qubatova",
-   "room": "217",
+   "room": "212",
    "pending": false
   },
   {
@@ -3476,9 +3476,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Jalə Qubatova",
-   "room": "129",
+   "room": "202",
    "pending": false
   },
   {
@@ -3490,9 +3490,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əlilliyi olan şəxslərlə sosial iş",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Nərgiz Əliyeva",
-   "room": "221",
+   "room": "123",
    "pending": false
   },
   {
@@ -3504,9 +3504,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Jalə Qubatova",
-   "room": "217",
+   "room": "202",
    "pending": false
   },
   {
@@ -3518,9 +3518,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Jalə Qubatova",
-   "room": "226",
+   "room": "217",
    "pending": false
   },
   {
@@ -3532,9 +3532,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Jalə Qubatova",
-   "room": "225",
+   "room": "129",
    "pending": false
   },
   {
@@ -3546,9 +3546,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Jalə Qubatova",
-   "room": "222",
+   "room": null,
    "pending": false
   },
   {
@@ -3560,9 +3560,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Layihələrin iqtisadi əsasları",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "İradə Bayramova",
-   "room": "222",
+   "room": "123",
    "pending": false
   },
   {
@@ -3574,9 +3574,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial sahibkarlıq",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "İradə Bayramova",
-   "room": "222",
+   "room": "202",
    "pending": false
   },
   {
@@ -3588,9 +3588,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Jalə Qubatova",
-   "room": "222",
+   "room": "217",
    "pending": false
   },
   {
@@ -3602,9 +3602,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Jalə Qubatova",
-   "room": "205",
+   "room": "123",
    "pending": false
   },
   {
@@ -3616,9 +3616,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əlilliyi olan şəxslərlə sosial iş",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Nərgiz Əliyeva",
-   "room": "225",
+   "room": "202",
    "pending": false
   },
   {
@@ -3630,9 +3630,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Fəlsəfə",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Nərmin Tapdıqlı",
-   "room": "222",
+   "room": "232",
    "pending": false
   },
   {
@@ -3644,9 +3644,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial sahibkarlıq",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "İradə Bayramova",
-   "room": "234",
+   "room": "206",
    "pending": false
   },
   {
@@ -3658,9 +3658,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Jalə Qubatova",
-   "room": "222",
+   "room": "115",
    "pending": false
   },
   {
@@ -3672,9 +3672,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Layihələrin iqtisadi əsasları",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "İradə Bayramova",
-   "room": "234",
+   "room": "217",
    "pending": false
   },
   {
@@ -3686,9 +3686,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Jalə Qubatova",
-   "room": "234",
+   "room": "213",
    "pending": false
   },
   {
@@ -3700,9 +3700,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial işə giriş",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Murad Məmmədli",
-   "room": "127",
+   "room": "205",
    "pending": false
   },
   {
@@ -3714,9 +3714,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Qənirə Əsgərova",
-   "room": "204",
+   "room": "205",
    "pending": false
   },
   {
@@ -3727,10 +3727,10 @@
    "end": "14:50",
    "week": "all",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Dürdanə Əlbabayeva",
-   "room": "203",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Dürdanə Əlibabayeva",
+   "room": "115",
    "pending": false
   },
   {
@@ -3742,37 +3742,37 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial siyasət",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aida Orucova",
-   "room": "204",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/01SB",
-   "day": 2,
-   "lesson": 3,
-   "start": "16:30",
-   "end": "17:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Uşaq və yeniyetmələrlə sosial iş",
-   "kind": "Mühazirə",
-   "teacher": "Pərvanə Əliyeva",
    "room": "212",
    "pending": false
   },
   {
    "group": "Sİ25/01SB",
+   "day": 2,
+   "lesson": 3,
+   "start": "16:30",
+   "end": "17:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Uşaq və yeniyetmələrlə sosial iş",
+   "kind": null,
+   "teacher": "Pərvanə Əliyeva",
+   "room": "213",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/01SB",
    "day": 3,
    "lesson": 1,
    "start": "13:30",
    "end": "14:50",
    "week": "all",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Dürdanə Əlbabayeva",
-   "room": "121",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Dürdanə Əlibabayeva",
+   "room": "213",
    "pending": false
   },
   {
@@ -3784,9 +3784,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Psixologiya",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Pərvanə Əliyeva",
-   "room": "204",
+   "room": "206",
    "pending": false
   },
   {
@@ -3798,9 +3798,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Psixologiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Pərvanə Əliyeva",
-   "room": "121",
+   "room": "206",
    "pending": false
   },
   {
@@ -3812,9 +3812,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Uşaq və yeniyetmələrlə sosial iş",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Pərvanə Əliyeva",
-   "room": "121",
+   "room": "206",
    "pending": false
   },
   {
@@ -3826,9 +3826,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Qənirə Əsgərova",
-   "room": "203",
+   "room": "115",
    "pending": false
   },
   {
@@ -3839,10 +3839,10 @@
    "end": "16:20",
    "week": "lower",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Dürdanə Əlbabayeva",
-   "room": "122",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Dürdanə Əlibabayeva",
+   "room": "115",
    "pending": false
   },
   {
@@ -3854,9 +3854,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial siyasət",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Aida Orucova",
-   "room": "112",
+   "room": "202",
    "pending": false
   },
   {
@@ -3868,9 +3868,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial işə giriş",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Murad Məmmədli",
-   "room": "110",
+   "room": "202",
    "pending": false
   },
   {
@@ -3882,9 +3882,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial siyasət",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Aida Orucova",
-   "room": "222",
+   "room": "212",
    "pending": false
   },
   {
@@ -3896,9 +3896,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Psixologiya",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "İlhamə Rəsulova",
-   "room": "110",
+   "room": "213",
    "pending": false
   },
   {
@@ -3910,9 +3910,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Uşaq və yeniyetmələrlə sosial iş",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Pərvanə Əliyeva",
-   "room": "120",
+   "room": "202",
    "pending": false
   },
   {
@@ -3924,9 +3924,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Psixologiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "İlhamə Rəsulova",
-   "room": "110",
+   "room": "217",
    "pending": false
   },
   {
@@ -3938,9 +3938,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Günel Dadaşova",
-   "room": "121",
+   "room": "202",
    "pending": false
   },
   {
@@ -3951,10 +3951,10 @@
    "end": "16:20",
    "week": "lower",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Məlahət Məmmədova",
-   "room": "121",
+   "room": "202",
    "pending": false
   },
   {
@@ -3966,9 +3966,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Uşaq və yeniyetmələrlə sosial iş",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Pərvanə Əliyeva",
-   "room": "113A",
+   "room": "206",
    "pending": false
   },
   {
@@ -3979,10 +3979,10 @@
    "end": "16:20",
    "week": "all",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Məlahət Məmmədova",
-   "room": "110",
+   "room": "216",
    "pending": false
   },
   {
@@ -3994,9 +3994,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial siyasət",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aida Orucova",
-   "room": "122",
+   "room": "213",
    "pending": false
   },
   {
@@ -4007,10 +4007,10 @@
    "end": "14:50",
    "week": "all",
    "subgroup": null,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Məlahət Məmmədova",
-   "room": "204",
+   "room": "213",
    "pending": false
   },
   {
@@ -4022,9 +4022,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial işə giriş",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Murad Məmmədli",
-   "room": "204",
+   "room": "212",
    "pending": false
   },
   {
@@ -4036,9 +4036,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial işə giriş",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Murad Məmmədli",
-   "room": "204",
+   "room": "206",
    "pending": false
   },
   {
@@ -4050,9 +4050,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Günel Dadaşova",
-   "room": "209",
+   "room": "206",
    "pending": false
   },
   {
@@ -4064,9 +4064,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Layihələrin iqtisadi əsasları",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "İradə Bayramova",
-   "room": "121",
+   "room": "206",
    "pending": false
   },
   {
@@ -4078,9 +4078,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Səkinə Vəlişova",
-   "room": "129",
+   "room": null,
    "pending": false
   },
   {
@@ -4092,9 +4092,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Səkinə Vəlişova",
-   "room": "129",
+   "room": "121",
    "pending": false
   },
   {
@@ -4106,9 +4106,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əlilliyi olan şəxslərlə sosial iş",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Səkinə Vəlişova",
-   "room": "129",
+   "room": "122",
    "pending": false
   },
   {
@@ -4120,9 +4120,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Səkinə Vəlişova",
-   "room": "210",
+   "room": "121",
    "pending": false
   },
   {
@@ -4134,376 +4134,376 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Səkinə Vəlişova",
+   "room": "122",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/03SB",
+   "day": 3,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial sahibkarlıq",
+   "kind": null,
+   "teacher": "İradə Bayramova",
    "room": "232",
    "pending": false
   },
   {
    "group": "Sİ25/03SB",
    "day": 3,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial sahibkarlıq",
-   "kind": "Mühazirə",
-   "teacher": "İradə Bayramova",
-   "room": "129",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/03SB",
-   "day": 3,
    "lesson": 2,
    "start": "10:30",
    "end": "11:50",
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Səkinə Vəlişova",
-   "room": "206",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/03SB",
-   "day": 3,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Fəlsəfə",
-   "kind": "Mühazirə",
-   "teacher": "Şəlalə Vəlisoy",
-   "room": "123",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/03SB",
-   "day": 5,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Layihələrin iqtisadi əsasları",
-   "kind": "Mühazirə",
-   "teacher": "İradə Bayramova",
-   "room": "217",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/03SB",
-   "day": 5,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Mühazirə",
-   "teacher": "Səkinə Vəlişova",
-   "room": "129",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/03SB",
-   "day": 5,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial sahibkarlıq",
-   "kind": "Seminar",
-   "teacher": "İradə Bayramova",
-   "room": "129",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/04SB",
-   "day": 1,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Mühazirə",
-   "teacher": "Səkinə Vəlişova",
-   "room": "223",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/04SB",
-   "day": 1,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Layihələrin iqtisadi əsasları",
-   "kind": "Seminar",
-   "teacher": "İradə Bayramova",
-   "room": "223",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/04SB",
-   "day": 1,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "upper",
-   "subgroup": null,
-   "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Seminar",
-   "teacher": "Jalə Qubatova",
-   "room": "216",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/04SB",
-   "day": 2,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Layihələrin iqtisadi əsasları",
-   "kind": "Mühazirə",
-   "teacher": "İradə Bayramova",
-   "room": "216",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/04SB",
-   "day": 2,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Əlilliyi olan şəxslərlə sosial iş",
-   "kind": "Mühazirə",
-   "teacher": "Jalə Qubatova",
-   "room": "223",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/04SB",
-   "day": 2,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial sahibkarlıq",
-   "kind": "Mühazirə",
-   "teacher": "Könül Vəliyeva",
-   "room": "216",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/04SB",
-   "day": 3,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Mühazirə",
-   "teacher": "Səkinə Vəlişova",
-   "room": "123",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/04SB",
-   "day": 3,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Fəlsəfə",
-   "kind": "Mühazirə",
-   "teacher": "Şəlalə Vəlisoy",
-   "room": "223",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/04SB",
-   "day": 3,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Mühazirə",
-   "teacher": "Jalə Qubatova",
-   "room": "223",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/04SB",
-   "day": 4,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Mühazirə",
-   "teacher": "Jalə Qubatova",
-   "room": "223",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/04SB",
-   "day": 4,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial sahibkarlıq",
-   "kind": "Seminar",
-   "teacher": "Könül Vəliyeva",
-   "room": "216",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/04SB",
-   "day": 5,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Seminar",
-   "teacher": "Səkinə Vəlişova",
-   "room": "216",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/05SB",
-   "day": 1,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Mühazirə",
-   "teacher": "Murad Məmmədli",
-   "room": "216",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/05SB",
-   "day": 1,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Mühazirə",
-   "teacher": "Murad Məmmədli",
-   "room": "216",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/05SB",
-   "day": 2,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial sahibkarlıq",
-   "kind": "Mühazirə",
-   "teacher": "Könül Vəliyeva",
-   "room": "123",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/05SB",
-   "day": 2,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Layihələrin iqtisadi əsasları",
-   "kind": "Mühazirə",
-   "teacher": "Afət Məsimova",
-   "room": "216",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/05SB",
-   "day": 2,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Mühazirə",
-   "teacher": "Murad Məmmədli",
-   "room": "123",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/05SB",
-   "day": 3,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Fəlsəfə",
-   "kind": "Mühazirə",
-   "teacher": "Şəlalə Vəlisoy",
-   "room": "216",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/05SB",
-   "day": 3,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Layihələrin iqtisadi əsasları",
-   "kind": "Seminar",
-   "teacher": "Afət Məsimova",
-   "room": "216",
-   "pending": false
-  },
-  {
-   "group": "Sİ25/05SB",
-   "day": 3,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Sosial sahibkarlıq",
-   "kind": "Seminar",
-   "teacher": "Könül Vəliyeva",
    "room": "121",
    "pending": false
   },
   {
+   "group": "Sİ25/03SB",
+   "day": 3,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Fəlsəfə",
+   "kind": null,
+   "teacher": "Şəlalə Vəlisoy",
+   "room": "121",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/03SB",
+   "day": 5,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Layihələrin iqtisadi əsasları",
+   "kind": null,
+   "teacher": "İradə Bayramova",
+   "room": "121",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/03SB",
+   "day": 5,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial iş təcrübəsində etik prinsiplər",
+   "kind": null,
+   "teacher": "Səkinə Vəlişova",
+   "room": "123",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/03SB",
+   "day": 5,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial sahibkarlıq",
+   "kind": null,
+   "teacher": "İradə Bayramova",
+   "room": "232",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/04SB",
+   "day": 1,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial iş və ailə zorakılığı",
+   "kind": null,
+   "teacher": "Səkinə Vəlişova",
+   "room": "205",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/04SB",
+   "day": 1,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Layihələrin iqtisadi əsasları",
+   "kind": null,
+   "teacher": "İradə Bayramova",
+   "room": null,
+   "pending": false
+  },
+  {
+   "group": "Sİ25/04SB",
+   "day": 1,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "upper",
+   "subgroup": null,
+   "subject": "Sosial iş təcrübəsində etik prinsiplər",
+   "kind": null,
+   "teacher": "Jalə Qubatova",
+   "room": "122",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/04SB",
+   "day": 2,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Layihələrin iqtisadi əsasları",
+   "kind": null,
+   "teacher": "İradə Bayramova",
+   "room": "123",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/04SB",
+   "day": 2,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Əlilliyi olan şəxslərlə sosial iş",
+   "kind": null,
+   "teacher": "Jalə Qubatova",
+   "room": "122",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/04SB",
+   "day": 2,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial sahibkarlıq",
+   "kind": null,
+   "teacher": "Könül Vəliyeva",
+   "room": "216",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/04SB",
+   "day": 3,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial iş və ailə zorakılığı",
+   "kind": null,
+   "teacher": "Səkinə Vəlişova",
+   "room": "121",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/04SB",
+   "day": 3,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Fəlsəfə",
+   "kind": null,
+   "teacher": "Şəlalə Vəlisoy",
+   "room": "122",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/04SB",
+   "day": 3,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial iş təcrübəsində etik prinsiplər",
+   "kind": null,
+   "teacher": "Jalə Qubatova",
+   "room": "122",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/04SB",
+   "day": 4,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial iş təcrübəsində etik prinsiplər",
+   "kind": null,
+   "teacher": "Jalə Qubatova",
+   "room": "217",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/04SB",
+   "day": 4,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial sahibkarlıq",
+   "kind": null,
+   "teacher": "Könül Vəliyeva",
+   "room": "115",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/04SB",
+   "day": 5,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial iş və ailə zorakılığı",
+   "kind": null,
+   "teacher": "Səkinə Vəlişova",
+   "room": "122",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/05SB",
+   "day": 1,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial iş və ailə zorakılığı",
+   "kind": null,
+   "teacher": "Murad Məmmədli",
+   "room": "115",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/05SB",
+   "day": 1,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial iş təcrübəsində etik prinsiplər",
+   "kind": null,
+   "teacher": "Murad Məmmədli",
+   "room": null,
+   "pending": false
+  },
+  {
+   "group": "Sİ25/05SB",
+   "day": 2,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial sahibkarlıq",
+   "kind": null,
+   "teacher": "Könül Vəliyeva",
+   "room": "115",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/05SB",
+   "day": 2,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Layihələrin iqtisadi əsasları",
+   "kind": null,
+   "teacher": "Afət Məsimova",
+   "room": "123",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/05SB",
+   "day": 2,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial iş və ailə zorakılığı",
+   "kind": null,
+   "teacher": "Murad Məmmədli",
+   "room": "232",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/05SB",
+   "day": 3,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Fəlsəfə",
+   "kind": null,
+   "teacher": "Şəlalə Vəlisoy",
+   "room": "122",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/05SB",
+   "day": 3,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Layihələrin iqtisadi əsasları",
+   "kind": null,
+   "teacher": "Afət Məsimova",
+   "room": "123",
+   "pending": false
+  },
+  {
+   "group": "Sİ25/05SB",
+   "day": 3,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Sosial sahibkarlıq",
+   "kind": null,
+   "teacher": "Könül Vəliyeva",
+   "room": "202",
+   "pending": false
+  },
+  {
    "group": "Sİ25/05SB",
    "day": 4,
    "lesson": 1,
@@ -4512,9 +4512,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş və ailə zorakılığı",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Murad Məmmədli",
-   "room": "216",
+   "room": "122",
    "pending": false
   },
   {
@@ -4526,9 +4526,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Murad Məmmədli",
-   "room": "123",
+   "room": "232",
    "pending": false
   },
   {
@@ -4540,9 +4540,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Sosial iş təcrübəsində etik prinsiplər",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Murad Məmmədli",
-   "room": "123",
+   "room": "213",
    "pending": false
   },
   {
@@ -4554,9 +4554,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Əlilliyi olan şəxslərlə sosial iş",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Nərgiz Əliyeva",
-   "room": "216",
+   "room": "232",
    "pending": false
   },
   {
@@ -4568,9 +4568,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Biologiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Yaqut Salahova",
-   "room": "110",
+   "room": "212",
    "pending": false
   },
   {
@@ -4582,9 +4582,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Əsmər Qasımlı",
-   "room": "110",
+   "room": "206",
    "pending": false
   },
   {
@@ -4596,9 +4596,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Xarici dil",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Nigar Kərimova",
-   "room": "112",
+   "room": "213",
    "pending": false
   },
   {
@@ -4610,209 +4610,209 @@
    "week": "all",
    "subgroup": null,
    "subject": "Coğrafiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Vüsalə Sadıqova",
-   "room": "110",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 2,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Riyaziyyat",
-   "kind": "Seminar",
-   "teacher": "Əsmər Qasımlı",
-   "room": "112",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 2,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Azərbaycan dili",
-   "kind": "Seminar",
-   "teacher": "Xatirə Xəlilova",
-   "room": "204",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 2,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "upper",
-   "subgroup": null,
-   "subject": "Ümumi tarix",
-   "kind": "Seminar",
-   "teacher": "Nərmin Nəsirova",
-   "room": "112",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 2,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "lower",
-   "subgroup": null,
-   "subject": "Biologiya",
-   "kind": "Seminar",
-   "teacher": "Yaqut Salahova",
-   "room": "112",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 2,
-   "lesson": 4,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Fiziki tərbiyə",
-   "kind": "Seminar",
-   "teacher": "Rüfət Nəsibov",
-   "room": "113C",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 3,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Kimya",
-   "kind": "Seminar",
-   "teacher": "Murad Məmmədov",
-   "room": "204",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 3,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Fizika",
-   "kind": "Seminar",
-   "teacher": "Günay Dadaşzadə",
-   "room": "124",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 3,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Azərbaycan dili",
-   "kind": "Seminar",
-   "teacher": "Xatirə Xəlilova",
-   "room": "122",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 3,
-   "lesson": 4,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Rus dili",
-   "kind": "Seminar",
-   "teacher": "Fəridə Seyidəhmədli",
-   "room": "204",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 4,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Azərbaycan tarixi",
-   "kind": "Seminar",
-   "teacher": "Aidə Musayeva",
-   "room": "204",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 4,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Çağırışaqədərki hazırlıq",
-   "kind": "Seminar",
-   "teacher": "Rövşən Quliyev",
-   "room": "126",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 4,
-   "lesson": 3,
-   "start": "12:00",
-   "end": "13:20",
-   "week": "all",
-   "subgroup": null,
-   "subject": "Xarici dil",
-   "kind": "Seminar",
-   "teacher": "Nigar Kərimova",
-   "room": "112",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 5,
-   "lesson": 1,
-   "start": "09:00",
-   "end": "10:20",
-   "week": "upper",
-   "subgroup": null,
-   "subject": "Riyaziyyat",
-   "kind": "Seminar",
-   "teacher": "Əsmər Qasımlı",
-   "room": "204",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/01SB",
-   "day": 5,
-   "lesson": 2,
-   "start": "10:30",
-   "end": "11:50",
-   "week": "all",
-   "subgroup": null,
-   "subject": "İnformatika",
-   "kind": "Seminar",
-   "teacher": "Elçin Əsədov",
    "room": "202",
    "pending": false
   },
   {
    "group": "Sİ26/01SB",
+   "day": 2,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Riyaziyyat",
+   "kind": null,
+   "teacher": "Əsmər Qasımlı",
+   "room": "232",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
+   "day": 2,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Azərbaycan dili",
+   "kind": null,
+   "teacher": "Xatirə Xəlilova",
+   "room": "205",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
+   "day": 2,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "upper",
+   "subgroup": null,
+   "subject": "Ümumi tarix",
+   "kind": null,
+   "teacher": "Nərmin Nəsirova",
+   "room": "115",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
+   "day": 2,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "lower",
+   "subgroup": null,
+   "subject": "Biologiya",
+   "kind": null,
+   "teacher": "Yaqut Salahova",
+   "room": "115",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
+   "day": 2,
+   "lesson": 4,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Fiziki tərbiyə",
+   "kind": null,
+   "teacher": "Rüfət Nəsibov",
+   "room": null,
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
+   "day": 3,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Kimya",
+   "kind": null,
+   "teacher": "Murad Məmmədov",
+   "room": "213",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
+   "day": 3,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Fizika",
+   "kind": null,
+   "teacher": "Günay Dadaşzadə",
+   "room": "212",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
+   "day": 3,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Azərbaycan dili",
+   "kind": null,
+   "teacher": "Xatirə Xəlilova",
+   "room": "212",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
+   "day": 3,
+   "lesson": 4,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Rus dili",
+   "kind": null,
+   "teacher": "Fəridə Seyidəhmədli",
+   "room": "217",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
+   "day": 4,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Azərbaycan tarixi",
+   "kind": null,
+   "teacher": "Aidə Musayeva",
+   "room": "115",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
+   "day": 4,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Çağırışaqədərki hazırlıq",
+   "kind": null,
+   "teacher": "Rövşən Quliyev",
+   "room": "217",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
+   "day": 4,
+   "lesson": 3,
+   "start": "12:00",
+   "end": "13:20",
+   "week": "all",
+   "subgroup": null,
+   "subject": "Xarici dil",
+   "kind": null,
+   "teacher": "Nigar Kərimova",
+   "room": "115",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
+   "day": 5,
+   "lesson": 1,
+   "start": "09:00",
+   "end": "10:20",
+   "week": "upper",
+   "subgroup": null,
+   "subject": "Riyaziyyat",
+   "kind": null,
+   "teacher": "Əsmər Qasımlı",
+   "room": "232",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
+   "day": 5,
+   "lesson": 2,
+   "start": "10:30",
+   "end": "11:50",
+   "week": "all",
+   "subgroup": null,
+   "subject": "İnformatika",
+   "kind": null,
+   "teacher": "Elçin Əsədov",
+   "room": "216",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/01SB",
    "day": 5,
    "lesson": 3,
    "start": "12:00",
@@ -4820,9 +4820,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Ədəbiyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Aytən İsmayılova",
-   "room": "122",
+   "room": "212",
    "pending": false
   },
   {
@@ -4834,9 +4834,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Pərvanə Ələkbərova",
-   "room": "204",
+   "room": "232",
    "pending": false
   },
   {
@@ -4848,9 +4848,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan tarixi",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Aidə Musayeva",
-   "room": "204",
+   "room": "205",
    "pending": false
   },
   {
@@ -4862,9 +4862,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Biologiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Yaqut Salahova",
-   "room": "120",
+   "room": "212",
    "pending": false
   },
   {
@@ -4876,9 +4876,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Çağırışaqədərki hazırlıq",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Rövşən Quliyev",
-   "room": "126",
+   "room": "129",
    "pending": false
   },
   {
@@ -4890,9 +4890,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Kimya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Murad Məmmədov",
-   "room": "120",
+   "room": "212",
    "pending": false
   },
   {
@@ -4904,9 +4904,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Pərvanə Ələkbərova",
-   "room": "112",
+   "room": "206",
    "pending": false
   },
   {
@@ -4918,9 +4918,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Ədəbiyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Xatirə Xəlilova",
-   "room": "120",
+   "room": "121",
    "pending": false
   },
   {
@@ -4932,9 +4932,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Ümumi tarix",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Nərmin Nəsirova",
-   "room": "110",
+   "room": "212",
    "pending": false
   },
   {
@@ -4946,9 +4946,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Biologiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Yaqut Salahova",
-   "room": "204",
+   "room": "212",
    "pending": false
   },
   {
@@ -4960,9 +4960,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dili",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Xatirə Xəlilova",
-   "room": "112",
+   "room": "212",
    "pending": false
   },
   {
@@ -4974,9 +4974,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Riyaziyyat",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Pərvanə Ələkbərova",
-   "room": "112",
+   "room": "232",
    "pending": false
   },
   {
@@ -4988,9 +4988,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "İnformatika",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Ülkər Kərimova",
-   "room": "203",
+   "room": "217",
    "pending": false
   },
   {
@@ -5002,9 +5002,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Xarici dil",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Məlahət Məmmədova",
-   "room": "112",
+   "room": "115",
    "pending": false
   },
   {
@@ -5016,9 +5016,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Fizika",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Məleykə Abdullayeva",
-   "room": "124",
+   "room": "121",
    "pending": false
   },
   {
@@ -5030,9 +5030,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dili",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Xatirə Xəlilova",
-   "room": "112",
+   "room": "121",
    "pending": false
   },
   {
@@ -5044,9 +5044,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Xarici dil",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Məlahət Məmmədova",
-   "room": "122",
+   "room": "213",
    "pending": false
   },
   {
@@ -5058,9 +5058,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Fiziki tərbiyə",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Nərgiz Çobanova",
-   "room": "113C",
+   "room": "idm zal",
    "pending": false
   },
   {
@@ -5072,9 +5072,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Rus dili",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "İnarə Cəfərova",
-   "room": "112",
+   "room": "121",
    "pending": false
   },
   {
@@ -5086,7 +5086,7 @@
    "week": "all",
    "subgroup": null,
    "subject": "Coğrafiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Vüsalə Sadıqova",
    "room": "202",
    "pending": false
@@ -5100,9 +5100,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Psixologiya",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "İlhamə Rəsulova",
-   "room": "221",
+   "room": "206",
    "pending": false
   },
   {
@@ -5114,8 +5114,22 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial siyasət",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Aida Orucova",
+   "room": "202",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/03SB",
+   "day": 1,
+   "lesson": 3,
+   "start": "16:30",
+   "end": "17:50",
+   "week": "lower",
+   "subgroup": 1,
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Ləman Abışova",
    "room": "217",
    "pending": false
   },
@@ -5126,25 +5140,11 @@
    "start": "16:30",
    "end": "17:50",
    "week": "lower",
-   "subgroup": 1,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Gülər Rüstəmova",
-   "room": "204",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/03SB",
-   "day": 1,
-   "lesson": 3,
-   "start": "16:30",
-   "end": "17:50",
-   "week": "lower",
    "subgroup": 2,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Ləman Abışova",
-   "room": "209",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Gülər Rüstəmova",
+   "room": "217",
    "pending": false
   },
   {
@@ -5156,9 +5156,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial işə giriş",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Səkinə Vəlişova",
-   "room": "232",
+   "room": null,
    "pending": false
   },
   {
@@ -5170,9 +5170,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Uşaq və yeniyetmələrlə sosial iş",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Pərvanə Əliyeva",
-   "room": "226",
+   "room": "205",
    "pending": false
   },
   {
@@ -5184,9 +5184,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial siyasət",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aida Orucova",
-   "room": "232",
+   "room": "205",
    "pending": false
   },
   {
@@ -5198,9 +5198,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial işə giriş",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Səkinə Vəlişova",
-   "room": "221",
+   "room": "202",
    "pending": false
   },
   {
@@ -5211,10 +5211,10 @@
    "end": "14:50",
    "week": "all",
    "subgroup": 1,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Gülər Rüstəmova",
-   "room": "234",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Ləman Abışova",
+   "room": "115",
    "pending": false
   },
   {
@@ -5225,10 +5225,10 @@
    "end": "14:50",
    "week": "all",
    "subgroup": 2,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Ləman Abışova",
-   "room": "205",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Gülər Rüstəmova",
+   "room": "115",
    "pending": false
   },
   {
@@ -5240,9 +5240,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Şəfəq Əzizova",
-   "room": "232",
+   "room": "213",
    "pending": false
   },
   {
@@ -5254,9 +5254,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Uşaq və yeniyetmələrlə sosial iş",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Pərvanə Əliyeva",
-   "room": "232",
+   "room": "202",
    "pending": false
   },
   {
@@ -5268,9 +5268,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Psixologiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "İlhamə Rəsulova",
-   "room": "232",
+   "room": "202",
    "pending": false
   },
   {
@@ -5281,10 +5281,10 @@
    "end": "14:50",
    "week": "all",
    "subgroup": 1,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Gülər Rüstəmova",
-   "room": "234",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Ləman Abışova",
+   "room": "213",
    "pending": false
   },
   {
@@ -5295,10 +5295,10 @@
    "end": "14:50",
    "week": "all",
    "subgroup": 2,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Ləman Abışova",
-   "room": "205",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Gülər Rüstəmova",
+   "room": "213",
    "pending": false
   },
   {
@@ -5310,9 +5310,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Şəfəq Əzizova",
-   "room": "206",
+   "room": "232",
    "pending": false
   },
   {
@@ -5324,9 +5324,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial işə giriş",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Murad Məmmədli",
-   "room": "221",
+   "room": "206",
    "pending": false
   },
   {
@@ -5338,9 +5338,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Uşaq və yeniyetmələrlə sosial iş",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "İlhamə Rəsulova",
-   "room": "221",
+   "room": "212",
    "pending": false
   },
   {
@@ -5352,9 +5352,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial siyasət",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aida Orucova",
-   "room": "221",
+   "room": null,
    "pending": false
   },
   {
@@ -5365,10 +5365,10 @@
    "end": "16:20",
    "week": "all",
    "subgroup": 1,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Lalə Amurəhmədova",
-   "room": "110",
+   "room": "115",
    "pending": false
   },
   {
@@ -5379,10 +5379,10 @@
    "end": "16:20",
    "week": "all",
    "subgroup": 2,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Pərvin Əhmədova",
-   "room": "234",
+   "room": "115",
    "pending": false
   },
   {
@@ -5394,9 +5394,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial işə giriş",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Murad Məmmədli",
-   "room": "232",
+   "room": "212",
    "pending": false
   },
   {
@@ -5408,9 +5408,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Psixologiya",
-   "kind": "Mühazirə",
-   "teacher": "Zeynab Bagirova",
-   "room": "221",
+   "kind": null,
+   "teacher": "Zeynəb Bağırova",
+   "room": "216",
    "pending": false
   },
   {
@@ -5421,10 +5421,10 @@
    "end": "16:20",
    "week": "all",
    "subgroup": 1,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Lalə Amurəhmədova",
-   "room": "121",
+   "room": "115",
    "pending": false
   },
   {
@@ -5435,50 +5435,8 @@
    "end": "16:20",
    "week": "all",
    "subgroup": 2,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Pərvin Əhmədova",
-   "room": "209",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/04SB",
-   "day": 4,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "upper",
-   "subgroup": null,
-   "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
-   "teacher": "Sevinc Salahova",
-   "room": "206",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/04SB",
-   "day": 4,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "lower",
-   "subgroup": 1,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
-   "teacher": "Lalə Amurəhmədova",
-   "room": "127",
-   "pending": false
-  },
-  {
-   "group": "Sİ26/04SB",
-   "day": 4,
-   "lesson": 1,
-   "start": "13:30",
-   "end": "14:50",
-   "week": "lower",
-   "subgroup": 2,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Pərvin Əhmədova",
    "room": "115",
    "pending": false
@@ -5486,15 +5444,57 @@
   {
    "group": "Sİ26/04SB",
    "day": 4,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "upper",
+   "subgroup": null,
+   "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
+   "kind": null,
+   "teacher": "Sevinc Salahova",
+   "room": "212",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/04SB",
+   "day": 4,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "lower",
+   "subgroup": 1,
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Lalə Amurəhmədova",
+   "room": "212",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/04SB",
+   "day": 4,
+   "lesson": 1,
+   "start": "13:30",
+   "end": "14:50",
+   "week": "lower",
+   "subgroup": 2,
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
+   "teacher": "Pərvin Əhmədova",
+   "room": "212",
+   "pending": false
+  },
+  {
+   "group": "Sİ26/04SB",
+   "day": 4,
    "lesson": 2,
    "start": "15:00",
    "end": "16:20",
    "week": "upper",
    "subgroup": null,
    "subject": "Psixologiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Pərvanə Əliyeva",
-   "room": "129",
+   "room": "202",
    "pending": false
   },
   {
@@ -5506,9 +5506,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Uşaq və yeniyetmələrlə sosial iş",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "İlhamə Rəsulova",
-   "room": "129",
+   "room": "202",
    "pending": false
   },
   {
@@ -5520,9 +5520,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Sevinc Salahova",
-   "room": "232",
+   "room": "115",
    "pending": false
   },
   {
@@ -5534,9 +5534,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial siyasət",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Aida Orucova",
-   "room": "232",
+   "room": "216",
    "pending": false
   },
   {
@@ -5548,9 +5548,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Vəfa Yunusova",
-   "room": "226",
+   "room": "232",
    "pending": false
   },
   {
@@ -5561,10 +5561,10 @@
    "end": "14:50",
    "week": "lower",
    "subgroup": 1,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Vüsalə Əsgərova",
-   "room": "206",
+   "room": "232",
    "pending": false
   },
   {
@@ -5575,10 +5575,10 @@
    "end": "14:50",
    "week": "lower",
    "subgroup": 2,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Könül Abbasova",
-   "room": "OZ",
+   "room": "232",
    "pending": false
   },
   {
@@ -5590,9 +5590,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Uşaq və yeniyetmələrlə sosial iş",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Pərvanə Əliyeva",
-   "room": "232",
+   "room": "217",
    "pending": false
   },
   {
@@ -5604,9 +5604,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial siyasət",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Aida Orucova",
-   "room": "217",
+   "room": "213",
    "pending": false
   },
   {
@@ -5618,9 +5618,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial işə giriş",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Murad Məmmədli",
-   "room": "129",
+   "room": "123",
    "pending": false
   },
   {
@@ -5632,9 +5632,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Psixologiya",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Samirə Yasinova",
-   "room": "221",
+   "room": "206",
    "pending": false
   },
   {
@@ -5646,9 +5646,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial siyasət",
-   "kind": "Mühazirə",
+   "kind": null,
    "teacher": "Aida Orucova",
-   "room": "226",
+   "room": "232",
    "pending": false
   },
   {
@@ -5660,9 +5660,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Sosial işə giriş",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Murad Məmmədli",
-   "room": "226",
+   "room": "205",
    "pending": false
   },
   {
@@ -5674,9 +5674,9 @@
    "week": "upper",
    "subgroup": null,
    "subject": "Psixologiya",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Samirə Yasinova",
-   "room": "127",
+   "room": "217",
    "pending": false
   },
   {
@@ -5688,9 +5688,9 @@
    "week": "lower",
    "subgroup": null,
    "subject": "Uşaq və yeniyetmələrlə sosial iş",
-   "kind": "Seminar",
+   "kind": null,
    "teacher": "Pərvanə Əliyeva",
-   "room": "127",
+   "room": "217",
    "pending": false
   },
   {
@@ -5701,10 +5701,10 @@
    "end": "17:50",
    "week": "all",
    "subgroup": 1,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Vüsalə Əsgərova",
-   "room": "122",
+   "room": "216",
    "pending": false
   },
   {
@@ -5715,10 +5715,10 @@
    "end": "17:50",
    "week": "all",
    "subgroup": 2,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Könül Abbasova",
-   "room": "204",
+   "room": "216",
    "pending": false
   },
   {
@@ -5729,10 +5729,10 @@
    "end": "14:50",
    "week": "all",
    "subgroup": 1,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Vüsalə Əsgərova",
-   "room": "212",
+   "room": "216",
    "pending": false
   },
   {
@@ -5743,10 +5743,10 @@
    "end": "14:50",
    "week": "all",
    "subgroup": 2,
-   "subject": "Xarici dildə işgüzar və akademik kommunikasiya-1",
-   "kind": "Praktika",
+   "subject": "Xarici dildə işgüzar və akademik kommunikasiya - 1",
+   "kind": null,
    "teacher": "Könül Abbasova",
-   "room": "225",
+   "room": "216",
    "pending": false
   },
   {
@@ -5758,9 +5758,9 @@
    "week": "all",
    "subgroup": null,
    "subject": "Azərbaycan dilində işgüzar və akademik kommunikasiya",
-   "kind": "Praktika",
+   "kind": null,
    "teacher": "Vəfa Yunusova",
-   "room": "226",
+   "room": "217",
    "pending": false
   }
  ]

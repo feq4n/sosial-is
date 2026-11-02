@@ -34,8 +34,8 @@ describe('rəsmi cədvəl məlumatı', () => {
       if (seen.has(key)) dupes.push(key);
       seen.add(key);
     }
-    // Mənbədəki yeganə təkrar yer (aşağıdakı ziddiyyət testi); yeni təkrar yaranarsa test xəbər verir.
-    expect(dupes).toEqual(['KŞŞİ24/02SB|1|1|all|0']);
+    // Cari mənbədə eyni qrupun eyni yerində iki dərs yoxdur; təkrar yaranarsa test xəbər verir.
+    expect(dupes).toEqual([]);
   });
 
   it('növbələrə görə dərs saatları cədvəldəki kimidir', () => {
@@ -49,17 +49,17 @@ describe('rəsmi cədvəl məlumatı', () => {
 
   it('fənn, növ, müəllim və otaq əlaqəsi saxlanılır', () => {
     expect(lessonsOfGroup('Sİ26/01SB').find((l) => l.day === 1 && l.lesson === 1)).toMatchObject({
-      subject: 'Biologiya', kind: 'Seminar', teacher: 'Yaqut Salahova', room: '110', week: 'all', subgroup: null,
+      subject: 'Biologiya', kind: null, teacher: 'Yaqut Salahova', room: '212', week: 'all', subgroup: null,
     });
     expect(lessonsOfGroup('KŞŞİ26/01SB').find((l) => l.day === 1 && l.lesson === 1)).toMatchObject({
-      subject: 'Azərbaycan dili', kind: 'Seminar', teacher: 'İlahə Əsgərova', room: '221',
+      subject: 'Azərbaycan dili', teacher: 'İlahə Əsgərova', room: '121',
     });
-    expect(lessonsOfGroup('KŞATS25/01SB').find((l) => l.day === 1 && l.lesson === 2)).toMatchObject({ kind: 'Praktika', subject: 'Əməliyyat sistemləri' });
+    expect(lessonsOfGroup('KŞATS25/01SB').find((l) => l.day === 1 && l.lesson === 2)).toMatchObject({ subject: 'Əməliyyat sistemləri', teacher: 'Samirə Kərimova', room: '209' });
   });
 
-  it('cədvəldə 400 dərs sətri var və növ/həftə/yarımqrup dəyərləri etibarlıdır', () => {
+  it('cədvəldə 400 dərs sətri var və həftə/yarımqrup dəyərləri etibarlıdır; dərs növü mənbədə yoxdur', () => {
     expect(lessons).toHaveLength(400);
-    expect(lessons.every((l) => ['Mühazirə', 'Seminar', 'Praktika'].includes(l.kind))).toBe(true);
+    expect(lessons.every((l) => l.kind === null)).toBe(true);
     expect(lessons.every((l) => ['all', 'upper', 'lower'].includes(l.week))).toBe(true);
     expect(lessons.every((l) => l.subgroup === null || l.subgroup === 1 || l.subgroup === 2)).toBe(true);
     expect(lessons.filter((l) => l.week === 'upper')).toHaveLength(34);
@@ -70,9 +70,15 @@ describe('rəsmi cədvəl məlumatı', () => {
   it('üst/alt həftə və yarımqrup variantları bir dərs yerində birlikdə qalır', () => {
     const slot = groupBySlot(lessonsOfGroup('Sİ25/01SB').filter((l) => l.day === 4)).find((items) => items[0].lesson === 1)!;
     expect(slot.map((l) => [l.week, l.subject])).toEqual([['upper', 'Psixologiya'], ['lower', 'Uşaq və yeniyetmələrlə sosial iş']]);
+    expect(slot.map((l) => l.teacher)).toEqual(['Pərvanə Əliyeva', 'Pərvanə Əliyeva']);
     expect(variantLabel(slot[0])).toBe('Üst həftə');
     const halves = groupBySlot(lessonsOfGroup('KŞŞİ26/01SB').filter((l) => l.day === 1)).find((items) => items[0].lesson === 2)!;
     expect(halves.map((l) => [l.subgroup, l.teacher])).toEqual([[1, 'Natiqə Abdüləzizova'], [2, 'İnarə Cəfərova']]);
+    // Eyni xanada ÜST fənn + ALT fənn və iki müəllimli ALT: Sİ26/04SB IV gün I dərs.
+    const mixed = groupBySlot(lessonsOfGroup('Sİ26/04SB').filter((l) => l.day === 4)).find((items) => items[0].lesson === 1)!;
+    expect(mixed.map((l) => [l.week, l.subgroup, l.teacher])).toEqual([
+      ['upper', null, 'Sevinc Salahova'], ['lower', 1, 'Lalə Amurəhmədova'], ['lower', 2, 'Pərvin Əhmədova'],
+    ]);
     expect(variantLabel(halves[1])).toBe('2-ci yarımqrup');
     expect(variantLabel(lessonsOfGroup('Sİ26/01SB')[0])).toBeNull();
   });
@@ -88,13 +94,26 @@ describe('rəsmi cədvəl məlumatı', () => {
   it('boş xanalar uydurma məlumatla doldurulmur', () => {
     // KŞATS25/03SB cədvəldə yalnız I–III dərs yerlərinə malikdir: IV dərs uydurulmur.
     expect(lessonsOfGroup('KŞATS25/03SB').find((x) => x.lesson === 4)).toBeUndefined();
-    // Sİ24/01SB bazar ertəsi yalnız I dərs: II və III dərs yeri boş qalır.
+    // Sİ24/01SB I gün yalnız I dərs: II və III dərs yeri boş qalır.
     expect(lessonsOfGroup('Sİ24/01SB').filter((x) => x.day === 1).map((x) => x.lesson)).toEqual([1]);
+    // Sİ25/05SB I gün III dərs yeri cədvəldə boşdur.
+    expect(lessonsOfGroup('Sİ25/05SB').filter((x) => x.day === 1).map((x) => x.lesson)).toEqual([1, 2]);
   });
 
-  it('mənbədəki bir ziddiyyət olduğu kimi saxlanılır: KŞŞİ24/02SB I gün I dərs yerində iki dərs', () => {
-    const both = lessonsOfGroup('KŞŞİ24/02SB').filter((x) => x.day === 1 && x.lesson === 1);
-    expect(both.map((x) => x.subject).sort()).toEqual(['Kompüter şəbəkələrinin idarəedilməsinin təşkili', 'Python proqramlaşdırma dili']);
+  it('mənbədəki aşkar yazılış səhvləri düzəldilir, adlar ixtiyari dəyişdirilmir', () => {
+    const subjects = new Set(lessons.map((l) => l.subject));
+    for (const bad of ['Phyton proqramlaşdırma dili', 'Kompüterin arxitekturası', 'Kompüterlərin arxitekturası', 'Fizili tərbiyə']) expect(subjects.has(bad)).toBe(false);
+    expect(subjects.has('Python proqramlaşdırma dili')).toBe(true);
+    // Fərqli şəxslər birləşdirilmir.
+    const teachers = new Set(lessons.map((l) => l.teacher));
+    expect(teachers.has('Aybəniz Aslanova') && teachers.has('Aybəniz Məmmədova')).toBe(true);
+    expect(teachers.has('Murad Məmmədov') && teachers.has('Murad Məmmədli')).toBe(true);
+  });
+
+  it('otaq yazılışı mənbədəki kimidir (məs. 207m / 207s) və boş otaq null qalır', () => {
+    expect(lessonsOfGroup('KŞŞİ25/03SB').find((x) => x.day === 1 && x.lesson === 1)).toMatchObject({ room: '207m' });
+    expect(lessonsOfGroup('Sİ26/01SB').find((x) => x.day === 2 && x.lesson === 4)).toMatchObject({ subject: 'Fiziki tərbiyə', room: null });
+    expect(lessons.some((l) => l.room?.includes('\\'))).toBe(false);
   });
 
   it('ixtisas və qrup əlaqəsi yoxlanılır, tam ad yalnız məlum olanda göstərilir', () => {

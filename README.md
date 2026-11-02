@@ -44,13 +44,13 @@ Cədvəl rəsmi Excel faylından (hər iki növbə vərəqi) oxunur və `src/dat
 
 ```bash
 pip install openpyxl
-python3 scripts/import-timetable.py "ADPK_ders_cedveli_Si_KSATS_KSSI.xlsx" 2026/2027 payız
+python3 scripts/import-timetable.py "Sİ_şöbəsi__dərs_cədvəli_2026-2027_rəna.xlsx" 2026/2027 payız
 npm test
 # Supabase SQL Editor-də işə salın (təkrar işlətmək təhlükəsizdir):
 #   supabase/seed/groups.sql
 ```
 
-- Skript Excel faylının **«Hamısı»** vərəqini oxuyur (hər sətir bir dərs: Qrup, Gün, Dərs №, Başlama, Bitmə, Həftə, Yarımqrup, Fənn, Növ, Müəllim, Otaq). Qrup üzrə vərəqlər və «Müəllimlər» vərəqi yalnız görünüşdür, oxunmur. Üst/alt həftə, yarımqrup və dərs növü (Mühazirə/Seminar/Praktika) saytda dərs kartında göstərilir.
+- Skript iki formatı tanıyır. Şöbənin geniş cədvəli (**«ÜMUMİ»** vərəqi: sətir = qrup və dərs yeri, sütunlar = I–V gün × Fənn/Müəllim/otaq) cari mənbədir: “ÜST/ALT” üst/alt həftəni, bir xanada iki müəllim adı 1-ci/2-ci yarımqrupu bildirir; bu faylda dərs növü olmadığı üçün saytda göstərilmir. Mənbədəki aşkar yazılış səhvləri (məs. “Phyton”) skriptdə `SUBJECT_FIXES`/`TEACHER_FIXES` cədvəllərində sadalanıb və hər işlədəndə “DÜZƏLİŞ” sətri ilə çap olunur. Köhnə tabular format isə Excel faylının **«Hamısı»** vərəqini oxuyur (hər sətir bir dərs: Qrup, Gün, Dərs №, Başlama, Bitmə, Həftə, Yarımqrup, Fənn, Növ, Müəllim, Otaq). Qrup üzrə vərəqlər və «Müəllimlər» vərəqi yalnız görünüşdür, oxunmur. Üst/alt həftə, yarımqrup və dərs növü (Mühazirə/Seminar/Praktika) saytda dərs kartında göstərilir.
 - Qrupun ixtisası kodun prefiksindən (Sİ, KŞATS, KŞŞİ), növbəsi isə dərsin saatından təyin edilir.
 - Eyni qrupun eyni yerində iki dərs yazılması, eyni vaxtda müəllim və ya otaq toqquşması xəta sayılmır: mənbə olduğu kimi köçürülür, skript isə “DİQQƏT” sətri ilə xəbər verir. Düzəliş Excel faylında edilib skript yenidən işlədilməlidir.
 - “XXX” kimi qeydlər (olarsa) olduğu kimi saxlanılır, saytda “Fənn hələ təyin olunmayıb” kimi göstərilir. Boş xanalar doldurulmur.

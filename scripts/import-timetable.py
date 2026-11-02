@@ -4,6 +4,10 @@ Mənbə format (ADPK_ders_cedveli_*.xlsx): «Hamısı» vərəqi, hər sətir bi
   Qrup | Gün | Dərs № | Başlama | Bitmə | Həftə | Yarımqrup | Fənn | Növ | Müəllim | Otaq
 Qrup üzrə vərəqlər və «Müəllimlər» vərəqi yalnız oxunaqlı görünüşdür, oxunmur.
 
+İkinci dəstəklənən format: şöbənin çap üçün hazırladığı geniş cədvəl («ÜMUMİ» vərəqi; sətir = qrup və dərs yeri,
+sütunlar = I–V gün × Fənn/Müəllim/otaq). Bu formatda dərs növü (mühazirə/seminar/praktika) yoxdur, ona görə kind=null
+yazılır və saytda göstərilmir; “ÜST/ALT” həftəni, bir xanada iki müəllim adı isə 1-ci/2-ci yarımqrupu bildirir.
+
 Qaydalar:
 - Heç nə uydurulmur: boş xanalar boş qalır, “XXX” qeydləri pending=true ilə saxlanılır.
 - İxtisas qrup kodunun prefiksindən (Sİ / KŞATS / KŞŞİ), növbə isə dərsin saatından təyin edilir.
@@ -109,6 +113,125 @@ def parse(ws):
     return lessons
 
 
+GRID_SHEET = "ÜMUMİ"
+ROMAN = {"I": 1, "II": 2, "III": 3, "IV": 4}
+FIRST_DAY_COL, GRID_FIRST_ROW = 6, 10
+GRID_TIME_RE = re.compile(r"(\d{1,2}):(\d{2})\D+(\d{1,2}):(\d{2})")
+WEEK_MARK_RE = re.compile(r"\b(ÜST|ALT)\b")
+# Mənbədəki aşkar yazılış səhvləri. Yalnız burada sadalananlar düzəldilir; hər düzəliş çap olunur.
+SUBJECT_FIXES = {
+    "Phyton proqramlaşdırma dili": "Python proqramlaşdırma dili",
+    "Sosial iş təcübəsində etik prinsiplər": "Sosial iş təcrübəsində etik prinsiplər",
+    "İnformasiya texonologiyaları": "İnformasiya texnologiyaları",
+    "Kompüter arxiyekturası": "Kompüter arxitekturası",
+    "Kompüterin arxitekturası": "Kompüter arxitekturası",
+    "Kompüterlərin arxitekturası": "Kompüter arxitekturası",
+    "Fizili tərbiyə": "Fiziki tərbiyə",
+}
+TEACHER_FIXES = {
+    "Xatirə Xəlilli": "Xatirə Xəlilova",
+    "Nazilə Qəhrəmaniva": "Nazilə Qəhrəmanova",
+    "Murad MƏmmədli": "Murad Məmmədli",
+    "Dürdanə Əlbabayeva": "Dürdanə Əlibabayeva",
+    "Gülər Rüsməmova": "Gülər Rüstəmova",
+    "Aida Zamanova": "Aidə Zamanova",
+}
+APPLIED_FIXES = Counter()
+GRID_NOTES = []
+
+
+def week_segments(raw, where):
+    """“ÜST X ALT Y” kimi xananı [(həftə, mətn)] siyahısına ayırır; işarə yoxdursa [('all', mətn)]."""
+    raw = unicodedata.normalize("NFC", str(raw)).strip()
+    if not WEEK_MARK_RE.search(raw):
+        return [("all", raw)]
+    parts = WEEK_MARK_RE.split(raw)
+    if parts[0].strip():
+        raise SystemExit(f"{where}: ÜST/ALT işarəsindən əvvəl mətn var: {raw!r}")
+    out = []
+    for mark, body in zip(parts[1::2], parts[2::2]):
+        out.append(("upper" if mark == "ÜST" else "lower", body.strip()))
+    if len({w for w, _ in out}) != len(out):
+        raise SystemExit(f"{where}: eyni həftə iki dəfə yazılıb: {raw!r}")
+    return out
+
+
+def split_teachers(body, where):
+    """Bir xanada iki ad (çox boşluqla və ya 2+2 sözlə) = 1-ci və 2-ci yarımqrup müəllimi."""
+    parts = [p for p in re.split(r"\s{2,}", body.strip()) if p]
+    if len(parts) == 1:
+        toks = parts[0].split()
+        if len(toks) == 4:
+            parts = [" ".join(toks[:2]), " ".join(toks[2:])]
+    names = [text(p) for p in parts]
+    if len(names) > 2:
+        raise SystemExit(f"{where}: ikidən çox müəllim adı: {body!r}")
+    return names
+
+
+def fix(value, table):
+    if value in table:
+        APPLIED_FIXES[(value, table[value])] += 1
+        return table[value]
+    return value
+
+
+def clean_room(value):
+    r = text(value)
+    if r and "\\" in r:
+        APPLIED_FIXES[(r, r.replace("\\", ""))] += 1
+        r = r.replace("\\", "")
+    return r
+
+
+def parse_grid(ws):
+    lessons = []
+    r = GRID_FIRST_ROW
+    while r <= ws.max_row:
+        group = text(ws.cell(r, 2).value)
+        if not group or not GROUP_RE.match(group):
+            break
+        lesson_no = ROMAN.get(text(ws.cell(r, 4).value) or "")
+        m = GRID_TIME_RE.search(text(ws.cell(r, 5).value) or "")
+        where = f"'{ws.title}' sətir {r} ({group})"
+        if not lesson_no or not m:
+            raise SystemExit(f"{where}: dərs № və ya saat tanınmadı")
+        s, e = f"{int(m[1]):02d}:{m[2]}", f"{int(m[3]):02d}:{m[4]}"
+        if (lesson_no, s, e) not in SLOTS:
+            raise SystemExit(f"{where}: dərs {lesson_no} üçün {s}–{e} rəsmi zəng cədvəlində yoxdur")
+        for day in range(1, 6):
+            c = FIRST_DAY_COL + (day - 1) * 3
+            subj_raw, teach_raw, room_raw = (ws.cell(r, c + i).value for i in range(3))
+            cell = f"{where}, gün {day}"
+            if text(subj_raw) is None:
+                if text(teach_raw) or text(room_raw):
+                    raise SystemExit(f"{cell}: fənn boşdur, amma müəllim/otaq yazılıb")
+                continue
+            if text(teach_raw) is None:
+                raise SystemExit(f"{cell}: müəllim boşdur: {subj_raw!r}")
+            subj = week_segments(subj_raw, cell)
+            teach = dict(week_segments(teach_raw, cell))
+            if set(teach) == {"all"} and len(subj) == 1 and subj[0][0] != "all":
+                # Fənn xanasında ÜST/ALT var, müəllim xanasında yoxdur: müəllim həmin həftəyə aid sayılır.
+                GRID_NOTES.append(f"{cell}: yalnız fənn xanasında {subj[0][0] == 'upper' and 'ÜST' or 'ALT'} yazılıb, müəllim ({teach['all']}) həmin həftəyə aid sayıldı")
+                teach = {subj[0][0]: teach["all"]}
+            if {w for w, _ in subj} != set(teach):
+                raise SystemExit(f"{cell}: fənn və müəllim xanalarında ÜST/ALT uyğun deyil: {subj_raw!r} / {teach_raw!r}")
+            room = clean_room(room_raw)
+            for week, subject_raw in subj:
+                subject = fix(text(subject_raw), SUBJECT_FIXES)
+                names = [fix(n, TEACHER_FIXES) for n in split_teachers(teach[week], cell)]
+                for i, name in enumerate(names):
+                    lessons.append({
+                        "group": group, "day": day, "lesson": lesson_no, "start": s, "end": e,
+                        "week": week, "subgroup": (i + 1) if len(names) == 2 else None,
+                        "subject": subject, "kind": None, "teacher": name, "room": room,
+                        "pending": is_pending(subject),
+                    })
+        r += 1
+    return lessons
+
+
 def clash_warnings(lessons):
     """Mənbədəki ehtimal olunan ziddiyyətləri çap üçün toplayır (məlumat dəyişdirilmir)."""
     out = []
@@ -158,9 +281,12 @@ def main():
     academic_year = sys.argv[2] if len(sys.argv) > 2 else "2026/2027"
     semester = sys.argv[3] if len(sys.argv) > 3 else "payız"
     wb = load_workbook(src, data_only=True)
-    if SHEET not in wb.sheetnames:
-        raise SystemExit(f"'{SHEET}' vərəqi tapılmadı. Mövcud vərəqlər: {wb.sheetnames[:5]}…")
-    lessons = parse(wb[SHEET])
+    if SHEET in wb.sheetnames:
+        lessons = parse(wb[SHEET])
+    elif GRID_SHEET in wb.sheetnames:
+        lessons = parse_grid(wb[GRID_SHEET])
+    else:
+        raise SystemExit(f"'{SHEET}' və ya '{GRID_SHEET}' vərəqi tapılmadı. Mövcud vərəqlər: {wb.sheetnames[:5]}…")
 
     shifts = defaultdict(set)
     for x in lessons:
@@ -196,6 +322,10 @@ def main():
     by_kind = Counter(x["kind"] for x in lessons_out)
     print(f"ixtisas: {len(specialties)}, qrup: {len(groups_out)}, dərs: {len(lessons_out)} (təyin olunmamış 'XXX': {pending})")
     print(f"həftə: {dict(by_week)}; növ: {dict(by_kind)}; yarımqrup sətirləri: {sum(1 for x in lessons_out if x['subgroup'])}")
+    for (old, new), n in sorted(APPLIED_FIXES.items()):
+        print(f"DÜZƏLİŞ: {old!r} -> {new!r} ({n}×)")
+    for line in GRID_NOTES:
+        print("QEYD:", line)
     for line in clash_warnings(lessons_out):
         print("DİQQƏT:", line)
 
